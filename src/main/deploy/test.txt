@@ -1,6 +1,0 @@
-hello this is my test text file!
-testing for commit and push to my own branch lol
-if this works, then the test was a success!
-next commit/push should delete this file as this file is only temporary
-
-- steven p :D
