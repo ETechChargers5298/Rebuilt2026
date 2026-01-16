@@ -2,10 +2,12 @@
 ETech Chargers (FRC5298) Code for the 2026 game "REBUILT" Competition!
 
 ## Contributors
-* Mike P - ?
-* Leo Cicco - ? 
 * Steven Pulgarin - Drivetrain
-* David K. - ?
-* Bryan Paxtor - Swerve
 * Bryan Ramirez - DriveTrain
-* Gabriel Rivera - ?
+* Tyler K - Intake
+* David K - Hopper/Loader
+* Bryan Paxtor - Scorer
+* Leo Cicco - Scorer
+* Gabriel Rivera - Vision
+* Dylan K - Vision
+* Mike P - Controls
