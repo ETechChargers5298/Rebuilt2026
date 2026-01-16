@@ -6,5 +6,5 @@ ETech Chargers (FRC5298) Code for the 2026 game "REBUILT" Competition!
 * Leo Cicco
 * Steven Pulgarin
 * David K. - ???
-* Bryan Paxtor = Swerve
+* Bryan Paxtor
 * Gabriel Rivera
