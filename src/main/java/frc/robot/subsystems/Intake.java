@@ -4,12 +4,29 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.hardware.TalonFX;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 
-public class ExampleSubsystem extends SubsystemBase {
+public class Intake extends SubsystemBase {
+
+// Fields
+TalonFX eatMotor = new TalonFX(Constants.EAT_MOTOR_PORT);
+
+
+
+
   /** Creates a new ExampleSubsystem. */
-  public ExampleSubsystem() {}
+  public Intake() {
+      
+  }
+
+  // Other Methods
+  public void eat(){
+    eatMotor.set(1.0);
+  }
 
   /**
    * Example command factory method.
