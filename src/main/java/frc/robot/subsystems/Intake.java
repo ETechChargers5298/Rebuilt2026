@@ -11,19 +11,35 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Ports;
 
+import com.revrobotics.AbsoluteEncoder;
+import com.revrobotics.spark.*;
+import com.revrobotics.spark.SparkLowLevel.MotorType;
+// import com.revrobotics.RelativeEncoder;
+// import com.revrobotics.CANSparkBase.IdleMode;
+// import com.revrobotics.CANSparkBase.SoftLimitDirection;
+// import com.revrobotics.CANSparkLowLevel.MotorType;
+// import com.revrobotics.SparkAbsoluteEncoder.Type;
+
 public class Intake extends SubsystemBase {
 
 // Fields
-TalonFX eatMotor;
-
-TalonFX extendMotor; // All extendMotor related things are currntly placeholder
+private static Intake instance;
+private SparkMax eatMotor;
+private SparkMax extendMotor; // All extendMotor related things are currntly placeholder
+private AbsoluteEncoder extendEncoder;
 
   /** Creates a new ExampleSubsystem. */
-  public Intake() {
-    eatMotor = new TalonFX(Ports.EAT_MOTOR_PORT);
+  public static Intake getInstance() {
+    if (instance == null) {
+      instance = new Intake();
+    }  
+    return instance;
+  }
 
-    extendMotor = new TalonFX(Ports.EXTEND_MOTOR_PORT);
-
+  private Intake() {
+    eatMotor = new SparkMax(Ports.EAT_MOTOR_PORT,MotorType.kBrushless);
+    extendMotor = new SparkMax(Ports.EXTEND_MOTOR_PORT,MotorType.kBrushless);
+    extendEncoder = extendMotor.getAbsoluteEncoder();
   }
 
   // Other Methods
@@ -31,7 +47,15 @@ TalonFX extendMotor; // All extendMotor related things are currntly placeholder
     eatMotor.set(1.0);
   }
   
-  //Methodspit
+  public void spit()
+  {
+    eatMotor.set(-1.0);
+  }
+
+  public void stopEating()
+  {
+    eatMotor.set(0);
+  }
 
   public void extend()
   {
@@ -40,10 +64,13 @@ TalonFX extendMotor; // All extendMotor related things are currntly placeholder
 
   public void extract()
   {
-    extendMotor.set(1.0);
+    extendMotor.set(-1.0);
   }
 
-
+  public double getExtendAngle()
+  {
+    return extendEncoder.getPosition();
+  }
 
 
 
