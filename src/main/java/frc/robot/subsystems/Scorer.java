@@ -3,14 +3,34 @@
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot.subsystems;
-
+import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
+import frc.robot.Ports;
 
 public class Scorer extends SubsystemBase {
   /** Creates a new ExampleSubsystem. */
-  public Scorer() {}
+  TalonFX turretMotor;
+  TalonFX angleMotor;
+  public Scorer() {
+    turretMotor = new TalonFX(Ports.TURRET_MOTOR_PORT);
+    angleMotor = new TalonFX(Ports.ANGLE_MOTOR_PORT);
+  
+  }
+  public void aimRight(){
+    turretMotor.set(1.0);
+  }
 
+  public void aimLeft(){
+    turretMotor.set(-1.0);
+  }
+  public void aimup(){
+    angleMotor.set(1);
+  }
+  public void aimdown(){
+    angleMotor.set(-1);
+  }
   /**
    * Example command factory method.
    *
