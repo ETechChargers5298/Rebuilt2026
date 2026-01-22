@@ -3,7 +3,10 @@
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot.subsystems;
+import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.hardware.TalonFX;
+
+import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -13,9 +16,22 @@ public class Scorer extends SubsystemBase {
   /** Creates a new ExampleSubsystem. */
   TalonFX turretMotor;
   TalonFX angleMotor;
+  TalonFX launcherMotor;
+  public  double distanceFromHub = 0;
+  public double angleToHub = 0;
+  public double turretMotorSpeed = 0;
+  public double turretAngle = 0;
+  public double angleAngler = 0;
+  // public double 
+
+
+
   public Scorer() {
+
     turretMotor = new TalonFX(Ports.TURRET_MOTOR_PORT);
     angleMotor = new TalonFX(Ports.ANGLE_MOTOR_PORT);
+    launcherMotor = new TalonFX(Ports.FLYWHEEL_MOTOR_PORT);
+    
   
   }
   public void aimRight(){
@@ -31,6 +47,26 @@ public class Scorer extends SubsystemBase {
   public void aimdown(){
     angleMotor.set(-1);
   }
+  
+
+  public double getLauncherSpeed(){
+    
+     StatusSignal<AngularVelocity> velocitySignal = launcherMotor.getVelocity();
+    return velocitySignal.getValueAsDouble();
+
+    // if (angleToHub == 0){
+      
+    //   turretX = 45;
+    //   turretY = 45;
+    // }
+  }
+  
+  // public void getLancherSpeed(){
+  //   if (distanceFromHub == 0){
+  //   turretMotorSpeed = 1;
+  //   }
+    
+  // }
   /**
    * Example command factory method.
    *
