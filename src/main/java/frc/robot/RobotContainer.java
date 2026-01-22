@@ -6,7 +6,7 @@ package frc.robot;
 
 import frc.robot.Ports;
 import frc.robot.commands.Autos;
-import frc.robot.commands.EatFuel;
+import frc.robot.commands.basic.EatFuel;
 import frc.robot.subsystems.Intake;
 import edu.wpi.first.wpilibj.StadiaController.Button;
 import edu.wpi.first.wpilibj.XboxController;

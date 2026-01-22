@@ -5,19 +5,29 @@
 package frc.robot.commands;
 
 import frc.robot.subsystems.Intake;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.Command;
 
 /** An example command that uses an example subsystem. */
-public class EatFuel extends Command {
+public class ExtendIntake extends Command {
   @SuppressWarnings("PMD.UnusedPrivateField")
-  private final Intake intake;
+  private final Intake intake = Intake.getInstance();
 
+  private double kP = 0;
+  private double kI = 0;
+  private double kD = 0;
+
+  private PIDController pid = new PIDController(kP, kI, kD);
+
+  private double setPoint = 0;
+
+  
   /**
    * Creates a new ExampleCommand.
    *
    * @param subsystem The subsystem used by this command.
    */
-  public EatFuel() {
+  public ExtendIntake() {
     intake = Intake.getInstance();
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(intake);
@@ -26,22 +36,29 @@ public class EatFuel extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+  pid.setTolerance(5,10);
 
+  pid.setSetpoint(setPoint);
+
+  
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    Intake.generalExtend(pid.calculate(intake.getExtendAngle()));
 
-    intake.eat();
-
+    if(pid.atSetpoint())
+    {
+      
+    }
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
 
-    intake.stopEating();
+    
   }
 
   // Returns true when the command should end.
