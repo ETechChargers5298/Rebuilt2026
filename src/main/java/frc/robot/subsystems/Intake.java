@@ -60,7 +60,7 @@ private AbsoluteEncoder extendEncoder;
     eatMotor.set(0);
   }
 
-  public static void generalExtend(double speed)
+  public void generalExtend(double speed)
   {
     extendMotor.set(speed);
   }

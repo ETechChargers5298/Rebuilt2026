@@ -46,7 +46,7 @@ public class ExtendIntake extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    Intake.generalExtend(pid.calculate(intake.getExtendAngle()));
+    intake.generalExtend(pid.calculate(intake.getExtendAngle()));
 
     if(pid.atSetpoint())
     {
@@ -57,7 +57,7 @@ public class ExtendIntake extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-
+    pid.close();
     
   }
 
