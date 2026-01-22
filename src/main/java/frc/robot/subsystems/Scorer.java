@@ -14,6 +14,8 @@ import frc.robot.Ports;
 
 public class Scorer extends SubsystemBase {
   /** Creates a new ExampleSubsystem. */
+
+  private static Scorer instance;
   TalonFX turretMotor;
   TalonFX angleMotor;
   TalonFX launcherMotor;
@@ -24,7 +26,11 @@ public class Scorer extends SubsystemBase {
   public double angleAngler = 0;
   // public double 
 
-
+public static Scorer getInstance(){
+  if (instance == null)
+  instance = new Scorer();
+  return instance;
+}
 
   public Scorer() {
 
