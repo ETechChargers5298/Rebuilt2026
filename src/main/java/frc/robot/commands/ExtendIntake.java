@@ -11,7 +11,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 /** An example command that uses an example subsystem. */
 public class ExtendIntake extends Command {
   @SuppressWarnings("PMD.UnusedPrivateField")
-  private final Intake intake = Intake.getInstance();
+  private final Intake intake;
 
   private double kP = 0;
   private double kI = 0;
