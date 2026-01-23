@@ -6,7 +6,8 @@ package frc.robot;
 
 import frc.robot.Ports;
 import frc.robot.commands.Autos;
-import frc.robot.commands.basic.EatFuel;
+import frc.robot.commands.basic.*;
+import frc.robot.subsystems.*;
 import frc.robot.subsystems.Intake;
 import edu.wpi.first.wpilibj.StadiaController.Button;
 import edu.wpi.first.wpilibj.XboxController;
@@ -22,12 +23,9 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
-  // The robot's subsystems and commands are defined here...
-  private final Intake intake = Intake.getInstance();
 
-  // Replace with CommandPS4Controller or CommandJoystick if needed
-  private final XboxController m_driverController =
-      new XboxController(Ports.DRIVER_CONTROLLER);
+  private static final XboxController driverController = new XboxController(Ports.DRIVER_CONTROLLER);
+  private static final XboxController operatorController = new XboxController(Ports.OPERATOR_CONTROLLER);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -45,16 +43,36 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
-    new Trigger(intake::exampleCondition)
-        .onTrue(new EatFuel());
 
-    new JoystickButton(m_driverController,Button.kA.value).whileTrue(new EatFuel());
+    // Link for joystick doc: https://docs.google.com/presentation/d/1cis5OrQfkU9m38LwgAMIfmPpJAZxnIC-KnAzi0JsRao/edit#slide=id.g18d2b75b637cb431_3
+
+    //---------- DRIVETRAIN ----------//
+    
+    //Driver - LX & LY joysticks for Translation, RX joystick for Strafing, A to reset Robot NavX Heading
+    // Drivetrain.getInstance().setDefaultCommand(
+    
+    //   new SwerveDrive(
+    //     () -> driverController.getRawAxis(1),
+    //     () -> -driverController.getRawAxis(0),
+    //     () -> -driverController.getRawAxis(4), //negative joystick values make a positive CCW turn
+    //     () -> driverController.getAButton()
+    //   )
+    
+    // );
+
+    //---------- INTAKE ----------//
+    new Trigger(Intake.getInstance()::isFuelJam).onTrue(new EatFuel());
+    new JoystickButton(driverController,Button.kA.value).whileTrue(new EatFuel());
 
 
-    // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
-    // cancelling on release.
-    //m_driverController.b().whileTrue(intake.exampleMethodCommand());
+    //---------- HOPPER/LOADER ----------//
+
+
+
+    //---------- SCORER ----------//
+
+
+
   }
 
   /**
@@ -64,6 +82,6 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
-    return Autos.exampleAuto(intake);
+    return Autos.exampleAuto();
   }
 }

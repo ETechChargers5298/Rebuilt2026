@@ -4,34 +4,36 @@
 
 package frc.robot.subsystems;
 
-import com.ctre.phoenix6.hardware.TalonFX;
 
+import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Ports;
-
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.spark.*;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
-// import com.revrobotics.RelativeEncoder;
-// import com.revrobotics.CANSparkBase.IdleMode;
-// import com.revrobotics.CANSparkBase.SoftLimitDirection;
-// import com.revrobotics.CANSparkLowLevel.MotorType;
-// import com.revrobotics.SparkAbsoluteEncoder.Type;
+
 
 public class Intake extends SubsystemBase {
 
-// Fields
-private static Intake instance;
-private SparkMax eatMotor;
+  // Fields
+  private static Intake instance;
+  private SparkMax eatMotor;
+  private SparkMax extendMotor; // All extendMotor related things are currntly placeholder
+  private AbsoluteEncoder extendEncoder;
 
-private SparkMax extendMotor; // All extendMotor related things are currntly placeholder
-private AbsoluteEncoder extendEncoder;
 
+  // Intake Constructor
+  private Intake() {
+    eatMotor = new SparkMax(Ports.EAT_MOTOR_PORT,MotorType.kBrushless);
+    extendMotor = new SparkMax(Ports.EXTEND_MOTOR_PORT,MotorType.kBrushless);
+    extendEncoder = extendMotor.getAbsoluteEncoder();
+  }
 
-  /** Creates a new ExampleSubsystem. */
+  // Intake Singleton - ensures only 1 instance of Intake is constructed
   public static Intake getInstance() {
     if (instance == null) {
       instance = new Intake();
@@ -39,14 +41,8 @@ private AbsoluteEncoder extendEncoder;
     return instance;
   }
 
-  private Intake() {
-    eatMotor = new SparkMax(Ports.EAT_MOTOR_PORT,MotorType.kBrushless);
-    extendMotor = new SparkMax(Ports.EXTEND_MOTOR_PORT,MotorType.kBrushless);
-    extendEncoder = extendMotor.getAbsoluteEncoder();
-  }
-
-  // Other Methods
-  public void eat(){
+  // Other Intake Methods
+  public void eat() {
     eatMotor.set(1.0);
   }
   
@@ -70,7 +66,7 @@ private AbsoluteEncoder extendEncoder;
     extendMotor.set(1.0);
   }
 
-  public void extract()
+  public void retract()
   {
     extendMotor.set(-1.0);
   }
@@ -80,35 +76,32 @@ private AbsoluteEncoder extendEncoder;
     return extendEncoder.getPosition();
   }
 
+  // Check if the fuel is jammed
+  public boolean isFuelJam(){
+    return false;
+  }
+
 
 
   /**
-   * Example command factory method.
-   *
+   * Basic Intake Command
    * @return a command
    */
-  public Command exampleMethodCommand() {
+  public Command eatFuelCommand() {
     // Inline construction of command goes here.
     // Subsystem::RunOnce implicitly requires `this` subsystem.
     return runOnce(
         () -> {
           /* one-time action goes here */
+          eat();
         });
-  }
-
-  /**
-   * An example method querying a boolean state of the subsystem (for example, a digital sensor).
-   *
-   * @return value of some boolean subsystem state, such as a digital sensor.
-   */
-  public boolean exampleCondition() {
-    // Query some boolean state, such as a digital sensor.
-    return false;
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    SmartDashboard.putNumber("Intake Extend Angle", getExtendAngle());
+    
   }
 
   @Override

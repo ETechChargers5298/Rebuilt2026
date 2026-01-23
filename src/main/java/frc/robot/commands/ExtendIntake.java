@@ -17,7 +17,7 @@ public class ExtendIntake extends Command {
   private double kI = 0;
   private double kD = 0;
 
-  private PIDController pid = new PIDController(kP, kI, kD);
+  private PIDController pid;
 
   private double setPoint = 0;
 
@@ -28,7 +28,10 @@ public class ExtendIntake extends Command {
    * @param subsystem The subsystem used by this command.
    */
   public ExtendIntake() {
+    
     intake = Intake.getInstance();
+    pid = new PIDController(kP, kI, kD);
+
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(intake);
   }
@@ -36,25 +39,19 @@ public class ExtendIntake extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-  pid.setTolerance(5,10);
-
-  pid.setSetpoint(setPoint);
-
-  
+    pid.setTolerance(5,10);
+    pid.setSetpoint(setPoint);  
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+
     intake.generalExtend(pid.calculate(intake.getExtendAngle()));
 
-    if(pid.atSetpoint())
-    {
-      
-    }
   }
 
-  // Called once the command ends or is interrupted.
+  // Called once the command ends (when the pid is at the setpoint)
   @Override
   public void end(boolean interrupted) {
     pid.close();
