@@ -23,12 +23,14 @@ public class Ports {
 
 
     //CAN-MECH NETWORK
+
+    //Intake related ports
     public static final int EAT_MOTOR_PORT = 16;
     public static final int FLYWHEEL_MOTOR_PORT = 17;
     public static final int TURRET_MOTOR_PORT = 14;
     public static final int ANGLE_MOTOR_PORT = 15;
 
-
+    public static final int EXTEND_MOTOR_PORT = 17; //placeholder
     //DIGITAL I/O PORTS
 
 

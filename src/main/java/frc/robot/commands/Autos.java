@@ -4,14 +4,18 @@
 
 package frc.robot.commands;
 
-import frc.robot.subsystems.Scorer;
+import frc.robot.commands.basic.EatFuel;
+import frc.robot.subsystems.Intake;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 
 public final class Autos {
   /** Example static factory for an autonomous command. */
-  public static Command exampleAuto(Scorer subsystem) {
-    return Commands.sequence(subsystem.exampleMethodCommand(), new ExampleCommand(subsystem));
+  public static Command exampleAuto() {
+    return Commands.sequence(
+      new EatFuel(), 
+      Intake.getInstance().eatFuelCommand() 
+    );
   }
 
   private Autos() {
