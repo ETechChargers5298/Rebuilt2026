@@ -5,7 +5,7 @@ import java.util.function.Supplier;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Constants.SwerveConstants;
+import frc.robot.Constants.SwerveConstantsOld;
 import frc.robot.subsystems.Drivetrain;
 
 
@@ -47,9 +47,9 @@ public class SwerveDrive extends Command {
   public void execute() {
     drivetrain.allianceCentric = true;
     
-    drivetrain.setXSpeed(MathUtil.applyDeadband(xSpeed.get(), 0.1) * SwerveConstants.TOP_SPEED);
-    drivetrain.setYSpeed(MathUtil.applyDeadband(ySpeed.get(), 0.1) * SwerveConstants.TOP_SPEED);
-    drivetrain.setRotSpeed(MathUtil.applyDeadband(rotSpeed.get(), 0.1) * SwerveConstants.TOP_ANGULAR_SPEED);
+    drivetrain.setXSpeed(MathUtil.applyDeadband(xSpeed.get(), 0.1) * SwerveConstantsOld.TOP_SPEED);
+    drivetrain.setYSpeed(MathUtil.applyDeadband(ySpeed.get(), 0.1) * SwerveConstantsOld.TOP_SPEED);
+    drivetrain.setRotSpeed(MathUtil.applyDeadband(rotSpeed.get(), 0.1) * SwerveConstantsOld.TOP_ANGULAR_SPEED);
 
     // drivetrain.move(
     //   MathUtil.applyDeadband(xSpeed.get(), 0.1), 

@@ -26,30 +26,38 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import static edu.wpi.first.units.Units.Volts;
 import java.util.ArrayList;
 import java.util.List;
 import org.photonvision.EstimatedRobotPose;
+
+import com.ctre.phoenix6.Utils;
+import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
+
 import frc.robot.Constants;
 import frc.robot.Constants.*;
+import frc.robot.utils.*;
+import frc.robot.utils.SwerveConstants.TunerSwerveDrivetrain;
 import frc.robot.FieldConstants;
-import frc.robot.utils.SwerveModule;
 
 
 
-public class Drivetrain extends SubsystemBase {
+
+public class Drivetrain extends TunerSwerveDrivetrain implements Subsystem {
 
   private static Drivetrain instance;
-
   private final List<SwerveModule> modulesList;
   private final SwerveDriveKinematics driveKinematics;
 
-  private final SwerveModule frontL = new SwerveModule();
-  private final SwerveModule frontR = new SwerveModule();
-  private final SwerveModule backL = new SwerveModule();
-  private final SwerveModule backR = new SwerveModule();
+  private final SwerveModuleConstants frontL = SwerveConstants.FrontLeft;
+  private final SwerveModuleConstants frontR = SwerveConstants.FrontRight
+  private final SwerveModuleConstants backL = SwerveConstants.BackLeft;
+  private final SwerveModuleConstants backR = SwerveConstants.BackRight;
+  private final SwerveModuleConstants[] swerveModules = {frontL, frontR, backL, backR};
+
 
 //   public AHRS navX;   // The gyro sensor
 
@@ -85,6 +93,85 @@ public class Drivetrain extends SubsystemBase {
 
 
   /** Drivetrain Constructor */
+ /**
+     * Constructs a CTRE SwerveDrivetrain using the specified constants.
+     * <p>
+     * This constructs the underlying hardware devices, so users should not construct
+     * the devices themselves. If they need the devices, they can access them through
+     * getters in the classes.
+     *
+     * @param drivetrainConstants   Drivetrain-wide constants for the swerve drive
+     * @param modules               Constants for each specific module
+     */
+    public Drivetrain(
+        SwerveDrivetrainConstants drivetrainConstants, SwerveModule[] swerveModules
+    ) {
+        super(drivetrainConstants, swerveModules);
+        if (Utils.isSimulation()) {
+            startSimThread();
+        }
+    }
+
+    /**
+     * Constructs a CTRE SwerveDrivetrain using the specified constants.
+     * <p>
+     * This constructs the underlying hardware devices, so users should not construct
+     * the devices themselves. If they need the devices, they can access them through
+     * getters in the classes.
+     *
+     * @param drivetrainConstants     Drivetrain-wide constants for the swerve drive
+     * @param odometryUpdateFrequency The frequency to run the odometry loop. If
+     *                                unspecified or set to 0 Hz, this is 250 Hz on
+     *                                CAN FD, and 100 Hz on CAN 2.0.
+     * @param modules                 Constants for each specific module
+     */
+    public Drivetrain(
+        SwerveDrivetrainConstants drivetrainConstants,
+        double odometryUpdateFrequency,
+        SwerveModuleConstants<?, ?, ?>... modules
+    ) {
+        super(drivetrainConstants, odometryUpdateFrequency, modules);
+        if (Utils.isSimulation()) {
+            startSimThread();
+        }
+    }
+
+    /**
+     * Constructs a CTRE SwerveDrivetrain using the specified constants.
+     * <p>
+     * This constructs the underlying hardware devices, so users should not construct
+     * the devices themselves. If they need the devices, they can access them through
+     * getters in the classes.
+     *
+     * @param drivetrainConstants       Drivetrain-wide constants for the swerve drive
+     * @param odometryUpdateFrequency   The frequency to run the odometry loop. If
+     *                                  unspecified or set to 0 Hz, this is 250 Hz on
+     *                                  CAN FD, and 100 Hz on CAN 2.0.
+     * @param odometryStandardDeviation The standard deviation for odometry calculation
+     *                                  in the form [x, y, theta]ᵀ, with units in meters
+     *                                  and radians
+     * @param visionStandardDeviation   The standard deviation for vision calculation
+     *                                  in the form [x, y, theta]ᵀ, with units in meters
+     *                                  and radians
+     * @param modules                   Constants for each specific module
+     */
+    public Drivetrain(
+        SwerveDrivetrainConstants drivetrainConstants,
+        double odometryUpdateFrequency,
+        Matrix<N3, N1> odometryStandardDeviation,
+        Matrix<N3, N1> visionStandardDeviation,
+        SwerveModuleConstants<?, ?, ?>... modules
+    ) {
+        super(drivetrainConstants, odometryUpdateFrequency, odometryStandardDeviation, visionStandardDeviation, modules);
+        if (Utils.isSimulation()) {
+            startSimThread();
+        }
+    }
+
+
+
+
+
   private Drivetrain() {
 
     // this.modules = new SwerveModule[4];
@@ -104,7 +191,7 @@ public class Drivetrain extends SubsystemBase {
     //this.navX = new AHRS(SPI.Port.kMXP);
     // this.navX = new AHRS(NavXComType.kMXP_SPI);
 
-    this.driveKinematics = SwerveConstants.DRIVE_KINEMATICS;
+    this.driveKinematics = SwerveConstantsOld.DRIVE_KINEMATICS;
 
     this.field = new Field2d();
     this.fieldCentric = true;
@@ -114,7 +201,7 @@ public class Drivetrain extends SubsystemBase {
     var visionStdDevs = VecBuilder.fill(1, 1, 1);
 
     this.poseEstimator =  new SwerveDrivePoseEstimator(
-      SwerveConstants.DRIVE_KINEMATICS,
+      SwerveConstantsOld.DRIVE_KINEMATICS,
       getRobotHeading(),
       getSwerveModulePos(),
       FieldConstants.getRobotPoseInitialFMS().toPose2d(), // Starting pose based on FMS Alliance + Driver Station
@@ -219,7 +306,12 @@ public class Drivetrain extends SubsystemBase {
   // Drivetrain Singleton - ensures only 1 instance of Drivetrain is constructed
   public static Drivetrain getInstance() {
     if (instance == null) {
-      instance = new Drivetrain();
+      instance = new Drivetrain(
+            SwerveConstants.DrivetrainConstants, 
+            SwerveConstants.FrontLeft, 
+            SwerveConstants.FrontRight, 
+            SwerveConstants.BackLeft, 
+            SwerveConstants.BackRight);
     }
     return instance;
   }
@@ -319,7 +411,7 @@ public class Drivetrain extends SubsystemBase {
     SwerveModuleState[] swerveModuleStates = driveKinematics.toSwerveModuleStates(speeds);
     
     //cleans up any weird speeds that may be too high after kinematics equation
-    SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, SwerveConstants.TOP_SPEED);
+    SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, SwerveConstantsOld.TOP_SPEED);
 
     // setting the state for each module as an array
     // for(int i = 0; i < modules.length; i++) {
@@ -378,7 +470,7 @@ public class Drivetrain extends SubsystemBase {
    * @param desiredStates The desired SwerveModule states.
    */
   public void setModuleStates(SwerveModuleState[] desiredStates) {
-    SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, SwerveConstants.TOP_SPEED);
+    SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, SwerveConstantsOld.TOP_SPEED);
     // for(int i = 0; i < modules.length; i++) {
     //   modules[i].setDesiredState(desiredStates[i]);
     // }
