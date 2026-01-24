@@ -59,9 +59,6 @@ public final class Constants {
 
   }
   
-  public static final class SwerveModuleConstants {
-     
-  }
   
   public static class MechConstants{
 
