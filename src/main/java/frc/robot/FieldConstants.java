@@ -20,11 +20,14 @@ import frc.robot.Constants.RobotConstants;
 
 public class FieldConstants {
 
+    // AprilTag User Guide from FIRST: https://firstfrc.blob.core.windows.net/frc2026/FieldAssets/2026-apriltag-images-user-guide.pdf
     public static AprilTagFieldLayout aprilTagFieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2026RebuiltWelded);
-    public static final int[] REEF_TAGS = {6, 7, 8, 9, 10, 11, 17, 18, 19, 20, 21, 22};
+    public static final int[] FIELD_TAGS = {6, 7, 8, 9, 10, 11, 17, 18, 19, 20, 21, 22};
     public static final double[] TAG_WEIGHTS = { 0.25, 0.25, 0.25, 0.25, 0.25, 1, 1, 1, 1, 1, 1, 0.25, 0.25, 0.25, 0.25, 0.25, 1, 1, 1, 1, 1, 1};
 
-    // See dimensions in CAD model: https://cad.onshape.com/documents/73436e28519cd6ef4a2eaa1e/w/658277bde6080a5805de078e/e/42ebe4fcf42b8b1c992b38c2
+    // See dimensions in CAD model: https://cad.onshape.com/documents/de2f7209733ab7e329c09bfb/w/543129b7970a07a101364ab9/e/610a7d2c02088aeabb91946e?renderMode=0&uiState=6972fd8c35795524f0b5acbd
+    // Official OnShape Field: https://cad.onshape.com/documents/8a691e28680da30504859fce/w/c6aa636fb23edb3f1e272fb1/e/f4e47c668796f504844c94a0
+    // ETech Spreadsheet with dimensions: https://docs.google.com/spreadsheets/d/1ADu-O-9LnCuzFm0Oi5kvYeQFNI42bzS47ktMrjclpx8/edit?gid=252485470#gid=252485470
     public static final double FIELD_LENGTH_X = 17.548;
     public static final double FIELD_WIDTH_Y = 8.052;
     public static final double BLUE_CENTER_CAGE_Y = 6.169;
@@ -239,7 +242,7 @@ public class FieldConstants {
         double minDistance = 30.0;
         int closestTag = -1;
 
-        for(int reefTag: REEF_TAGS){
+        for(int reefTag: FIELD_TAGS){
             
             Pose3d reefFacePose = aprilTagFieldLayout.getTagPose(reefTag).get();
             double dx = reefFacePose.getX() - currentRobotPose.getX();
@@ -254,7 +257,7 @@ public class FieldConstants {
         return closestTag;
     }
 
-    // See AprilTag field map: https://firstfrc.blob.core.windows.net/frc2025/FieldAssets/Apriltag_Images_and_User_Guide.pdf
+
     public static int getTagFromReef(Alliance alliance, String reefFace){
         
         if(reefFace.equals("A") && alliance == Alliance.Blue) return 18;
