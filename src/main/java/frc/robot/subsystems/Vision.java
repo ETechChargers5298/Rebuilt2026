@@ -18,7 +18,7 @@ public class Vision extends SubsystemBase {
   private static Vision instance;
   public AprilCam cam1;
   public AprilCam cam2;
-  public boolean doubleCam = false;
+  public boolean doubleCam = true;
   public int closestId;
   Drivetrain drivetrain = Drivetrain.getInstance();
   private final SendableChooser<Integer> tagChooser = new SendableChooser<>();

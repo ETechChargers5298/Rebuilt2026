@@ -389,11 +389,18 @@ public class Drivetrain extends SubsystemBase {
 
   // method to return all the positions of the 4 modules
   public SwerveModulePosition[] getSwerveModulePos() {  
-    SwerveModulePosition[] modulePosition = new SwerveModulePosition[4];
+    SwerveModulePosition[] modulePosition = {
+      new SwerveModulePosition(),
+      new SwerveModulePosition(),
+      new SwerveModulePosition(),
+      new SwerveModulePosition()
+    };
+    
     // for(int i = 0; i < modules.length; i++) {
     //   SwerveModulePosition currentPos = modules[i].getPosition();
     //   modulePosition[i] = new SwerveModulePosition(currentPos.distanceMeters, currentPos.angle); //negative on distance BAD!
     // }
+
     return modulePosition;
   }
 
