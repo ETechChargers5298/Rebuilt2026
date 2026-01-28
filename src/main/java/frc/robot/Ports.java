@@ -28,6 +28,11 @@ public class Ports {
     public static final int EAT_MOTOR_PORT = 16;
 
     public static final int EXTEND_MOTOR_PORT = 17; //placeholder
+
+    //Hopper PORTS
+
+    public static final int CONVEYOR_MOTOR_PORT = 24;
+
     //DIGITAL I/O PORTS
 
 

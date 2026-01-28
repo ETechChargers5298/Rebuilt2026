@@ -4,16 +4,61 @@
 
 package frc.robot.subsystems;
 
+import com.revrobotics.spark.SparkMax;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Ports;
 
 public class Hopper extends SubsystemBase {
 
   //Fields?
-
+  private static Hopper instance;
+  private SparkMax conveyorMotor;
   
-  /** Creates a new ExampleSubsystem. */
-  public Hopper() {}
+
+
+  //Hopper Constructer
+
+  private Hopper() 
+  {
+    conveyorMotor = new SparkMax(Ports.CONVEYOR_MOTOR_PORT, com.revrobotics.spark.SparkLowLevel.MotorType.kBrushless);
+  }
+
+  //Hopper Singleton
+
+  public static Hopper getInstance()
+  {
+    if(instance == null)
+    {
+      instance = new Hopper();
+    }
+    return instance;
+  }
+
+  //Methods
+
+  public void fowardConvey()
+  {
+    conveyorMotor.set(1.0);
+  }
+
+  public void backConvey()
+  {
+    conveyorMotor.set(-1.0);
+  }
+
+  public void stopConvey()
+  {
+    conveyorMotor.set(0);
+  }
+
+  public void generalMoveConvey(double speed)
+  {
+    conveyorMotor.set(speed);
+  }
+
+
 
   /**
    * Example command factory method.
