@@ -32,6 +32,7 @@ public class Ports {
     //Hopper PORTS
 
     public static final int CONVEYOR_MOTOR_PORT = 24;
+    public static final int LOADER_MOTOR_PORT = 25;
 
     //DIGITAL I/O PORTS
 
