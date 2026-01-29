@@ -6,6 +6,7 @@ package frc.robot;
 
 import frc.robot.Ports;
 import frc.robot.commands.Autos;
+import frc.robot.commands.MoveIntake;
 import frc.robot.commands.basic.*;
 import frc.robot.subsystems.*;
 import frc.robot.subsystems.Intake;
@@ -25,7 +26,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 public class RobotContainer {
 
   private static final XboxController driverController = new XboxController(Ports.DRIVER_CONTROLLER);
-  private static final XboxController operatorController = new XboxController(Ports.OPERATOR_CONTROLLER);
+  private static final CommandXboxController operatorController = new CommandXboxController(Ports.OPERATOR_CONTROLLER);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -61,9 +62,17 @@ public class RobotContainer {
     // );
 
     //---------- INTAKE ----------//
-    new Trigger(Intake.getInstance()::isFuelJam).onTrue(new EatFuel());
-    new JoystickButton(driverController,Button.kA.value).whileTrue(new EatFuel());
+    // new Trigger(Intake.getInstance()::isFuelJam).onTrue(new EatFuel());
+    // new JoystickButton(driverController,Button.kA.value).whileTrue(new EatFuel());
+    // new Trigger(Intake.getInstance()::isFuelJam).onTrue(new SpitFuel());
+    // new Trigger(Intake.getInstance()).onTrue(new MoveIntake(0));//temporary point
+    // new Trigger(Intake.getInstance()).onTrue(new MoveIntake(45));//temporary point
 
+    operatorController.leftBumper().whileTrue(new EatFuel());//eat fuel
+    operatorController.leftTrigger().whileTrue(new SpitFuel());//spit fuel
+
+    operatorController.b().whileFalse(new MoveIntake(45));//extend intake temp point
+    operatorController.b().whileFalse(new MoveIntake(45));//retract intake temp point
 
     //---------- HOPPER/LOADER ----------//
 
