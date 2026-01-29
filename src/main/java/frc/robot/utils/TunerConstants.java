@@ -23,7 +23,8 @@ import frc.robot.subsystems.Drivetrain;
 public class TunerConstants {
 
     // COMMAND-USED CONSTANTS
-    public static double MaxSpeed = 1.0 * TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
+    public static double MaxSpeed = 16.0;
+    //1.0 * TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
     public static double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
 
      /* Setting up bindings for necessary control of the swerve drive platform */
@@ -128,7 +129,8 @@ public class TunerConstants {
     private static final Voltage kDriveFrictionVoltage = Volts.of(0.2);
 
     public static final SwerveDrivetrainConstants DrivetrainConstants = new SwerveDrivetrainConstants()
-            .withCANBusName(CAN_DRIVE_BUS.getName())
+            .withCANBusName("swerve bus")
+            //.withCANBusName(CAN_DRIVE_BUS.getName())
             .withPigeon2Id(Ports.PIGEON)
             .withPigeon2Configs(pigeonConfigs);
 
