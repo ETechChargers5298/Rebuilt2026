@@ -27,7 +27,7 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   //private final Vision vision;
 
-  private static final XboxController driverController = new XboxController(Ports.DRIVER_CONTROLLER);
+  private static final CommandXboxController driverController = new CommandXboxController(Ports.DRIVER_CONTROLLER);
   private static final CommandXboxController operatorController = new CommandXboxController(Ports.OPERATOR_CONTROLLER);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
@@ -65,15 +65,13 @@ public class RobotContainer {
     // );
 
     //---------- INTAKE ----------//
-    new Trigger(Intake.getInstance()::isFuelJam).onTrue(new EatFuel());
-    new JoystickButton(driverController,Button.kA.value).whileTrue(new EatFuel());
 
 
     //---------- HOPPER/LOADER ----------//
-    operatorController.a().onTrue(new FowardConvey());
-    operatorController.y().onTrue(new BackConvey());
+    operatorController.a().whileTrue(new ConveyIn());
+    operatorController.y().whileTrue(new ConveyOut());
 
-
+    operatorController.rightTrigger().whileTrue(new LoadFuel());
     //---------- SCORER ----------//
 
 

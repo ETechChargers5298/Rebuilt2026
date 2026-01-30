@@ -40,12 +40,12 @@ public class Hopper extends SubsystemBase {
 
   //Methods
 
-  public void fowardConvey()
+  public void conveyIn()
   {
     conveyorMotor.set(1.0);
   }
 
-  public void backConvey()
+  public void conveyOut()
   {
     conveyorMotor.set(-1.0);
   }
@@ -70,7 +70,7 @@ public class Hopper extends SubsystemBase {
     loaderMotor.set(-1);
   }
 
-  public void generalLoad(double speed)
+  public void generalLoading(double speed)
   {
     loaderMotor.set(speed);
   }

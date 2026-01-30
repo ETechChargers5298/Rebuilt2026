@@ -8,7 +8,7 @@ import frc.robot.subsystems.Hopper;
 import edu.wpi.first.wpilibj2.command.Command;
 
 /** An example command that uses an example subsystem. */
-public class BackConvey extends Command {
+public class ConveyIn extends Command {
   @SuppressWarnings("PMD.UnusedPrivateField")
   private final Hopper hopper;
 
@@ -17,7 +17,7 @@ public class BackConvey extends Command {
    *
    * @param subsystem The subsystem used by this command.
    */
-  public BackConvey() {
+  public ConveyIn() {
     hopper = Hopper.getInstance();
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(hopper);
@@ -33,7 +33,7 @@ public class BackConvey extends Command {
   @Override
   public void execute() {
 
-    hopper.backConvey();
+    hopper.conveyIn();
 
   }
 
