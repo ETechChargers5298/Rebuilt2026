@@ -18,8 +18,13 @@ import com.ctre.phoenix6.hardware.*;
 import com.ctre.phoenix6.signals.*;
 import com.ctre.phoenix6.swerve.*;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants.*;
-import com.ctre.phoenix6.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.Utils;
+
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.config.PIDConstants;
+import com.pathplanner.lib.config.RobotConfig;
+import com.pathplanner.lib.controllers.PPHolonomicDriveController;
+
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
@@ -66,7 +71,7 @@ import frc.robot.FieldConstants;
 public class Drivetrain extends TunerSwerveDrivetrain implements Subsystem {
 
   // DRIVETRAIN FIELDS
-  private static Drivetrain instance;
+  private static Drivetrain instance = null;
 
   // ETECH FIELDS
   private double xSpeed = 0.0;
@@ -75,6 +80,33 @@ public class Drivetrain extends TunerSwerveDrivetrain implements Subsystem {
   public boolean fieldCentric = true;
   public boolean allianceCentric = true;
   private final Field2d field;
+
+  // CTRE SIM FIELDS
+  private static final double kSimLoopPeriod = 0.004; // 4 ms
+  private Notifier m_simNotifier = null;
+  private double m_lastSimTime;
+
+  // CTRE ALLIANCE FIELDS
+  /* Blue alliance sees forward as 0 degrees (toward red alliance wall) */
+  private static final Rotation2d kBlueAlliancePerspectiveRotation = Rotation2d.kZero;
+  /* Red alliance sees forward as 180 degrees (toward blue alliance wall) */
+  private static final Rotation2d kRedAlliancePerspectiveRotation = Rotation2d.k180deg;
+  /* Keep track if we've ever applied the operator perspective before or not */
+  private boolean m_hasAppliedOperatorPerspective = false;
+
+  // CTRE PATHPLANNER FIELDS
+  /** Swerve request to apply during robot-centric path following */
+  private final SwerveRequest.ApplyRobotSpeeds m_pathApplyRobotSpeeds = new SwerveRequest.ApplyRobotSpeeds();
+  
+  // CTRE SYSID FIELDS
+  /* Swerve requests to apply during SysId characterization */
+  private final SwerveRequest.SysIdSwerveTranslation m_translationCharacterization = new SwerveRequest.SysIdSwerveTranslation();
+  private final SwerveRequest.SysIdSwerveSteerGains m_steerCharacterization = new SwerveRequest.SysIdSwerveSteerGains();
+  private final SwerveRequest.SysIdSwerveRotation m_rotationCharacterization = new SwerveRequest.SysIdSwerveRotation();
+
+
+
+
 
   // OLD FIELDS
   // private final List<SwerveModule> modulesList;  
@@ -87,7 +119,7 @@ public class Drivetrain extends TunerSwerveDrivetrain implements Subsystem {
   //--------------------- CONSTRUCTORS -----------------------------------------------//
 
 
-  /** Drivetrain Constructor
+  /** Drivetrain Constructor #1
    * Constructs a CTRE SwerveDrivetrain using the specified constants.
    * This constructs the underlying hardware devices, so users should not construct
    * the devices themselves. If they need the devices, they can access them through
@@ -105,9 +137,8 @@ public class Drivetrain extends TunerSwerveDrivetrain implements Subsystem {
     swerveInit();
   }
 
-    /**
+  /** Drivetrain Constructor #2
      * Constructs a CTRE SwerveDrivetrain using the specified constants.
-     * <p>
      * This constructs the underlying hardware devices, so users should not construct
      * the devices themselves. If they need the devices, they can access them through
      * getters in the classes.
@@ -128,9 +159,8 @@ public class Drivetrain extends TunerSwerveDrivetrain implements Subsystem {
         swerveInit();
     }
 
-    /**
+  /** Drivetrain Constructor #3
      * Constructs a CTRE SwerveDrivetrain using the specified constants.
-     * <p>
      * This constructs the underlying hardware devices, so users should not construct
      * the devices themselves. If they need the devices, they can access them through
      * getters in the classes.
@@ -161,10 +191,8 @@ public class Drivetrain extends TunerSwerveDrivetrain implements Subsystem {
 
   public void swerveInit(){
 
-
     this.fieldCentric = true;
-    this.allianceCentric = true;
-    
+    this.allianceCentric = true;    
     var stateStdDevs = VecBuilder.fill(0.1, 0.1, 0.1);
     var visionStdDevs = VecBuilder.fill(1, 1, 1);
 
@@ -183,7 +211,57 @@ public class Drivetrain extends TunerSwerveDrivetrain implements Subsystem {
       startSimThread();
     }
 
+    configureAutoBuilder();
+
   }
+
+
+  // Drivetrain Singleton - ensures only 1 instance of Drivetrain is constructed
+  public static Drivetrain getInstance() {
+    if (instance == null) {
+      instance = new Drivetrain(
+        TunerConstants.DrivetrainConstants,
+        TunerConstants.FrontLeftModule,
+        TunerConstants.FrontRightModule,
+        TunerConstants.BackLeftModule,
+        TunerConstants.BackRightModule
+        // TunerConstants.modules
+      );
+    }
+    return instance;
+  }
+
+
+
+  //------------------------------ PATHPLANNER Methods ------------------------------------//
+  private void configureAutoBuilder() {
+        try {
+            var config = RobotConfig.fromGUISettings();
+            AutoBuilder.configure(
+                () -> getState().Pose,   // Supplier of current robot pose
+                this::resetPose,         // Consumer for seeding pose against auto
+                () -> getState().Speeds, // Supplier of current robot speeds
+                // Consumer of ChassisSpeeds and feedforwards to drive the robot
+                (speeds, feedforwards) -> setControl(
+                    m_pathApplyRobotSpeeds.withSpeeds(ChassisSpeeds.discretize(speeds, 0.020))
+                        .withWheelForceFeedforwardsX(feedforwards.robotRelativeForcesXNewtons())
+                        .withWheelForceFeedforwardsY(feedforwards.robotRelativeForcesYNewtons())
+                ),
+                new PPHolonomicDriveController(
+                    // PID constants for translation
+                    new PIDConstants(10, 0, 0),
+                    // PID constants for rotation
+                    new PIDConstants(7, 0, 0)
+                ),
+                config,
+                // Assume the path needs to be flipped for Red vs Blue, this is normally the case
+                () -> DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red,
+                this // Subsystem for requirements
+            );
+        } catch (Exception ex) {
+            DriverStation.reportError("Failed to load PathPlanner config and configure AutoBuilder", ex.getStackTrace());
+        }
+    }
 
 
   //------------------------------ CTRE Methods -------------------------------------------------//
@@ -197,16 +275,8 @@ public class Drivetrain extends TunerSwerveDrivetrain implements Subsystem {
   }
 
 
-  // Drivetrain Singleton - ensures only 1 instance of Drivetrain is constructed
-  public static Drivetrain getInstance() {
-    if (instance == null) {
-      instance = new Drivetrain(
-            TunerConstants.DrivetrainConstants, 
-            TunerConstants.modules);
-    }
-    return instance;
-  }
 
+  //--------------------------- OLD DT Methods -------------------------------------------//
   // sets forward/backward motion of robot
   public void setXSpeed(double xSpeed){
     this.xSpeed = xSpeed;
@@ -522,13 +592,6 @@ public class Drivetrain extends TunerSwerveDrivetrain implements Subsystem {
 
 
 
-
-  // ----------------------------- SIM FIELDS -----------------------------------------//
-  private static final double kSimLoopPeriod = 0.004; // 4 ms
-  private Notifier m_simNotifier = null;
-  private double m_lastSimTime;
-
-
   // ----------------------------- SIM METHODS -----------------------------------------//
   private void startSimThread() {
     m_lastSimTime = Utils.getCurrentTimeSeconds();
@@ -546,70 +609,9 @@ public class Drivetrain extends TunerSwerveDrivetrain implements Subsystem {
   }
 
 
-  //------------------------------ SYSID OLD ----------------------------------//
-  // // SysID Commands
-  // public Command transQ1;
-  // public Command transQ2;
-  // public Command transD1;
-  // public Command transD2;
-  // public Command rotQ1;
-  // public Command rotQ2;
-  // public Command rotD1;
-  // public Command rotD2;
-
-  // private void sysIdConfig(){
-
-  //   // Create the SysId routines
-  //   var translationSysIdRoutine = new SysIdRoutine(
-  //     new SysIdRoutine.Config(),
-  //     new SysIdRoutine.Mechanism(
-  //       volts ->
-  //       modulesList.forEach(
-  //           m -> m.updateInputs(Rotation2d.fromRadians(0), volts.in(Volts))),
-  //       // (voltage) -> this.runVolts(voltage.in(Volts)),
-  //       null, // No log consumer, since data is recorded by URCL
-  //       this
-  //     )
-  //   );
-  //   var rotationalSysIdRoutine = new SysIdRoutine(
-  //     new SysIdRoutine.Config(),
-  //     new SysIdRoutine.Mechanism(
-  //       volts -> {
-  //         this.frontL.updateInputs(
-  //           Rotation2d.fromRadians((3 * Math.PI / 4) + SwerveConstants.FL_ANGULAR_OFFSET), volts.in(Volts));
-  //       this.frontR.updateInputs(
-  //           Rotation2d.fromRadians((Math.PI / 4) + SwerveConstants.FR_ANGULAR_OFFSET), volts.in(Volts));
-  //       this.backL.updateInputs(
-  //           Rotation2d.fromRadians((-3 * Math.PI / 4) + SwerveConstants.BL_ANGULAR_OFFSET), volts.in(Volts));
-  //       this.backR.updateInputs(
-  //           Rotation2d.fromRadians((-Math.PI / 4) + SwerveConstants.BR_ANGULAR_OFFSET), volts.in(Volts));
-  //       },
-  //       // (voltage) -> this.runVolts(voltage.in(Volts)),
-  //       null, // No log consumer, since data is recorded by URCL
-  //       this
-  //     )
-  //   );
-
-  //   // SysID methods below return Command objects
-  //   transQ1 = translationSysIdRoutine.quasistatic(SysIdRoutine.Direction.kForward);
-  //   transQ2 = translationSysIdRoutine.quasistatic(SysIdRoutine.Direction.kReverse);
-  //   transD1 = translationSysIdRoutine.dynamic(SysIdRoutine.Direction.kForward);
-  //   transD2 = translationSysIdRoutine.dynamic(SysIdRoutine.Direction.kReverse);
-
-  //   rotQ1 = rotationalSysIdRoutine.quasistatic(SysIdRoutine.Direction.kForward);
-  //   rotQ2 = rotationalSysIdRoutine.quasistatic(SysIdRoutine.Direction.kForward);
-  //   rotD1 = rotationalSysIdRoutine.quasistatic(SysIdRoutine.Direction.kForward);
-  //   rotD2 = rotationalSysIdRoutine.quasistatic(SysIdRoutine.Direction.kForward);
-  // }
-
 
   // ----------------------------- SYSID ----------------------------------------------------//
   
-  /* Swerve requests to apply during SysId characterization */
-  private final SwerveRequest.SysIdSwerveTranslation m_translationCharacterization = new SwerveRequest.SysIdSwerveTranslation();
-  private final SwerveRequest.SysIdSwerveSteerGains m_steerCharacterization = new SwerveRequest.SysIdSwerveSteerGains();
-  private final SwerveRequest.SysIdSwerveRotation m_rotationCharacterization = new SwerveRequest.SysIdSwerveRotation();
-
   /* SysId routine for characterizing translation. This is used to find PID gains for the drive motors. */
   private final SysIdRoutine m_sysIdRoutineTranslation = new SysIdRoutine(
       new SysIdRoutine.Config(
@@ -745,13 +747,6 @@ public class Drivetrain extends TunerSwerveDrivetrain implements Subsystem {
 
 
   // --------------------------  ALLIANCE COLOR ------------------------------------------//
-
-  /* Blue alliance sees forward as 0 degrees (toward red alliance wall) */
-  private static final Rotation2d kBlueAlliancePerspectiveRotation = Rotation2d.kZero;
-  /* Red alliance sees forward as 180 degrees (toward blue alliance wall) */
-  private static final Rotation2d kRedAlliancePerspectiveRotation = Rotation2d.k180deg;
-  /* Keep track if we've ever applied the operator perspective before or not */
-  private boolean m_hasAppliedOperatorPerspective = false;
 
   public void checkAllianceColor(){
     /*
