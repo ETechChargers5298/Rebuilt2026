@@ -4,6 +4,7 @@
 
 package frc.robot.commands;
 
+import frc.robot.subsystems.Hopper;
 import frc.robot.commands.basic.EatFuel;
 import frc.robot.subsystems.Intake;
 import edu.wpi.first.wpilibj2.command.Command;

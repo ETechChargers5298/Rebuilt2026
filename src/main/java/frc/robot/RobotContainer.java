@@ -6,6 +6,7 @@ package frc.robot;
 
 import frc.robot.commands.Autos;
 import frc.robot.commands.PivotIntake;
+import frc.robot.subsystems.Hopper;
 import frc.robot.commands.basic.*;
 import frc.robot.subsystems.*;
 import frc.robot.subsystems.Intake;
@@ -77,9 +78,10 @@ public class RobotContainer {
     operatorController.x().whileTrue(new PivotIntake(0));//retract intake temp point
 
     //---------- HOPPER/LOADER ----------//
+    operatorController.a().whileTrue(new ConveyIn());
+    operatorController.y().whileTrue(new ConveyOut());
 
-
-
+    operatorController.rightTrigger().whileTrue(new LoadFuel());
     //---------- SCORER ----------//
     operatorController.rightBumper().onTrue(Scorer.getInstance().revFlywheelCommand());
 
