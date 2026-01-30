@@ -10,6 +10,7 @@ import frc.robot.subsystems.*;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
@@ -21,8 +22,8 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  */
 public class RobotContainer {
 
-  private static final XboxController driverController = new XboxController(Ports.DRIVER_CONTROLLER);
-  private static final XboxController operatorController = new XboxController(Ports.OPERATOR_CONTROLLER);
+  private static final CommandXboxController driverController = new CommandXboxController(Ports.DRIVER_CONTROLLER);
+  private static final CommandXboxController operatorController = new CommandXboxController(Ports.OPERATOR_CONTROLLER);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -59,8 +60,8 @@ public class RobotContainer {
     // );
 
     //---------- INTAKE ----------//
-    new Trigger(Intake.getInstance()::isFuelJam).onTrue(new EatFuel());
-    new JoystickButton(driverController,Button.kA.value).whileTrue(new EatFuel());
+    // new Trigger(Intake.getInstance()::isFuelJam).onTrue(new EatFuel());
+    // new JoystickButton(driverController,Button.kA.value).whileTrue(new EatFuel());
 
 
     //---------- HOPPER/LOADER ----------//
@@ -68,7 +69,7 @@ public class RobotContainer {
 
 
     //---------- SCORER ----------//
-
+    operatorController.rightBumper().onTrue(Scorer.getInstance().revFlywheelCommand());
 
 
   }

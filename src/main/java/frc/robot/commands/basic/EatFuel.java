@@ -9,6 +9,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 
 /** An example command that uses an example subsystem. */
 public class EatFuel extends Command {
+
+  
   @SuppressWarnings("PMD.UnusedPrivateField")
   private final Intake intake;
 

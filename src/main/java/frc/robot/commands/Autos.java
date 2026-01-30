@@ -13,8 +13,8 @@ public final class Autos {
   /** Example static factory for an autonomous command. */
   public static Command exampleAuto() {
     return Commands.sequence(
-      new EatFuel(), 
-      Intake.getInstance().eatFuelCommand() 
+      new EatFuel()
+      // Intake.getInstance().eatFuelCommand() 
     );
   }
 

@@ -26,7 +26,7 @@ public class Scorer extends SubsystemBase {
   private static Scorer instance;
   private SparkMax turretMotor;
   private SparkMax angleMotor;
-  private SparkMax launcherMotor;
+  private SparkMax flywheelMotor;
 
   private RelativeEncoder anglerEncoder; // Angle sensor UP/DOWN () == Relative position 
   private RelativeEncoder turretEncoder; // turret sensor LEFT/RIGHT() == relative position with throughbore
@@ -63,12 +63,14 @@ public class Scorer extends SubsystemBase {
 
     turretMotor = new SparkMax(Ports.TURRET_MOTOR_PORT, MotorType.kBrushless);
     angleMotor = new SparkMax(Ports.ANGLE_MOTOR_PORT, MotorType.kBrushless);
-    launcherMotor = new SparkMax(Ports.FLYWHEEL_MOTOR_PORT, MotorType.kBrushless);
+    flywheelMotor = new SparkMax(Ports.FLYWHEEL_MOTOR_PORT, MotorType.kBrushless);
     turretEncoder = turretMotor.getAlternateEncoder();    //REV throughbore connected to Turret Sparkmax
     anglerEncoder = angleMotor.getAlternateEncoder();   //REV throughbore connected to Angler Sparkmax
-    flywheelEncoder = launcherMotor.getEncoder();  //Built in encoder
+    flywheelEncoder = flywheelMotor.getEncoder();  //Built in encoder
   }
 
+
+  // BASIC FUNCTIONALITY
   public void aimRight(){
     turretMotor.set(1.0);
   }
@@ -82,8 +84,20 @@ public class Scorer extends SubsystemBase {
   public void aimdown(){
     angleMotor.set(-1);
   }
-  
 
+  public void revFlywheel(){
+    flywheelMotor.set(1.0);
+  }
+
+  public void aimTurret(double direction){
+    turretMotor.set(direction);
+  }
+
+  public void aimAngler(double direction){
+    angleMotor.set(direction);
+  }
+
+  // SENSOR ACCESSOR METHODS
   public double getLauncherSpeed(){
     
     //  StatusSignal<AngularVelocity> velocitySignal = launcherMotor.getVelocity();
@@ -120,12 +134,13 @@ public class Scorer extends SubsystemBase {
    *
    * @return a command
    */
-  public Command exampleMethodCommand() {
+  public Command revFlywheelCommand() {
     // Inline construction of command goes here.
     // Subsystem::RunOnce implicitly requires `this` subsystem.
     return runOnce(
         () -> {
           /* one-time action goes here */
+          revFlywheel();
         });
   }
 
