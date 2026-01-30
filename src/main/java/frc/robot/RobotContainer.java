@@ -5,6 +5,7 @@
 package frc.robot;
 
 import frc.robot.commands.Autos;
+import frc.robot.commands.PivotIntake;
 import frc.robot.commands.basic.*;
 import frc.robot.subsystems.*;
 import frc.robot.subsystems.Intake;
@@ -65,7 +66,15 @@ public class RobotContainer {
     //---------- INTAKE ----------//
     // new Trigger(Intake.getInstance()::isFuelJam).onTrue(new EatFuel());
     // new JoystickButton(driverController,Button.kA.value).whileTrue(new EatFuel());
+    // new Trigger(Intake.getInstance()::isFuelJam).onTrue(new SpitFuel());
+    // new Trigger(Intake.getInstance()).onTrue(new MoveIntake(0));//temporary point
+    // new Trigger(Intake.getInstance()).onTrue(new MoveIntake(45));//temporary point
 
+    operatorController.leftBumper().whileTrue(new EatFuel());//eat fuel
+    operatorController.leftTrigger().whileTrue(new SpitFuel());//spit fuel
+
+    operatorController.b().whileTrue(new PivotIntake(45));//extend intake temp point
+    operatorController.x().whileTrue(new PivotIntake(0));//retract intake temp point
 
     //---------- HOPPER/LOADER ----------//
 
