@@ -28,7 +28,7 @@ public class RobotContainer {
   //private final Vision vision;
 
   private static final XboxController driverController = new XboxController(Ports.DRIVER_CONTROLLER);
-  private static final XboxController operatorController = new XboxController(Ports.OPERATOR_CONTROLLER);
+  private static final CommandXboxController operatorController = new CommandXboxController(Ports.OPERATOR_CONTROLLER);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -70,7 +70,8 @@ public class RobotContainer {
 
 
     //---------- HOPPER/LOADER ----------//
-
+    operatorController.a().onTrue(new FowardConvey());
+    operatorController.y().onTrue(new BackConvey());
 
 
     //---------- SCORER ----------//
