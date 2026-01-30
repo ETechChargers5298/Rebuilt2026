@@ -26,6 +26,7 @@ import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 
 /** Add your docs here. */
@@ -63,7 +64,7 @@ public class AprilCam {
     public void update() {
         this.results = camera.getAllUnreadResults();
 
-        // SmartDashboard.putNumber("X", getX());
+         //SmartDashboard.putNumber("X", getTargetTransform(target).getX());
         // SmartDashboard.putNumber("Y", getY());
         // SmartDashboard.putNumber("Z", getZ());
         // for (int i = 0; i < getTargets().size(); i++) {

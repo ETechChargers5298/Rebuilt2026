@@ -239,7 +239,7 @@ public class FieldConstants {
     // Returns the nearest reef apriltag from an input pose
     public static int getNearestReefTag(Pose3d currentRobotPose) {
 
-        double minDistance = 30.0;
+        double minDistance = 0.0;
         int closestTag = -1;
 
         for(int reefTag: FIELD_TAGS){

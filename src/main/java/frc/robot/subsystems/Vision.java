@@ -99,6 +99,7 @@ public class Vision extends SubsystemBase {
       SmartDashboard.putNumber("cam1 poseX", visionEst1.get().estimatedPose.getX());
       SmartDashboard.putNumber("cam1 poseY", visionEst1.get().estimatedPose.getY());
       SmartDashboard.putNumber("cam1 poseRot", visionEst1.get().estimatedPose.getRotation().getAngle());
+      SmartDashboard.putNumber("TargetX", cam1.getXDesired(cam1.getDesiredTarget(closestId)));
     }
 
     if(doubleCam){
@@ -117,8 +118,8 @@ public class Vision extends SubsystemBase {
       }
     }
 
-    // int tagId = tagChooser.getSelected();
-    int tagId = getClosestId();
+    int tagId = tagChooser.getSelected();
+    // int tagId = getClosestId();
 
     if(tagId > 0) {
       SmartDashboard.putNumber("tag " + tagId + " pose x", FieldConstants.aprilTagFieldLayout.getTagPose(tagId).get().getX());
