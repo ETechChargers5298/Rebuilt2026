@@ -72,7 +72,7 @@ public class RobotContainer {
     operatorController.leftTrigger().whileTrue(new SpitFuel());//spit fuel
 
     operatorController.b().whileFalse(new MoveIntake(45));//extend intake temp point
-    operatorController.b().whileFalse(new MoveIntake(45));//retract intake temp point
+    operatorController.x().whileFalse(new MoveIntake(0));//retract intake temp point
 
     //---------- HOPPER/LOADER ----------//
 
