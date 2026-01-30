@@ -1,13 +1,5 @@
 package frc.robot.subsystems;
 
-// import com.pathplanner.lib.auto.AutoBuilder;
-// import com.pathplanner.lib.config.ModuleConfig;
-// import com.pathplanner.lib.config.PIDConstants;
-// import com.pathplanner.lib.config.RobotConfig;
-// import com.pathplanner.lib.controllers.PPHolonomicDriveController;
-// import com.studica.frc.AHRS;
-// import com.studica.frc.AHRS.NavXComType;
-
 
 // IMPORT STATEMENTS
 import static edu.wpi.first.units.Units.*;
@@ -20,10 +12,10 @@ import com.ctre.phoenix6.swerve.*;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants.*;
 import com.ctre.phoenix6.Utils;
 
-import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.config.PIDConstants;
-import com.pathplanner.lib.config.RobotConfig;
-import com.pathplanner.lib.controllers.PPHolonomicDriveController;
+// import com.pathplanner.lib.auto.AutoBuilder;
+// import com.pathplanner.lib.config.PIDConstants;
+// import com.pathplanner.lib.config.RobotConfig;
+// import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.numbers.N1;
@@ -236,28 +228,28 @@ public class Drivetrain extends TunerSwerveDrivetrain implements Subsystem {
   //------------------------------ PATHPLANNER Methods ------------------------------------//
   private void configureAutoBuilder() {
         try {
-            var config = RobotConfig.fromGUISettings();
-            AutoBuilder.configure(
-                () -> getState().Pose,   // Supplier of current robot pose
-                this::resetPose,         // Consumer for seeding pose against auto
-                () -> getState().Speeds, // Supplier of current robot speeds
-                // Consumer of ChassisSpeeds and feedforwards to drive the robot
-                (speeds, feedforwards) -> setControl(
-                    m_pathApplyRobotSpeeds.withSpeeds(ChassisSpeeds.discretize(speeds, 0.020))
-                        .withWheelForceFeedforwardsX(feedforwards.robotRelativeForcesXNewtons())
-                        .withWheelForceFeedforwardsY(feedforwards.robotRelativeForcesYNewtons())
-                ),
-                new PPHolonomicDriveController(
-                    // PID constants for translation
-                    new PIDConstants(10, 0, 0),
-                    // PID constants for rotation
-                    new PIDConstants(7, 0, 0)
-                ),
-                config,
-                // Assume the path needs to be flipped for Red vs Blue, this is normally the case
-                () -> DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red,
-                this // Subsystem for requirements
-            );
+            // var config = RobotConfig.fromGUISettings();
+            // AutoBuilder.configure(
+            //     () -> getState().Pose,   // Supplier of current robot pose
+            //     this::resetPose,         // Consumer for seeding pose against auto
+            //     () -> getState().Speeds, // Supplier of current robot speeds
+            //     // Consumer of ChassisSpeeds and feedforwards to drive the robot
+            //     (speeds, feedforwards) -> setControl(
+            //         m_pathApplyRobotSpeeds.withSpeeds(ChassisSpeeds.discretize(speeds, 0.020))
+            //             .withWheelForceFeedforwardsX(feedforwards.robotRelativeForcesXNewtons())
+            //             .withWheelForceFeedforwardsY(feedforwards.robotRelativeForcesYNewtons())
+            //     ),
+            //     new PPHolonomicDriveController(
+            //         // PID constants for translation
+            //         new PIDConstants(10, 0, 0),
+            //         // PID constants for rotation
+            //         new PIDConstants(7, 0, 0)
+            //     ),
+            //     config,
+            //     // Assume the path needs to be flipped for Red vs Blue, this is normally the case
+            //     () -> DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red,
+            //     this // Subsystem for requirements
+            // );
         } catch (Exception ex) {
             DriverStation.reportError("Failed to load PathPlanner config and configure AutoBuilder", ex.getStackTrace());
         }

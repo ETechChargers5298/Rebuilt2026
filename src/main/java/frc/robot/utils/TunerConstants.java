@@ -22,7 +22,7 @@ import frc.robot.Ports;
 public class TunerConstants {
 
     // COMMAND-USED CONSTANTS
-    public static double MaxSpeed = 1.0 * TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
+    public static double MaxSpeed = 1; //1.0  * TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
     public static double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
 
      /* Setting up bindings for necessary control of the swerve drive platform */
@@ -34,10 +34,6 @@ public class TunerConstants {
 
 
 
-    public static SwerveDrivetrainConstants drivetrainConstants = new SwerveDrivetrainConstants()
-        .withCANBusName(TunerConstants.CAN_DRIVE_BUS.getName())
-        .withPigeon2Id(Ports.PIGEON)
-        .withPigeon2Configs(TunerConstants.pigeonConfigs);
 
 
     // Both sets of gains need to be tuned to your individual robot.
@@ -197,5 +193,12 @@ public class TunerConstants {
             Ports.SWERVE_TURN_BR, Ports.SWERVE_DRIVE_BR, Ports.SWERVE_ANGLE_BR, kBackRightEncoderOffset,
             kBackRightXPos, kBackRightYPos, kInvertRightSide, kBackRightSteerMotorInverted, kBackRightEncoderInverted
         );
+
+
+    public static SwerveDrivetrainConstants drivetrainConstants = new SwerveDrivetrainConstants()
+        .withCANBusName(TunerConstants.CAN_DRIVE_BUS.getName())
+        .withPigeon2Id(Ports.PIGEON)
+        .withPigeon2Configs(TunerConstants.pigeonConfigs);
+
 
 }

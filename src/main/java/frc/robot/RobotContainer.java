@@ -41,7 +41,7 @@ import static edu.wpi.first.units.Units.*;
 public class RobotContainer {
   
   //VISION! (Comment IN to use vision)
-  private final Vision vision = Vision.getInstance();;
+  // private final Vision vision = Vision.getInstance();;
 
   // CTRE SWERVE FIELDS
   private double MaxSpeed = 1.0 * TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
@@ -62,14 +62,14 @@ public class RobotContainer {
   private final Telemetry logger = new Telemetry(MaxSpeed);
 
   //PATHPLANNER FIELDS
-  private final SendableChooser<Command> autoChooser;
+  // private final SendableChooser<Command> autoChooser;
   
 
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
-    autoChooser = AutoBuilder.buildAutoChooser("Tests");
-    SmartDashboard.putData("Auto Mode", autoChooser);
+    // autoChooser = AutoBuilder.buildAutoChooser("Tests");
+    // SmartDashboard.putData("Auto Mode", autoChooser);
     configureBindings();
 
     // Warmup PathPlanner to avoid Java pauses
