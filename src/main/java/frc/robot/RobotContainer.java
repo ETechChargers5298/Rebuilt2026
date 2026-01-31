@@ -6,7 +6,7 @@ package frc.robot;
 
 import frc.robot.Ports;
 import frc.robot.commands.Autos;
-import frc.robot.commands.basic.*;
+// import frc.robot.commands.basic.*;
 import frc.robot.subsystems.*;
 import frc.robot.utils.TunerConstants;
 import frc.robot.utils.Telemetry;
@@ -154,8 +154,8 @@ public class RobotContainer {
 
 
     //---------- INTAKE ----------//
-    new Trigger(Intake.getInstance()::isFuelJam).onTrue(new EatFuel());
-    driverController.a().whileTrue(new EatFuel());
+    // new Trigger(Intake.getInstance()::isFuelJam).onTrue(new EatFuel());
+    // driverController.a().whileTrue(new EatFuel());
 
 
 
