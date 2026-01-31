@@ -87,7 +87,7 @@ public class RobotContainer {
    */
   private void configureBindings() {
 
-    // Link for map of Joystick Controllers: https://docs.google.com/presentation/d/1cis5OrQfkU9m38LwgAMIfmPpJAZxnIC-KnAzi0JsRao/edit#slide=id.g18d2b75b637cb431_3
+    // Link for map of Joystick Controllers: https://docs.google.com/presentation/d/1W7NYwlgP1rfN15ja3PuY3GGtcSFDY97u9_2YbxYBe2A/edit?slide=id.g18d2b75b637cb431_3#slide=id.g18d2b75b637cb431_3
 
 
     //---------- DRIVETRAIN JOYSTICK CONTROLLER BINDINGS----------//
