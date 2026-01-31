@@ -87,18 +87,14 @@ public class RobotContainer {
    */
   private void configureBindings() {
 
-    // Link for joystick doc: https://docs.google.com/presentation/d/1cis5OrQfkU9m38LwgAMIfmPpJAZxnIC-KnAzi0JsRao/edit#slide=id.g18d2b75b637cb431_3
-    // Note that X is defined as forward according to WPILib convention,
-    // and Y is defined as to the left according to WPILib convention.
+    // Link for map of Joystick Controllers: https://docs.google.com/presentation/d/1cis5OrQfkU9m38LwgAMIfmPpJAZxnIC-KnAzi0JsRao/edit#slide=id.g18d2b75b637cb431_3
 
 
-    //---------- DRIVETRAIN ----------//
-
-    // CTRE SWERVE BINDINGS
-    // Note that X is defined as forward according to WPILib convention,
-    // and Y is defined as to the left according to WPILib convention.
+    //---------- DRIVETRAIN JOYSTICK CONTROLLER BINDINGS----------//
+    
+    // BASIC SWERVE DRIVING WITH 3 AXES (DRIVER - LY= forward, LX = strafe, RX = turn)
+    // Note: WPILib convention of X is , Y is left
     drivetrain.setDefaultCommand(
-
       drivetrain.applyRequest(() ->
           TunerConstants.drive.withVelocityX(-driverController.getLeftY() * TunerConstants.MaxSpeed) // Drive forward with negative Y (forward)
               .withVelocityY(-driverController.getLeftX() * TunerConstants.MaxSpeed) // Drive left with negative X (left)
@@ -106,65 +102,57 @@ public class RobotContainer {
       )
     );
 
-    // Idle while the robot is disabled. This ensures the configured
-    // neutral mode is applied to the drive motors while disabled.
+    // SWERVE IDLE WHILE DISABLED
+    // Note: This ensures the configured neutral mode is applied to the drive motors while disabled.
     final var idle = new SwerveRequest.Idle();
     RobotModeTriggers.disabled().whileTrue(
         drivetrain.applyRequest(() -> idle).ignoringDisable(true)
     );
 
+    // SWERVE BRAKE (DRIVER - A button)
     driverController.a().whileTrue(drivetrain.applyRequest(() -> brake));
+
+    // SWERVE TURN TO DIRECTION OF STRAFE (DRIVER - B button)
     driverController.b().whileTrue(drivetrain.applyRequest(() ->
         point.withModuleDirection(new Rotation2d(-driverController.getLeftY(), -driverController.getLeftX()))
     ));
 
+    // SWERVE FORWARD HALF-SPEED (DRIVER - DPAD_UP)
     driverController.povUp().whileTrue(drivetrain.applyRequest(() ->
         forwardStraight.withVelocityX(0.5).withVelocityY(0))
     );
+
+    // SWERVE BACKWARD HALF-SPEED (DRIVER - DPAD_DOWN)
     driverController.povDown().whileTrue(drivetrain.applyRequest(() ->
         forwardStraight.withVelocityX(-0.5).withVelocityY(0))
     );
 
 
-    // Run SysId routines when holding back/start and X/Y.
-    // Note that each routine should be run exactly once in a single log.
+    // SWERVE SysId ROUTINES (DRIVER - BACK/START + X/Y)
+    // Note: Each routine should be run exactly once in a single log.
     driverController.back().and(driverController.y()).whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
     driverController.back().and(driverController.x()).whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
     driverController.start().and(driverController.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
     driverController.start().and(driverController.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
 
-    // Reset the field-centric heading on left bumper press.
+    // FIELD-CENTRIC HEADING RESET (DRIVER - LB)
     driverController.leftBumper().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
 
+    // Ensure that the telemetry is updated from our drivetrain's movements
     drivetrain.registerTelemetry(logger::telemeterize);
 
 
-    // 2025 SWERVE BINDINGS
-    //Driver - LX & LY joysticks for Translation, RX joystick for Strafing, A to reset Robot NavX Heading
-    // Drivetrain.getInstance().setDefaultCommand(
-    
-    //   new SwerveDrive(
-    //     () -> driverController.getRawAxis(1),
-    //     () -> -driverController.getRawAxis(0),
-    //     () -> -driverController.getRawAxis(4), //negative joystick values make a positive CCW turn
-    //     () -> driverController.getAButton()
-    //   )
-    
-    // );
 
 
-    //---------- INTAKE ----------//
-    // new Trigger(Intake.getInstance()::isFuelJam).onTrue(new EatFuel());
-    // driverController.a().whileTrue(new EatFuel());
+    //---------- INTAKE JOYSTICK CONTROLLER BINDINGS----------//
 
 
 
-
-    //---------- HOPPER/LOADER ----------//
-
+    //---------- CONVEYOR-LOADER JOYSTICK CONTROLLER BINDINGS ----------//
 
 
-    //---------- SCORER ----------//
+
+    //---------- SCORER JOYSTICK CONTROLLER  BINDINGS----------//
 
 
 
