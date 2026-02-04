@@ -34,7 +34,7 @@ public final class Constants {
   }
   
   public static class MechConstants{
-
+    public static final double INTAKE_POS = 45;
   }
   
   public static class RobotConstants{

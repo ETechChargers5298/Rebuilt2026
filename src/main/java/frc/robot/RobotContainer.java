@@ -5,6 +5,7 @@
 package frc.robot;
 
 import frc.robot.Ports;
+import frc.robot.Constants.MechConstants;
 import frc.robot.commands.Autos;
 import frc.robot.commands.MoveIntake;
 import frc.robot.commands.basic.*;
@@ -71,8 +72,8 @@ public class RobotContainer {
     operatorController.leftBumper().whileTrue(new EatFuel());//eat fuel
     operatorController.leftTrigger().whileTrue(new SpitFuel());//spit fuel
 
-    operatorController.b().whileFalse(new MoveIntake(45));//extend intake temp point
-    operatorController.b().whileFalse(new MoveIntake(45));//retract intake temp point
+    operatorController.b().whileFalse(new MoveIntake(MechConstants.INTAKE_POS));//extend intake temp point
+    operatorController.b().whileFalse(new MoveIntake(MechConstants.INTAKE_POS));//retract intake temp point
 
     //---------- HOPPER/LOADER ----------//
 
