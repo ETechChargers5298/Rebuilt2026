@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 import java.util.Locale.LanguageRange;
+import java.util.function.DoubleSupplier;
 
 import com.ctre.phoenix6.StatusSignal;
 // import com.ctre.phoenix6.hardware.TalonFX;
@@ -151,6 +152,22 @@ public class Scorer extends SubsystemBase {
         () -> {
           /* one-time action goes here */
           aimup();
+        });
+  }
+
+
+
+  public Command aimTurretCommand(DoubleSupplier speedSupplier) {
+    return runOnce(
+        () -> {
+          aimTurret(speedSupplier.getAsDouble());
+        });
+  }
+
+  public Command aimAnglerCommand(DoubleSupplier speedSupplier) {
+    return runOnce(
+        () -> {
+          aimAngler(speedSupplier.getAsDouble());
         });
   }
 
