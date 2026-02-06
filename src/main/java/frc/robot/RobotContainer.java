@@ -10,6 +10,7 @@ import frc.robot.commands.Autos;
 import frc.robot.subsystems.*;
 import frc.robot.utils.TunerConstants;
 import frc.robot.utils.Telemetry;
+import frc.robot.commands.ToggleFieldCentric;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
@@ -28,7 +29,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.*;
 
 import static edu.wpi.first.units.Units.*;
 
@@ -137,7 +138,7 @@ public class RobotContainer {
 
     // FIELD-CENTRIC HEADING RESET (DRIVER - LB)
     driverController.leftBumper().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
-
+    driverController.rightBumper().onTrue(new ToggleFieldCentric());
     // Ensure that the telemetry is updated from our drivetrain's movements
     drivetrain.registerTelemetry(logger::telemeterize);
 
