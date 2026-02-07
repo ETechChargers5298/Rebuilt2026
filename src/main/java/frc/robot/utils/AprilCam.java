@@ -79,13 +79,13 @@ public class AprilCam {
     //     return result.hasTargets();
     // }
 
-    //Gets all the AprilTag targets the camera can currently see
+    //Gets all the AprilTag targets the camera can c urrently see
     public List<PhotonTrackedTarget> getTargets(){
         return targets;
     }
 
     public void updateClosestVisibleId(List<PhotonTrackedTarget> help) {
-        int closestId = -1;
+        this.closestId = -1;
         double closestDistance = 100;
 
         for(PhotonTrackedTarget t: help) {
@@ -93,10 +93,10 @@ public class AprilCam {
             
             if(currentDistance < closestDistance) {
                 closestDistance = currentDistance;
-                closestId = t.fiducialId;
+                this.closestId = t.fiducialId;
             }
         }
-        this.closestId = closestId;
+        //this.closestId = closestId;
     }
 
     // Gets the current "best" target
@@ -112,15 +112,16 @@ public class AprilCam {
             for (PhotonTrackedTarget t: getTargets())
             {
                 // look for the target with the desired Id
-                if (t.getFiducialId() == desiredTargetId)
-                {
+                // if (t.getFiducialId() == desiredTargetId)
+                // {
+                //     return t;
+                // }
                     return t;
-                }
-
             }
         }
         //return null if you can't find the desiredTarget
         System.out.println("AprilCam cannot find desired target " + desiredTargetId);
+        System.out.println("targets " + getTargets());
         return null;
     }
 
@@ -142,7 +143,7 @@ public class AprilCam {
     // double skew = target.getSkew(); //not available for AprilTags
     // Transform2d pose = target.getCameraToTarget();
     // List<TargetCorner> corners = target.getCorners();
-    // int targetId = target.getfiducialId();
+    //  double targetId = target.getfiducialId();
     // double poseAmbiguity = target.getPoseAmbiguity();
     // Transform3d bestCameraToTarget = target.getBestCameraToTarget();
     // Transform3d alternateCameraToTarget = target.getAlternateCameraToTarget();

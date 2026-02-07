@@ -245,14 +245,15 @@ public class FieldConstants {
         for(int reefTag: FIELD_TAGS){
             
             Pose3d reefFacePose = aprilTagFieldLayout.getTagPose(reefTag).get();
+            closestTag = reefTag;
             double dx = reefFacePose.getX() - currentRobotPose.getX();
             double dy = reefFacePose.getY() - currentRobotPose.getY();
-            double distance = Math.sqrt(Math.pow(dx,2)+Math.pow(dy,2));
+            // double distance = Math.sqrt(Math.pow(dx,2)+Math.pow(dy,2));
 
-            if(distance < minDistance){
-                minDistance = distance;
-                closestTag = reefTag;
-            }
+            // if(distance < minDistance){
+            //     minDistance = distance;
+            //     closestTag = reefTag;
+            // }
         }
         return closestTag;
     }
