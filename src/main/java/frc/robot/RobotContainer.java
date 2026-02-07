@@ -133,8 +133,8 @@ public class RobotContainer {
     // SWERVE SysId ROUTINES (DRIVER - BACK/START + X/Y)
     // Note: Each routine should be run exactly once in a single log.
     // Start SysID Log
-     driverController.leftTrigger().onTrue(Commands.runOnce(SignalLogger::start));
-     driverController.rightTrigger().onTrue(Commands.runOnce(SignalLogger::stop));
+     driverController.leftBumper().onTrue(Commands.runOnce(SignalLogger::start));
+     driverController.rightBumper().onTrue(Commands.runOnce(SignalLogger::stop));
 
     driverController.back().and(driverController.y()).whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
     driverController.back().and(driverController.x()).whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
@@ -144,8 +144,8 @@ public class RobotContainer {
    
 
     // FIELD-CENTRIC HEADING RESET (DRIVER - LB)
-    driverController.leftBumper().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
-    driverController.rightBumper().onTrue(new ToggleFieldCentric());
+    // driverController.leftBumper().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
+    // driverController.rightBumper().onTrue(new ToggleFieldCentric());
 
     // Ensure that the telemetry is updated from our drivetrain's movements
     drivetrain.registerTelemetry(logger::telemeterize);
