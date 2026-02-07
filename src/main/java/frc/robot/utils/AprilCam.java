@@ -40,7 +40,7 @@ public class AprilCam {
 
     private PhotonTrackedTarget desiredTarget;
     private List<PhotonTrackedTarget> targets;
-    public int closestId;
+    //public int closestId;
 
     // Simulation
     private PhotonCameraSim cameraSim;
