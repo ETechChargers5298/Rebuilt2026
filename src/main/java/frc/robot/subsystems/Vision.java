@@ -18,7 +18,7 @@ public class Vision extends SubsystemBase {
   private static Vision instance;
   public AprilCam cam1;
   public AprilCam cam2;
-  public boolean doubleCam = true;
+  public boolean doubleCam = false;
   public int closestId;
   Drivetrain drivetrain = Drivetrain.getInstance();
   private final SendableChooser<Integer> tagChooser = new SendableChooser<>();
@@ -118,8 +118,8 @@ public class Vision extends SubsystemBase {
       }
     }
 
-    int tagId = tagChooser.getSelected();
-    // int tagId = getClosestId();
+    // int tagId = tagChooser.getSelected();
+     int tagId = getClosestId();
 
     if(tagId > 0) {
       SmartDashboard.putNumber("tag " + tagId + " pose x", FieldConstants.aprilTagFieldLayout.getTagPose(tagId).get().getX());

@@ -111,11 +111,12 @@ public class AprilCam {
         if(getTargets() != null){
             for (PhotonTrackedTarget t: getTargets())
             {
-                //look for the target with the desired Id
+                // look for the target with the desired Id
                 if (t.getFiducialId() == desiredTargetId)
                 {
                     return t;
                 }
+
             }
         }
         //return null if you can't find the desiredTarget
