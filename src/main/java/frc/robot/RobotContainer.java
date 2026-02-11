@@ -11,6 +11,8 @@ import frc.robot.subsystems.*;
 import edu.wpi.first.wpilibj.StadiaController.Button;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.FunctionalCommand;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -69,17 +71,36 @@ public class RobotContainer {
     // new Trigger(Intake.getInstance()).onTrue(new MoveIntake(0));//temporary point
     // new Trigger(Intake.getInstance()).onTrue(new MoveIntake(45));//temporary point
 
-    operatorController.leftBumper().whileTrue(new EatFuel());//eat fuel
-    operatorController.leftTrigger().whileTrue(new SpitFuel());//spit fuel
+    operatorController.leftBumper().whileTrue(new InstantCommand(
+      () -> Intake.getInstance().eat(),
+      Intake.getInstance()
+      )
+    );//eat fuel
+    operatorController.leftTrigger().whileTrue(
+      new InstantCommand(
+        () -> Intake.getInstance().retract(),
+        Intake.getInstance()
+      )
+    );//spit fuel
 
     operatorController.b().whileTrue(new PivotIntake(45));//extend intake temp point
     // operatorController.x().whileTrue(new PivotIntake(0));//retract intake temp point
 
     //---------- HOPPER/LOADER ----------//
-    operatorController.a().whileTrue(new ConveyIn());
-    operatorController.y().whileTrue(new ConveyOut());
+    operatorController.a().whileTrue(new InstantCommand(
+      () -> Hopper.getInstance().conveyIn(), 
+      Hopper.getInstance()));
 
-    operatorController.rightTrigger().whileTrue(new LoadFuel());
+    operatorController.y().whileTrue(new InstantCommand(
+      () -> Hopper.getInstance().conveyOut(),
+      Hopper.getInstance()));
+
+    operatorController.rightTrigger().whileTrue(new FunctionalCommand(
+      () -> {},
+      () -> Hopper.getInstance().loadFuel(),
+      interrupted -> Hopper.getInstance().stopLoading(),
+      () -> false,
+      Hopper.getInstance()));
     //---------- SCORER ----------//
     operatorController.rightBumper().onTrue(Scorer.getInstance().revFlywheelCommand());
     operatorController.x().onTrue(Scorer.getInstance().angleUpCommand());
