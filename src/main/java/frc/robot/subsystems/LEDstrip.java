@@ -17,15 +17,25 @@ public class LEDstrip {
 
     //INTAKE
     public static final double INTAKING = LEDColors.YELLOW;
-    public static final double STUCK = LEDColors.RED;
-    public static final double FULL = LEDColors.GOLD;
+    public static final double SPITING = LEDColors.GRAY;
+    public static final double FULL = LEDColors.AQUA;
     public static final double FUEL_STUCK = LEDColors.RED_HEARTBEAT;
 
     //HOPPER
-    //public static final double 
+    public static final double FUEL_IN = LEDColors.BLUE_HEARTBEAT;
+    //public static final double
 
 
-    //
+    //ABOUT THE ROBOT
+    public static final double STUCK = LEDColors.RED;
+
+    //IN THE GAME
+    public static final double GET_READY = LEDColors.RAINBOW_TWINKLES;
+
+    //VISION
+    public static final double SHOOT = LEDColors.GOLD;
+
+    //AUTO
     public static final double AUTO = LEDColors.VIOLET;
 
 
