@@ -90,6 +90,11 @@ public class Scorer extends SubsystemBase {
     flywheelMotor.set(1.0);
   }
 
+  public void stopFlywheel(){
+    flywheelMotor.set(0.0);
+  }
+  
+
   public void aimTurret(double direction){
     turretMotor.set(direction);
   }
@@ -130,45 +135,43 @@ public class Scorer extends SubsystemBase {
 
 
 
-  /**
-   * Example command factory method.
-   *
-   * @return a command
-   */
+  // In-line Command to Rev the Flywheel
   public Command revFlywheelCommand() {
-    // Inline construction of command goes here.
-    // Subsystem::RunOnce implicitly requires `this` subsystem.
-    return runOnce(
-        () -> {
-          /* one-time action goes here */
-          revFlywheel();
-        });
+    return run(
+      () -> {
+        revFlywheel();
+      });
   }
 
+  public Command stopFlywheelCommand() {
+    return run(
+      () -> {
+        stopFlywheel();
+      });
+  }
+
+  // In-line Command to move the hood down, producing a higher launch angle (closer shots)
   public Command angleUpCommand() {
-    // Inline construction of command goes here.
-    // Subsystem::RunOnce implicitly requires `this` subsystem.
-    return runOnce(
-        () -> {
-          /* one-time action goes here */
-          aimup();
-        });
+    return run(
+      () -> {
+        aimup();
+      });
   }
 
-
-
+  // In-line Command to rotate the turret based on provided speed
   public Command aimTurretCommand(DoubleSupplier speedSupplier) {
-    return runOnce(
-        () -> {
-          aimTurret(speedSupplier.getAsDouble());
-        });
+    return run(
+      () -> {
+        aimTurret(speedSupplier.getAsDouble());
+      });
   }
 
+  // In-line Command to rotate the pitch angle of the hood based on provided speed
   public Command aimAnglerCommand(DoubleSupplier speedSupplier) {
-    return runOnce(
-        () -> {
-          aimAngler(speedSupplier.getAsDouble());
-        });
+    return run(
+      () -> {
+        aimAngler(speedSupplier.getAsDouble());
+      });
   }
 
 

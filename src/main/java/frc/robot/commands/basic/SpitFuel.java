@@ -33,7 +33,7 @@ public class SpitFuel extends Command {
   @Override
   public void execute() {
 
-    intake.retract();
+    intake.spit();
 
   }
 

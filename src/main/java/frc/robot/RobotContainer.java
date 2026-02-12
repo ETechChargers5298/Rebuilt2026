@@ -120,7 +120,7 @@ public class RobotContainer {
         drivetrain.applyRequest(() -> idle).ignoringDisable(true)
     );
 
-    // SWERVE BRAKE (DRIVER - A button)
+    // SWERVE BRAKE (DRIVER - A  n)
     driverController.a().whileTrue(drivetrain.applyRequest(() -> brake));
 
     // SWERVE TURN TO DIRECTION OF STRAFE (DRIVER - B button)
@@ -169,64 +169,54 @@ public class RobotContainer {
 
     //---------- INTAKE JOYSTICK CONTROLLER BINDINGS----------//
 
-    // new Trigger(Intake.getInstance()::isFuelJam).onTrue(new EatFuel());
-    // new JoystickButton(driverController,Button.kA.value).whileTrue(new EatFuel());
-    // new Trigger(Intake.getInstance()::isFuelJam).onTrue(new SpitFuel());
-    // new Trigger(Intake.getInstance()).onTrue(new MoveIntake(0));//temporary point
-    // new Trigger(Intake.getInstance()).onTrue(new MoveIntake(45));//temporary point
+    // INTAKE STOPS by default
+    Intake.getInstance().setDefaultCommand(  Intake.getInstance().stopEatingCommand()  );
 
     // EAT FUEL (OPERATOR - LB)
-    operatorController.leftBumper().whileTrue(new InstantCommand(
-      () -> Intake.getInstance().eat(),
-      Intake.getInstance()
-      )
-    );
+    operatorController.leftBumper().whileTrue( Intake.getInstance().eatFuelCommand() );
 
     // SPIT FUEL (OPERATOR - LT)
-    operatorController.leftTrigger().whileTrue(
-      new InstantCommand(
-        () -> Intake.getInstance().retract(),
-        Intake.getInstance()
-      )
-    );
+    operatorController.leftTrigger().whileTrue(  Intake.getInstance().spitFuelCommand()   );
+
+
+    // PIVOT maintains position by default
 
     // PIVOT INTAKE OUT (OPERATOR - B)
     operatorController.b().whileTrue(new PivotIntake(45));//extend intake temp point
     
     // RETRACT INTAKE BACK (OPERATOR - X)
     // operatorController.x().whileTrue(new PivotIntake(0));//retract intake temp point
+   
 
 
 
     //---------- CONVEYOR-LOADER JOYSTICK CONTROLLER BINDINGS ----------//
 
-    // CONVEY IN (OPERATOR - A)
-    operatorController.a().whileTrue(new InstantCommand(
-      () -> Hopper.getInstance().conveyIn(), 
-      Hopper.getInstance()));
+    // STOPS CONVEYER by default
+    Hopper.getInstance().setDefaultCommand(Hopper.getInstance().stopConveyCommand());
 
+    // CONVEY IN (OPERATOR - A)
+    operatorController.a().whileTrue( Hopper.getInstance().conveyInCommand());
+      
     // CONVEY OUT (OPERATOR - Y)
-    operatorController.y().whileTrue(new InstantCommand(
-      () -> Hopper.getInstance().conveyOut(),
-      Hopper.getInstance()));
+    operatorController.y().whileTrue( Hopper.getInstance().conveyOutCommand());
+      
+
 
     // LOAD FUEL TO LAUNCHER (OPERATOR - RT)
-    operatorController.rightTrigger().whileTrue(new FunctionalCommand(
-      () -> {},
-      () -> Hopper.getInstance().loadFuel(),
-      interrupted -> Hopper.getInstance().stopLoading(),
-      () -> false,
-      Hopper.getInstance()));
-
+    // operatorController.rightTrigger().whileTrue(Hopper.getInstance().loadFuelCommand());
 
 
     //---------- SCORER JOYSTICK CONTROLLER  BINDINGS----------//
 
+    // STOP FLYWHEEL by default
+     Scorer.getInstance().setDefaultCommand(Scorer.getInstance().stopFlywheelCommand()  );
+
     // REV FLYWHEEL (OPERATOR - RB)
     operatorController.rightBumper().whileTrue(Scorer.getInstance().revFlywheelCommand());
     
-    // ANGLE UP (OPERATOR - X)
-    operatorController.x().whileTrue(Scorer.getInstance().angleUpCommand());
+    // ANGLE UP (OPERATOR - X) - will not stop moving without defaul Angler command
+    // operatorController.x().whileTrue(Scorer.getInstance().angleUpCommand());
 
     // AIM TURRET (OPERATOR - LX AXIS)
     Scorer.getInstance().aimTurretCommand( () -> operatorController.getLeftX() );
@@ -234,7 +224,7 @@ public class RobotContainer {
     // AIM ANGLER (OPERATOR - RY AXIS)
     Scorer.getInstance().aimAnglerCommand( () -> operatorController.getRightY() );
 
-
+    
   }
 
   /**
