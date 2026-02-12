@@ -16,6 +16,9 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import edu.wpi.first.net.WebServer; // For the WebServer class
+import edu.wpi.first.wpilibj.Filesystem; // For the Filesystem class
+
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -32,6 +35,11 @@ public class RobotContainer {
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
+
+    // Start a webserver to host the Elastic layout file
+    // On any computer connected to the robot, open Elastic, go to the File menu, and select Load Layout From Robot (or press Ctrl + D)
+    WebServer.start(5800, Filesystem.getDeployDirectory().getPath());
+
     // Configure the trigger bindings
     configureBindings();
 
