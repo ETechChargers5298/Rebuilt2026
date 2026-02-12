@@ -40,7 +40,8 @@ public class AprilCam {
 
     private PhotonTrackedTarget desiredTarget;
     private List<PhotonTrackedTarget> targets;
-    //public int closestId;
+    public int closestId;
+    public double closestDistance;
 
     // Simulation
     private PhotonCameraSim cameraSim;
@@ -94,6 +95,7 @@ public class AprilCam {
             if(currentDistance < closestDistance) {
                 closestDistance = currentDistance;
                 this.closestId = t.fiducialId;
+                this.closestDistance = closestDistance;
             }
         }
         //this.closestId = closestId;
