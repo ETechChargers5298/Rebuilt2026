@@ -46,7 +46,7 @@ public class Vision extends SubsystemBase {
       cam2.update();  
     }
 
-    for(int i=1; i<=22; i++){
+    for(int i=1; i<=FieldConstants.NUM_TAGS; i++){
       tagChooser.addOption("AT "+i, i);
     }
     

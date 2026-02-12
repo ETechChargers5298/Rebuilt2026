@@ -20,6 +20,17 @@ public class Ports {
     public static final int SWERVE_TURN_BL = 6;
     public static final int SWERVE_DRIVE_BR = 7;
     public static final int SWERVE_TURN_BR = 8;
+    public static final int SWERVE_ANGLE_FL = 9;
+    public static final int SWERVE_ANGLE_FR = 10;
+    public static final int SWERVE_ANGLE_BL = 11;
+    public static final int SWERVE_ANGLE_BR = 12;
+
+    
+
+
+
+
+    public static final int PIGEON = 14;
 
 
     //CAN-MECH NETWORK
