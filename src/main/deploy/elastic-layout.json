@@ -3,6 +3,114 @@
   "grid_size": 128,
   "tabs": [
     {
+      "name": "Daniel",
+      "grid_layout": {
+        "layouts": [],
+        "containers": [
+          {
+            "title": "robotPose",
+            "x": 640.0,
+            "y": 128.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/Pose/robotPose",
+              "period": 0.06,
+              "data_type": "double[]",
+              "show_submit_button": false
+            }
+          },
+          {
+            "title": "y",
+            "x": 640.0,
+            "y": 256.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/DriveState/Pose",
+              "period": 0.06,
+              "data_type": "double",
+              "struct_meta": {
+                "path": [
+                  "translation",
+                  "y"
+                ],
+                "schema_name": "Pose2d",
+                "type": "double"
+              },
+              "show_submit_button": false
+            }
+          },
+          {
+            "title": "x",
+            "x": 512.0,
+            "y": 256.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/DriveState/Pose",
+              "period": 0.06,
+              "data_type": "double",
+              "struct_meta": {
+                "path": [
+                  "translation",
+                  "x"
+                ],
+                "schema_name": "Pose2d",
+                "type": "double"
+              },
+              "show_submit_button": false
+            }
+          },
+          {
+            "title": "value",
+            "x": 768.0,
+            "y": 256.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/DriveState/Pose",
+              "period": 0.06,
+              "data_type": "double",
+              "struct_meta": {
+                "path": [
+                  "rotation",
+                  "value"
+                ],
+                "schema_name": "Pose2d",
+                "type": "double"
+              },
+              "show_submit_button": false
+            }
+          },
+          {
+            "title": "photonvision_Port_1181_Input_MJPEG_Server",
+            "x": 896.0,
+            "y": 128.0,
+            "width": 256.0,
+            "height": 256.0,
+            "type": "Camera Stream",
+            "properties": {
+              "topic": "/CameraPublisher/photonvision_Port_1181_Input_MJPEG_Server",
+              "period": 0.06,
+              "rotation_turns": 0
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Autonomous",
+      "grid_layout": {
+        "layouts": [],
+        "containers": []
+      }
+    },
+    {
       "name": "Match",
       "grid_layout": {
         "layouts": [
