@@ -175,20 +175,31 @@ public class RobotContainer {
     // new Trigger(Intake.getInstance()).onTrue(new MoveIntake(0));//temporary point
     // new Trigger(Intake.getInstance()).onTrue(new MoveIntake(45));//temporary point
 
+
+    Intake.getInstance().setDefaultCommand(  Intake.getInstance().stopEatingCommand()  );
+
     // EAT FUEL (OPERATOR - LB)
-    operatorController.leftBumper().whileTrue(new InstantCommand(
-      () -> Intake.getInstance().eat(),
-      Intake.getInstance()
-      )
+    operatorController.leftBumper().whileTrue( 
+
+
+    //OPTION 1: use commadns in their own files
+    //new SpitFuel()
+
+    //OPTION 2: use commands from the subsystem
+    Intake.getInstance().eatFuelCommand()
+
+      
+    //OPTION 3: write the command inside RobotContainer
+    // new InstantCommand(
+    //   () -> Intake.getInstance().eat(),
+    //   Intake.getInstance()
+    //   )
+
+
     );
 
     // SPIT FUEL (OPERATOR - LT)
-    operatorController.leftTrigger().whileTrue(
-      new InstantCommand(
-        () -> Intake.getInstance().retract(),
-        Intake.getInstance()
-      )
-    );
+    operatorController.leftTrigger().whileTrue(  Intake.getInstance().spitFuelCommand()   );
 
     // PIVOT INTAKE OUT (OPERATOR - B)
     operatorController.b().whileTrue(new PivotIntake(45));//extend intake temp point
