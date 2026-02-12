@@ -65,6 +65,11 @@ public class AprilCam {
     public void update() {
         this.results = camera.getAllUnreadResults();
 
+        for (var change: this.results){
+            targets = change.getTargets();
+            updateClosestVisibleId(targets);
+        }
+
          //SmartDashboard.putNumber("X", getTargetTransform(target).getX());
         // SmartDashboard.putNumber("Y", getY());
         // SmartDashboard.putNumber("Z", getZ());
