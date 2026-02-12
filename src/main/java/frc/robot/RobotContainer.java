@@ -193,17 +193,17 @@ public class RobotContainer {
     //---------- CONVEYOR-LOADER JOYSTICK CONTROLLER BINDINGS ----------//
 
     // CONVEYER STOPS by default
-
+    Hopper.getInstance().setDefaultCommand(Hopper.getInstance().stopConveyCommand());
 
     // CONVEY IN (OPERATOR - A)
-    operatorController.a().whileTrue(new InstantCommand(
-      () -> Hopper.getInstance().conveyIn(), 
-      Hopper.getInstance()));
-
+    operatorController.a().whileTrue( Hopper.getInstance().conveyInCommand());
+      
     // CONVEY OUT (OPERATOR - Y)
-    operatorController.y().whileTrue(new InstantCommand(
-      () -> Hopper.getInstance().conveyOut(),
-      Hopper.getInstance()));
+    operatorController.y().whileTrue( Hopper.getInstance().conveyOutCommand());
+      
+    new InstantCommand(
+      () -> 
+      Hopper.getInstance());
 
     // STOP LOADER by default
 

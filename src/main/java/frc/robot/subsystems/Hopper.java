@@ -81,6 +81,32 @@ public class Hopper extends SubsystemBase {
   }
 
 
+
+    public Command conveyInCommand() {
+    // Inline construction of command goes here.
+    return run(
+        () -> {
+          conveyIn();
+        });
+  }
+
+    public Command conveyOutCommand() {
+    // Inline construction of command goes here.
+    return run(
+        () -> {
+          conveyOut();
+        });
+  }
+
+  public Command stopConveyCommand() {
+    // Inline construction of command goes here.
+    return run(
+        () -> {
+          stopConvey();
+        });
+  }
+
+
   /**
    * Example command factory method.
    *
