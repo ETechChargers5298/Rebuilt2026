@@ -120,7 +120,7 @@ public class RobotContainer {
         drivetrain.applyRequest(() -> idle).ignoringDisable(true)
     );
 
-    // SWERVE BRAKE (DRIVER - A button)
+    // SWERVE BRAKE (DRIVER - A  n)
     driverController.a().whileTrue(drivetrain.applyRequest(() -> brake));
 
     // SWERVE TURN TO DIRECTION OF STRAFE (DRIVER - B button)
@@ -186,6 +186,7 @@ public class RobotContainer {
     
     // RETRACT INTAKE BACK (OPERATOR - X)
     // operatorController.x().whileTrue(new PivotIntake(0));//retract intake temp point
+   
 
 
 
@@ -208,19 +209,19 @@ public class RobotContainer {
 
 
     // LOAD FUEL TO LAUNCHER (OPERATOR - RT)
-    operatorController.rightTrigger().whileTrue(new FunctionalCommand(
-      () -> {},
-      () -> Hopper.getInstance().loadFuel(),
-      interrupted -> Hopper.getInstance().stopLoading(),
-      () -> false,
-      Hopper.getInstance()));
-
+    //operatorController.rightTrigger().whileTrue(new FunctionalCommand(
+      //() -> {},
+      //() -> Hopper.getInstance().loadFuel(),
+      //interrupted -> Hopper.getInstance().stopLoading(),
+      // () -> false,
+      // Hopper.getInstance()));
+    // operatorController.rightTrigger().whileTrue(Hopper.getInstance().loadFuelCommand());
 
 
     //---------- SCORER JOYSTICK CONTROLLER  BINDINGS----------//
 
     // STOP FLYWHEEL by default
-
+     Scorer.getInstance().setDefaultCommand(Scorer.getInstance().stopFlywheelCommand()  );
 
     // REV FLYWHEEL (OPERATOR - RB)
     operatorController.rightBumper().whileTrue(Scorer.getInstance().revFlywheelCommand());

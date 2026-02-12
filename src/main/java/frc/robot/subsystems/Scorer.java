@@ -90,6 +90,11 @@ public class Scorer extends SubsystemBase {
     flywheelMotor.set(1.0);
   }
 
+  public void stopFlywheel(){
+    flywheelMotor.set(0.0);
+  }
+  
+
   public void aimTurret(double direction){
     turretMotor.set(direction);
   }
@@ -135,6 +140,13 @@ public class Scorer extends SubsystemBase {
     return run(
       () -> {
         revFlywheel();
+      });
+  }
+
+  public Command stopFlywheelCommand() {
+    return run(
+      () -> {
+        stopFlywheel();
       });
   }
 
