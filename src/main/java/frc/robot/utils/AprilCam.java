@@ -86,7 +86,7 @@ public class AprilCam {
     }
 
     public void updateClosestVisibleId(List<PhotonTrackedTarget> help) {
-        this.closestId = -1;
+        closestId = -1;
         double closestDistance = 100;
 
         for(PhotonTrackedTarget t: help) {
@@ -94,11 +94,11 @@ public class AprilCam {
             
             if(currentDistance < closestDistance) {
                 closestDistance = currentDistance;
-                this.closestId = t.fiducialId;
+                closestId = t.fiducialId;
                 this.closestDistance = closestDistance;
             }
         }
-        //this.closestId = closestId;
+        this.closestId = closestId;
     }
 
     // Gets the current "best" target
