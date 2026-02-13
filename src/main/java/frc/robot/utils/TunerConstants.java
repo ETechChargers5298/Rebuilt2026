@@ -120,10 +120,10 @@ public class TunerConstants {
     private static final Voltage kSteerFrictionVoltage = Volts.of(0.2);
     private static final Voltage kDriveFrictionVoltage = Volts.of(0.2);
 
-    public static final SwerveDrivetrainConstants DrivetrainConstants = new SwerveDrivetrainConstants()
-    .withCANBusName(CAN_DRIVE_BUS.getName())
-            .withPigeon2Id(Ports.PIGEON)
-            .withPigeon2Configs(pigeonConfigs);
+    // public static final SwerveDrivetrainConstants DrivetrainConstants = new SwerveDrivetrainConstants()
+    // .withCANBusName(CAN_DRIVE_BUS.getName())
+    //         .withPigeon2Id(Ports.PIGEON)
+    //         .withPigeon2Configs(pigeonConfigs);
 
     private static final SwerveModuleConstantsFactory<TalonFXConfiguration, TalonFXConfiguration, CANcoderConfiguration> ConstantCreator =
         new SwerveModuleConstantsFactory<TalonFXConfiguration, TalonFXConfiguration, CANcoderConfiguration>()

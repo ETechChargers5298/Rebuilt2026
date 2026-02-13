@@ -212,7 +212,7 @@ public class Drivetrain extends TunerSwerveDrivetrain implements Subsystem {
   public static Drivetrain getInstance() {
     if (instance == null) {
       instance = new Drivetrain(
-        TunerConstants.DrivetrainConstants,
+        TunerConstants.drivetrainConstants,
         TunerConstants.FrontLeftModule,
         TunerConstants.FrontRightModule,
         TunerConstants.BackLeftModule,
