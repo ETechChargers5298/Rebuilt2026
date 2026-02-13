@@ -9,7 +9,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.Command;
 
 /** An example command that uses an example subsystem. */
-public class ExtendIntake extends Command {
+public class PivotIntake extends Command {
   @SuppressWarnings("PMD.UnusedPrivateField")
   private final Intake intake;
 
@@ -27,11 +27,11 @@ public class ExtendIntake extends Command {
    *
    * @param subsystem The subsystem used by this command.
    */
-  public ExtendIntake() {
+  public PivotIntake(double point) {
     
     intake = Intake.getInstance();
     pid = new PIDController(kP, kI, kD);
-
+    setPoint = point;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(intake);
   }

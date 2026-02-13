@@ -40,7 +40,7 @@ import frc.robot.Ports;
  */
 public final class Constants {
 
-  public static class SwerveConstants {
+  public static class SwerveConstantsOld {
  // Distance between front and back wheels on robot
     public static final SwerveDriveKinematics DRIVE_KINEMATICS = new SwerveDriveKinematics(
         new Translation2d(RobotConstants.WHEEL_BASE / 2, RobotConstants.TRACK_WIDTH / 2),
@@ -59,9 +59,6 @@ public final class Constants {
 
   }
   
-  public static final class SwerveModuleConstants {
-     
-  }
   
   public static class MechConstants{
 
