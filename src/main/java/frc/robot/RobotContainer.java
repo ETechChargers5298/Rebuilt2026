@@ -15,8 +15,8 @@ import frc.robot.utils.Telemetry;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
-import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.commands.FollowPathCommand;
+// import com.pathplanner.lib.auto.AutoBuilder;
+// import com.pathplanner.lib.commands.FollowPathCommand;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.StadiaController.Button;
@@ -84,7 +84,7 @@ public class RobotContainer {
     configureBindings();
 
     // Warmup PathPlanner to avoid Java pauses
-    FollowPathCommand.warmupCommand().schedule();
+    // FollowPathCommand.warmupCommand().schedule();
   }
 
   /**
@@ -210,19 +210,19 @@ public class RobotContainer {
     //---------- SCORER JOYSTICK CONTROLLER  BINDINGS----------//
 
     // STOP FLYWHEEL by default
-     Scorer.getInstance().setDefaultCommand(Scorer.getInstance().stopFlywheelCommand()  );
+     Flywheel.getInstance().setDefaultCommand(Flywheel.getInstance().stopFlywheelCommand()  );
 
     // REV FLYWHEEL (OPERATOR - RB)
-    operatorController.rightBumper().whileTrue(Scorer.getInstance().revFlywheelCommand());
+    operatorController.rightBumper().whileTrue(Flywheel.getInstance().revFlywheelCommand());
     
     // ANGLE UP (OPERATOR - X) - will not stop moving without defaul Angler command
     // operatorController.x().whileTrue(Scorer.getInstance().angleUpCommand());
 
     // AIM TURRET (OPERATOR - LX AXIS)
-    Scorer.getInstance().aimTurretCommand( () -> operatorController.getLeftX() );
+    Turret.getInstance().aimTurretCommand( () -> operatorController.getLeftX() );
 
     // AIM ANGLER (OPERATOR - RY AXIS)
-    Scorer.getInstance().aimAnglerCommand( () -> operatorController.getRightY() );
+    Angler.getInstance().aimAnglerCommand( () -> operatorController.getRightY() );
 
     
   }
