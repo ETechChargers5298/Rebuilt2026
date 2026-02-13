@@ -3,42 +3,37 @@
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot.subsystems;
-import java.util.Locale.LanguageRange;
 import java.util.function.DoubleSupplier;
-
-import com.ctre.phoenix6.StatusSignal;
 // import com.ctre.phoenix6.hardware.TalonFX;
 import com.revrobotics.RelativeEncoder;
-import com.revrobotics.encoder.DetachedEncoder;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
-
-import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
 import frc.robot.Ports;
 
 public class Flywheel extends SubsystemBase {
-  /** Creates a new Flywheel. */
-  // FIELDS
+  
+  // FLYWHEEL FIELDS
   private static Flywheel instance;
   private SparkMax flywheelMotor;
   private RelativeEncoder flywheelEncoder; // Flywheel speed sensor (in sparkmax)
 
-  /** Creates a new Turret. */
+  // FLYWHEEL SINGLETON
   public static Flywheel getInstance(){
     if (instance == null)
       instance = new Flywheel();
       return instance;
   }
 
+  // FLYWHEEL CONSTRUCTOR
   private Flywheel() {
     flywheelMotor = new SparkMax(Ports.FLYWHEEL_MOTOR_PORT, MotorType.kBrushless);
     flywheelEncoder = flywheelMotor.getEncoder();  //Built in encoder
   }
 
+  // BASIC FLYWHEEL METHODS
   public void revFlywheel(){
     flywheelMotor.set(1.0);
   }
@@ -46,6 +41,15 @@ public class Flywheel extends SubsystemBase {
   public void stopFlywheel(){
     flywheelMotor.set(0.0);
   }
+
+  public double getLauncherSpeed(){
+    //  StatusSignal<AngularVelocity> velocitySignal = launcherMotor.getVelocity();
+    // return velocitySignal.getValueAsDouble();
+    return flywheelEncoder.getVelocity();
+  }
+
+
+  // BASIC FLYWHEEL COMMANDS
 
   public Command revFlywheelCommand() {
     return run(
@@ -61,8 +65,10 @@ public class Flywheel extends SubsystemBase {
       });
   }
   
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    SmartDashboard.putNumber("flyWheelSpeed", getLauncherSpeed());
   }
 }

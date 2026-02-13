@@ -14,27 +14,24 @@ import frc.robot.Ports;
 
 public class Loader extends SubsystemBase {
 
-  //Fields?
+  // LOADER FIELDS
   private static Loader instance;
   private SparkMax loaderMotor;
 
-  //Loader Constructor
+  // LOADER CONSTRUCTOR
   private Loader() {
     loaderMotor = new SparkMax(Ports.LOADER_MOTOR_PORT, MotorType.kBrushless);
   }
 
-  //Loader Singleton
-
-  public static Loader getInstance()
-  {
-    if(instance == null)
-    {
+  // LOADER SINGLETON
+  public static Loader getInstance() {
+    if(instance == null){
       instance = new Loader();
     }
     return instance;
   }
 
-  //Methods
+  // BASIC LOADER METHODS
 
   public void loadFuel()
   {
@@ -57,33 +54,31 @@ public class Loader extends SubsystemBase {
   }
 
 
-    public Command loadInCommand() {
-    // Inline construction of command goes here.
-    return run(
-        () -> {
-          loadFuel();
-        });
+  // BASIC LOADER COMMANDS
+
+  // In-line Command to load the ball into the launcher to shoot
+  public Command loadInCommand() {
+  return run(
+      () -> {
+        loadFuel();
+      });
   }
 
-    public Command unloadCommand() {
-    // Inline construction of command goes here.
+  // In-line Command to UNLOAD a ball stuck in the loader
+  public Command unloadCommand() {
     return run(
         () -> {
           unloadFuel();
         });
   }
 
+  // In-line Command to stop the loader from moving
   public Command stopLoadCommand() {
-    // Inline construction of command goes here.
     return run(
         () -> {
           stopLoading();
         });
   }
-
-
-
-
 
 
 

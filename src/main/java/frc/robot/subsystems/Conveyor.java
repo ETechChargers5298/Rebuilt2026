@@ -19,14 +19,12 @@ public class Conveyor extends SubsystemBase {
 
 
   //Conveyor Constructor
-
   private Conveyor() 
   {
     conveyorMotor = new SparkMax(Ports.CONVEYOR_MOTOR_PORT, MotorType.kBrushless);
   }
 
   //Conveyor Singleton
-
   public static Conveyor getInstance()
   {
     if(instance == null)
@@ -37,7 +35,6 @@ public class Conveyor extends SubsystemBase {
   }
 
   //Methods
-
   public void conveyIn()
   {
     conveyorMotor.set(1.0);
@@ -53,7 +50,7 @@ public class Conveyor extends SubsystemBase {
     conveyorMotor.set(0);
   }
 
-  public void generalMoveConvey(double speed)
+  public void generalConvey(double speed)
   {
     conveyorMotor.set(speed);
   }

@@ -22,7 +22,7 @@ import frc.robot.Ports;
 
 public class Turret extends SubsystemBase {
 
-  // FIELDS
+  // TURRET FIELDS
   private static Turret instance;
   private SparkMax turretMotor;
   private RelativeEncoder turretEncoder; // turret sensor LEFT/RIGHT() == relative position with throughbore
@@ -33,20 +33,20 @@ public class Turret extends SubsystemBase {
   public double turretAngle = 0;
   public double angleAngler = 0;
 
-  /** Creates a new Turret. */
-  public static Turret getInstance(){
-    if (instance == null)
-      instance = new Turret();
-      return instance;
-  }
-  
+  // TURRET CONSTRUCTOR
   private Turret() {
     turretMotor = new SparkMax(Ports.TURRET_MOTOR_PORT, MotorType.kBrushless);
     turretEncoder = turretMotor.getAlternateEncoder();    //REV throughbore connected to Turret Sparkmax
   }
 
-  
-  // BASIC FUNCTIONALITY
+  // TURRET SINGLETON
+  public static Turret getInstance(){
+    if (instance == null)
+      instance = new Turret();
+      return instance;
+  }
+    
+  // BASIC TURRET METHODS
   public void aimRight(){
     turretMotor.set(1.0);
   }
@@ -59,8 +59,13 @@ public class Turret extends SubsystemBase {
     turretMotor.set(direction);
   }
 
+   public double getTurretAngle(){ 
+    return turretEncoder.getPosition();
+  }
 
-    // In-line Command to rotate the turret based on provided speed
+  // BASIC TURRET COMMANDS
+
+  // In-line Command to rotate the turret based on provided speed
   public Command aimTurretCommand(DoubleSupplier speedSupplier) {
     return run(
       () -> {
@@ -71,5 +76,6 @@ public class Turret extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    SmartDashboard.putNumber("turretAngle", getTurretAngle());
   }
 }

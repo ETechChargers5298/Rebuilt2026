@@ -208,7 +208,7 @@ public class Drivetrain extends TunerSwerveDrivetrain implements Subsystem {
   }
 
 
-  // Drivetrain Singleton - ensures only 1 instance of Drivetrain is constructed
+  // DRIVETRAIN SINGLETON - ensures only 1 instance of Drivetrain is constructed
   public static Drivetrain getInstance() {
     if (instance == null) {
       instance = new Drivetrain(

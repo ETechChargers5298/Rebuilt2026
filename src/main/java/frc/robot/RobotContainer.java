@@ -117,7 +117,7 @@ public class RobotContainer {
         drivetrain.applyRequest(() -> idle).ignoringDisable(true)
     );
 
-    // SWERVE BRAKE (DRIVER - A  n)
+    // SWERVE BRAKE (DRIVER - A)
     driverController.a().whileTrue(drivetrain.applyRequest(() -> brake));
 
     // SWERVE TURN TO DIRECTION OF STRAFE (DRIVER - B button)
@@ -182,7 +182,7 @@ public class RobotContainer {
     operatorController.b().whileTrue(new PivotIntake(45));//extend intake temp point
     
     // RETRACT INTAKE BACK (OPERATOR - X)
-    // operatorController.x().whileTrue(new PivotIntake(0));//retract intake temp point
+    operatorController.x().whileTrue(new PivotIntake(0));//retract intake temp point
    
 
 
