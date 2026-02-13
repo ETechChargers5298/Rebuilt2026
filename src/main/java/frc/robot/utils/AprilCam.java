@@ -91,20 +91,39 @@ public class AprilCam {
     }
 
     public void updateClosestVisibleId(List<PhotonTrackedTarget> help) {
-        closestId = -1;
-        double closestDistance = 100;
+        //closestId = -1;
+        // double closestDistance = 100;
 
+        if(help == null || help.isEmpty()) return;
+
+        int bestId = -1;
+        double bestDistance = Double.MAX_VALUE;
+        
         for(PhotonTrackedTarget t: help) {
-            double currentDistance = Math.sqrt(Math.pow(getTargetTransform(t).getX(), 2) + Math.pow(getTargetTransform(t).getY(), 2));
-            
-            if(currentDistance < closestDistance) {
-                closestDistance = currentDistance;
-                closestId = t.fiducialId;
-                this.closestDistance = closestDistance;
+            // double currentDistance = Math.sqrt(Math.pow(getTargetTransform(t).getX(), 2) + Math.pow(getTargetTransform(t).getY(), 2));
+            Transform3d transform = getTargetTransform(t);
+            if(transform == null) continue;
+            double currentDistance = Math.sqrt(Math.pow(transform.getX(), 2) + Math.pow(getTargetTransform(t).getY(), 2));
+
+            if(currentDistance < bestDistance){
+                bestDistance = currentDistance;
+                bestId = t.fiducialId;
             }
-        }
-        this.closestId = closestId;
+
+
+        //     if(currentDistance < closestDistance) {
+        //         closestDistance = currentDistance;
+        //         closestId = t.fiducialId;
+        //         this.closestDistance = closestDistance;
+        //     }
+        // }
+        // this.closestId = closestId;
     }
+    if (bestId != -1){
+        this.closestId = bestId;
+        this.closestDistance = bestDistance;
+    }
+}
 
     // Gets the current "best" target
     // public PhotonTrackedTarget getBestTarget(){
