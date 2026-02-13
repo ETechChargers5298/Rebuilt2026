@@ -15,8 +15,8 @@ import frc.robot.utils.Telemetry;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
-import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.commands.FollowPathCommand;
+// import com.pathplanner.lib.auto.AutoBuilder;
+// import com.pathplanner.lib.commands.FollowPathCommand;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -81,7 +81,7 @@ public class RobotContainer {
     configureBindings();
 
     // Warmup PathPlanner to avoid Java pauses
-    FollowPathCommand.warmupCommand().schedule();
+    // FollowPathCommand.warmupCommand().schedule();
   }
 
   /**
@@ -190,36 +190,45 @@ public class RobotContainer {
     //---------- CONVEYOR-LOADER JOYSTICK CONTROLLER BINDINGS ----------//
 
     // STOPS CONVEYER by default
-    Hopper.getInstance().setDefaultCommand(Hopper.getInstance().stopConveyCommand());
+    Conveyor.getInstance().setDefaultCommand(Conveyor.getInstance().stopConveyCommand());
 
     // CONVEY IN (OPERATOR - A)
-    operatorController.a().whileTrue( Hopper.getInstance().conveyInCommand());
+    operatorController.a().whileTrue( Conveyor.getInstance().conveyInCommand());
       
     // CONVEY OUT (OPERATOR - Y)
-    operatorController.y().whileTrue( Hopper.getInstance().conveyOutCommand());
+    operatorController.y().whileTrue( Conveyor.getInstance().conveyOutCommand());
       
 
 
     // LOAD FUEL TO LAUNCHER (OPERATOR - RT)
-    // operatorController.rightTrigger().whileTrue(Hopper.getInstance().loadFuelCommand());
+    
+    // STOPS LOADER by default
+    Conveyor.getInstance().setDefaultCommand(Loader.getInstance().stopLoadCommand());
+
+    // LOAD IN (OPERATOR - RT)
+    operatorController.rightTrigger().whileTrue( Loader.getInstance().loadInCommand());
+      
+    // LOAD OUT (OPERATOR - ???)
+    //operatorController.???().whileTrue(Loader.getInstance().unloadCommand());
+
 
 
     //---------- SCORER JOYSTICK CONTROLLER  BINDINGS----------//
 
     // STOP FLYWHEEL by default
-     Scorer.getInstance().setDefaultCommand(Scorer.getInstance().stopFlywheelCommand()  );
+     Flywheel.getInstance().setDefaultCommand(Flywheel.getInstance().stopFlywheelCommand()  );
 
     // REV FLYWHEEL (OPERATOR - RB)
-    operatorController.rightBumper().whileTrue(Scorer.getInstance().revFlywheelCommand());
+    operatorController.rightBumper().whileTrue(Flywheel.getInstance().revFlywheelCommand());
     
     // ANGLE UP (OPERATOR - X) - will not stop moving without defaul Angler command
     // operatorController.x().whileTrue(Scorer.getInstance().angleUpCommand());
 
     // AIM TURRET (OPERATOR - LX AXIS)
-    Scorer.getInstance().aimTurretCommand( () -> operatorController.getLeftX() );
+    Turret.getInstance().aimTurretCommand( () -> operatorController.getLeftX() );
 
     // AIM ANGLER (OPERATOR - RY AXIS)
-    Scorer.getInstance().aimAnglerCommand( () -> operatorController.getRightY() );
+    Angler.getInstance().aimAnglerCommand( () -> operatorController.getRightY() );
 
 
   }

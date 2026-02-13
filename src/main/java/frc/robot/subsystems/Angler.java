@@ -20,11 +20,11 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Ports;
 
-public class Scorer extends SubsystemBase {
+public class Angler extends SubsystemBase {
   /** Creates a new ExampleSubsystem. */
 
   // FIELDS
-  private static Scorer instance;
+  private static Angler instance;
   private SparkMax turretMotor;
   private SparkMax angleMotor;
   private SparkMax flywheelMotor;
@@ -34,10 +34,6 @@ public class Scorer extends SubsystemBase {
   private RelativeEncoder flywheelEncoder; // Flywheel speed sensor (in sparkmax)
 
 
-  public double distanceFromHub = 0;
-  public double angleToHub = 0;
-  public double turretMotorSpeed = 0;
-  public double turretAngle = 0;
   public double angleAngler = 0;
 
 
@@ -54,20 +50,15 @@ public class Scorer extends SubsystemBase {
 
 
 
-  public static Scorer getInstance(){
+  public static Angler getInstance(){
   if (instance == null)
-    instance = new Scorer();
+    instance = new Angler();
     return instance;
   }
 
-  public Scorer() {
-
-    turretMotor = new SparkMax(Ports.TURRET_MOTOR_PORT, MotorType.kBrushless);
+  public Angler() {
     angleMotor = new SparkMax(Ports.ANGLE_MOTOR_PORT, MotorType.kBrushless);
-    flywheelMotor = new SparkMax(Ports.FLYWHEEL_MOTOR_PORT, MotorType.kBrushless);
-    turretEncoder = turretMotor.getAlternateEncoder();    //REV throughbore connected to Turret Sparkmax
     anglerEncoder = angleMotor.getAlternateEncoder();   //REV throughbore connected to Angler Sparkmax
-    flywheelEncoder = flywheelMotor.getEncoder();  //Built in encoder
   }
 
 

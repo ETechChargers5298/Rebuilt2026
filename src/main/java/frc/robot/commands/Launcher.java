@@ -4,14 +4,14 @@
 
 package frc.robot.commands;
 
-import frc.robot.subsystems.Scorer;
+import frc.robot.subsystems.Angler;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.Command;
 
 /** An example command that uses an example subsystem. */
 public class Launcher extends Command {
   @SuppressWarnings("PMD.UnusedPrivateField")
-  private final Scorer scorer;
+  private final Angler scorer;
 
   private double kP = 0, kI = 0, kD = 0;
   private PIDController launchPid = new PIDController(kP, kI, kD);
@@ -19,7 +19,7 @@ public class Launcher extends Command {
 
 
   public Launcher() {
-    scorer = Scorer.getInstance();
+    scorer = Angler.getInstance();
 
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(scorer);

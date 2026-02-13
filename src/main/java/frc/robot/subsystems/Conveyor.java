@@ -11,29 +11,27 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Ports;
 
-public class Hopper extends SubsystemBase {
+public class Conveyor extends SubsystemBase {
 
   //Fields?
-  private static Hopper instance;
+  private static Conveyor instance;
   private SparkMax conveyorMotor;
-  private SparkMax loaderMotor;
 
 
-  //Hopper Constructer
+  //Conveyor Constructor
 
-  private Hopper() 
+  private Conveyor() 
   {
     conveyorMotor = new SparkMax(Ports.CONVEYOR_MOTOR_PORT, MotorType.kBrushless);
-    loaderMotor = new SparkMax(Ports.LOADER_MOTOR_PORT, MotorType.kBrushless);
   }
 
-  //Hopper Singleton
+  //Conveyor Singleton
 
-  public static Hopper getInstance()
+  public static Conveyor getInstance()
   {
     if(instance == null)
     {
-      instance = new Hopper();
+      instance = new Conveyor();
     }
     return instance;
   }
@@ -60,28 +58,6 @@ public class Hopper extends SubsystemBase {
     conveyorMotor.set(speed);
   }
 
-  public void loadFuel()
-  {
-    loaderMotor.set(1);
-  }
-
-  public void unloadFuel()
-  {
-    loaderMotor.set(-1);
-  }
-
-  public void generalLoading(double speed)
-  {
-    loaderMotor.set(speed);
-  }
-
-  public void stopLoading()
-  {
-    loaderMotor.set(0);
-  }
-
-
-
     public Command conveyInCommand() {
     // Inline construction of command goes here.
     return run(
@@ -106,30 +82,6 @@ public class Hopper extends SubsystemBase {
         });
   }
 
-
-  /**
-   * Example command factory method.
-   *
-   * @return a command
-   */
-  public Command exampleMethodCommand() {
-    // Inline construction of command goes here.
-    // Subsystem::RunOnce implicitly requires `this` subsystem.
-    return runOnce(
-        () -> {
-          /* one-time action goes here */
-        });
-  }
-
-  /**
-   * An example method querying a boolean state of the subsystem (for example, a digital sensor).
-   *
-   * @return value of some boolean subsystem state, such as a digital sensor.
-   */
-  public boolean exampleCondition() {
-    // Query some boolean state, such as a digital sensor.
-    return false;
-  }
 
   @Override
   public void periodic() {
