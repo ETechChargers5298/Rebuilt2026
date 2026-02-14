@@ -19,6 +19,7 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 // import com.pathplanner.lib.commands.FollowPathCommand;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -228,7 +229,7 @@ public class RobotContainer {
 
     // AIM ANGLER (OPERATOR - RY AXIS)
     Angler.getInstance().setDefaultCommand(
-      Angler.getInstance().aimAnglerCommand( () -> operatorController.getRightY() )
+      Angler.getInstance().aimAnglerCommand( () -> MathUtil.applyDeadband(operatorController.getRightY(), 0.1) )
     );
     // ANGLE UP (OPERATOR - X) - will not stop moving without defaul Angler command
     // operatorController.x().whileTrue(Scorer.getInstance().angleUpCommand());
@@ -238,7 +239,7 @@ public class RobotContainer {
 
     // AIM TURRET (OPERATOR - LX AXIS)
     Turret.getInstance().setDefaultCommand(
-      Turret.getInstance().aimTurretCommand( () -> operatorController.getLeftX() )
+      Turret.getInstance().aimTurretCommand( () -> MathUtil.applyDeadband(operatorController.getLeftX(), 0.1) )
     );
   }
 
