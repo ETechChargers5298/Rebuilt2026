@@ -2,7 +2,7 @@
 ETech Chargers (FRC5298) Code for the 2026 game "REBUILT" Competition!
 
 ## Contributors
-* Steven Pulgarin - Drivetrain
+* Steven Pulgarin* - Drivetrain
 * Bryan Ramirez - DriveTrain
 * Tyler K - Intake
 * David K - Hopper/Loader
@@ -11,3 +11,4 @@ ETech Chargers (FRC5298) Code for the 2026 game "REBUILT" Competition!
 * Gabriel Rivera - Vision
 * Dylan K - Vision
 * Mike P - Controls
+* Daniel Z - Intake

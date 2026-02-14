@@ -20,14 +20,35 @@ public class Ports {
     public static final int SWERVE_TURN_BL = 6;
     public static final int SWERVE_DRIVE_BR = 7;
     public static final int SWERVE_TURN_BR = 8;
+    public static final int SWERVE_ANGLE_FL = 9;
+    public static final int SWERVE_ANGLE_FR = 10;
+    public static final int SWERVE_ANGLE_BL = 11;
+    public static final int SWERVE_ANGLE_BR = 12;
+
+    
+
+
+
+
+    public static final int PIGEON = 14;
 
 
     //CAN-MECH NETWORK
 
     //Intake related ports
-    public static final int EAT_MOTOR_PORT = 16;
+    public static final int EAT_MOTOR_PORT = 21; //works
+    public static final int EXTEND_MOTOR_PORT = 22; // not working
+    public static final int FLYWHEEL_MOTOR_PORT = 28; //works
+    public static final int TURRET_MOTOR_PORT = 26; // works
+    public static final int ANGLE_MOTOR_PORT = 27; //works
 
-    public static final int EXTEND_MOTOR_PORT = 17; //placeholder
+
+
+    //Hopper PORTS
+
+    public static final int CONVEYOR_MOTOR_PORT = 24; //works
+    public static final int LOADER_MOTOR_PORT = 25; //works
+
     //DIGITAL I/O PORTS
 
 

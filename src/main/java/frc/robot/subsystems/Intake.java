@@ -9,6 +9,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Ports;
@@ -19,21 +20,21 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 
 public class Intake extends SubsystemBase {
 
-  // Fields
+  // INTAKE FIELDS
   private static Intake instance;
   private SparkMax eatMotor;
   private SparkMax extendMotor; // All extendMotor related things are currntly placeholder
   private AbsoluteEncoder extendEncoder;
 
 
-  // Intake Constructor
+  // INTAKE CONSTRUCTOR
   private Intake() {
     eatMotor = new SparkMax(Ports.EAT_MOTOR_PORT,MotorType.kBrushless);
     extendMotor = new SparkMax(Ports.EXTEND_MOTOR_PORT,MotorType.kBrushless);
     extendEncoder = extendMotor.getAbsoluteEncoder();
   }
 
-  // Intake Singleton - ensures only 1 instance of Intake is constructed
+  // INTAKE SINGLETON - ensures only 1 instance of Intake is constructed
   public static Intake getInstance() {
     if (instance == null) {
       instance = new Intake();
@@ -41,7 +42,8 @@ public class Intake extends SubsystemBase {
     return instance;
   }
 
-  // Other Intake Methods
+  // BASIC INTAKE METHODS
+
   public void eat() {
     eatMotor.set(1.0);
   }
@@ -82,20 +84,32 @@ public class Intake extends SubsystemBase {
   }
 
 
+  // BASIC INTAKE COMMANDS
 
-  /**
-   * Basic Intake Command
-   * @return a command
-   */
+  // In-line Command to eat fuel off the ground into the hopper
   public Command eatFuelCommand() {
-    // Inline construction of command goes here.
-    // Subsystem::RunOnce implicitly requires `this` subsystem.
-    return runOnce(
+    return run(
         () -> {
-          /* one-time action goes here */
           eat();
         });
   }
+
+  // In-line Command to spit fuel from the hopper back onto the ground
+  public Command spitFuelCommand() {
+    return run(
+        () -> {
+          spit();
+        });
+  }
+
+  // In-line Command to stop moving the intake rollers
+  public Command stopEatingCommand(){
+    return run(
+      () -> {
+        stopEating();
+      });
+}
+
 
   @Override
   public void periodic() {
