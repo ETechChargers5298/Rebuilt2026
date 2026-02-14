@@ -2,10 +2,10 @@ package frc.robot.subsystems;
 
 import frc.robot.LEDColors;
 import frc.robot.Ports;
-import frc.robot.subsystems.Turret;
-import frc.robot.subsystems.Angler;
-import frc.robot.subsystems.Flywheel.revFlywheel;
+import frc.robot.subsystems.Flywheel;
 import frc.robot.subsystems.Vision;
+import frc.robot.subsystems.Angler;
+import frc.robot.subsystems.Turret;
 import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -114,8 +114,11 @@ public class LEDstrip extends SubsystemBase {
         request(SubsystemPriority.DEFAULT, ENABLED);
         setStatus();
 
-        //FLYWHEEL MAX SPEED
-        boolean ShootReadyFlywheel = instance.revFlywheel() = 1;
+        //FLYWHEEL MAX SPEED - SHOOT
+        boolean ShootReadyFlywheel = Flywheel.getInstance().getLauncherSpeed() > 0.9;
+        if(ShootReadyFlywheel) {
+            request(SubsystemPriority.FLYWHEEL, SHOOT);
+        }
     }
 
 
