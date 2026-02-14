@@ -187,7 +187,7 @@ public class RobotContainer {
 
 
 
-    //---------- CONVEYOR-LOADER JOYSTICK CONTROLLER BINDINGS ----------//
+    //---------- CONVEYOR JOYSTICK CONTROLLER BINDINGS ----------//
 
     // STOPS CONVEYER by default
     Conveyor.getInstance().setDefaultCommand(Conveyor.getInstance().stopConveyCommand());
@@ -199,11 +199,13 @@ public class RobotContainer {
     operatorController.y().whileTrue( Conveyor.getInstance().conveyOutCommand());
       
 
+    //---------- LOADER JOYSTICK CONTROLLER BINDINGS ----------//
 
     // LOAD FUEL TO LAUNCHER (OPERATOR - RT)
+
     
     // STOPS LOADER by default
-    Conveyor.getInstance().setDefaultCommand(Loader.getInstance().stopLoadCommand());
+    Loader.getInstance().setDefaultCommand(Loader.getInstance().stopLoadCommand());
 
     // LOAD IN (OPERATOR - RT)
     operatorController.rightTrigger().whileTrue( Loader.getInstance().loadInCommand());
@@ -213,7 +215,7 @@ public class RobotContainer {
 
 
 
-    //---------- SCORER JOYSTICK CONTROLLER  BINDINGS----------//
+    //---------- FLYWHEEL JOYSTICK CONTROLLER  BINDINGS----------//
 
     // STOP FLYWHEEL by default
      Flywheel.getInstance().setDefaultCommand(Flywheel.getInstance().stopFlywheelCommand()  );
@@ -221,15 +223,20 @@ public class RobotContainer {
     // REV FLYWHEEL (OPERATOR - RB)
     operatorController.rightBumper().whileTrue(Flywheel.getInstance().revFlywheelCommand());
     
-    // ANGLE UP (OPERATOR - X) - will not stop moving without defaul Angler command
-    // operatorController.x().whileTrue(Scorer.getInstance().angleUpCommand());
 
-    // AIM TURRET (OPERATOR - LX AXIS)
-    Turret.getInstance().aimTurretCommand( () -> operatorController.getLeftX() );
+    //---------- ANGLER JOYSTICK CONTROLLER BINDINGS ----------//
 
     // AIM ANGLER (OPERATOR - RY AXIS)
     Angler.getInstance().aimAnglerCommand( () -> operatorController.getRightY() );
 
+    // ANGLE UP (OPERATOR - X) - will not stop moving without defaul Angler command
+    // operatorController.x().whileTrue(Scorer.getInstance().angleUpCommand());
+
+
+    //---------- TURRET JOYSTICK CONTROLLER BINDINGS ----------//
+
+    // AIM TURRET (OPERATOR - LX AXIS)
+    Turret.getInstance().aimTurretCommand( () -> operatorController.getLeftX() );
 
   }
 
