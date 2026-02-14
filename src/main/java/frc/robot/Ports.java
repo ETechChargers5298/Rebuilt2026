@@ -57,6 +57,6 @@ public class Ports {
 
     //PWM PORTS
 
-
-
+    // LED PORTS
+    public static final int BLINKIN_PORT = 100;
 }

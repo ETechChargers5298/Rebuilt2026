@@ -6,7 +6,10 @@ import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class LEDstrip {
+public class LEDstrip extends SubsystemBase {
+
+    private static LEDstrip instance;
+    private static Spark LED = new Spark(Ports.BLINKIN_PORT);
     // ON OR OFF
     public static final double DISABLED = LEDColors.BLACK;
     public static final double ENABLED = LEDColors.BLUE;
@@ -39,6 +42,74 @@ public class LEDstrip {
     public static final double AUTO = LEDColors.VIOLET;
 
 
+    private static int topCurrentPriority = 0;
+    private static double[] patternArray = new double[5];
+
+    //LED SINGLETON
+    public static LEDstrip getInstance() {
+        if(instance == null){
+            instance = new LEDstrip()
+        }
+        return instance;
+    }
+       // Enum to determine which subsystem the light pattern is for
+    public enum SubsystemPriority {
+        
+        INTAKE(1),
+        CORAL(2),
+        ALGAE(3),
+        ELCORAL(4),
+        DEFAULT(0);
+
+        private int priority;
+
+        private SubsystemPriority(int priority){
+            this.priority = priority;
+        }
+
+        public int get(){
+            return priority;
+        }
+    }
+
+    // primary method to set the lights
+    public static void request(SubsystemPriority priority, double lightColor) {
+        // update the top priority
+        if (priority.get() > topCurrentPriority) {
+            topCurrentPriority = priority.get();
+        }
+        // recording the request in the array
+        patternArray[priority.get()] = lightColor;
+    }
+
+    public static void disable() {
+        LED.stopMotor();
+    }
+
+
+    //---------- PRIVATE METHODS ---------//
+    private static void setPattern(double ledPattern) {
+        LED.set(ledPattern);
+    }
+
+    private static void setStatus() {
+        // turn light on for the top priority reqeust
+        if (topCurrentPriority < patternArray.length) {
+            setPattern(patternArray[topCurrentPriority]);
+        }
+
+        topCurrentPriority = SubsystemPriority.DEFAULT.get();
+
+        SmartDashboard.putNumber("Top Priority", topCurrentPriority);
+        SmartDashboard.putNumber("LED Value", patternArray[topCurrentPriority]);
+    }
+
+    @Override
+    public void periodic() {
+        // This method will be called once per scheduler run
+        request(SubsystemPriority.DEFAULT, ENABLED);
+        setStatus();
+    }
 
 
 }

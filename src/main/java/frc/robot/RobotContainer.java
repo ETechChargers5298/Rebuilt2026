@@ -11,7 +11,7 @@ import frc.robot.commands.basic.*;
 import frc.robot.subsystems.*;
 import frc.robot.utils.TunerConstants;
 import frc.robot.utils.Telemetry;
-
+import frc.robot.subsystems.LEDstrip;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
@@ -64,6 +64,7 @@ public class RobotContainer {
   private final CommandXboxController operatorController = new CommandXboxController(Ports.OPERATOR_CONTROLLER);
   private final Drivetrain drivetrain = Drivetrain.getInstance();
   private final Telemetry logger = new Telemetry(MaxSpeed);
+  private LEDstrip LED = LEDstrip.getInstance();
 
   //PATHPLANNER FIELDS
   // private final SendableChooser<Command> autoChooser;
