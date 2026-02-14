@@ -37,7 +37,7 @@ public class Ports {
 
     //Intake related ports
     public static final int EAT_MOTOR_PORT = 21; //works
-    public static final int EXTEND_MOTOR_PORT = 22; // not working
+    public static final int EXTEND_MOTOR_PORT = 22; // works
     public static final int FLYWHEEL_MOTOR_PORT = 28; //works
     public static final int TURRET_MOTOR_PORT = 26; // works
     public static final int ANGLE_MOTOR_PORT = 27; //works

@@ -35,7 +35,7 @@ public class Flywheel extends SubsystemBase {
 
   // BASIC FLYWHEEL METHODS
   public void revFlywheel(){
-    flywheelMotor.set(1.0);
+    flywheelMotor.set(-1.0);
   }
 
   public void stopFlywheel(){
