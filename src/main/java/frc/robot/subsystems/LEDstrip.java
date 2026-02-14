@@ -2,6 +2,10 @@ package frc.robot.subsystems;
 
 import frc.robot.LEDColors;
 import frc.robot.Ports;
+import frc.robot.subsystems.Turret;
+import frc.robot.subsystems.Angler;
+import frc.robot.subsystems.Flywheel.revFlywheel;
+import frc.robot.subsystems.Vision;
 import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -55,7 +59,7 @@ public class LEDstrip extends SubsystemBase {
        // Enum to determine which subsystem the light pattern is for
     public enum SubsystemPriority {
         
-        INTAKE(1),
+        FLYWHEEL(1),
         CORAL(2),
         ALGAE(3),
         ELCORAL(4),
@@ -109,6 +113,9 @@ public class LEDstrip extends SubsystemBase {
         // This method will be called once per scheduler run
         request(SubsystemPriority.DEFAULT, ENABLED);
         setStatus();
+
+        //FLYWHEEL MAX SPEED
+        boolean ShootReadyFlywheel = instance.revFlywheel() = 1;
     }
 
 
