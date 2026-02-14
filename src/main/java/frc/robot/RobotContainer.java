@@ -227,17 +227,19 @@ public class RobotContainer {
     //---------- ANGLER JOYSTICK CONTROLLER BINDINGS ----------//
 
     // AIM ANGLER (OPERATOR - RY AXIS)
-    Angler.getInstance().aimAnglerCommand( () -> operatorController.getRightY() );
-
+    Angler.getInstance().setDefaultCommand(
+      Angler.getInstance().aimAnglerCommand( () -> operatorController.getRightY() )
+    );
     // ANGLE UP (OPERATOR - X) - will not stop moving without defaul Angler command
     // operatorController.x().whileTrue(Scorer.getInstance().angleUpCommand());
-
+    
 
     //---------- TURRET JOYSTICK CONTROLLER BINDINGS ----------//
 
     // AIM TURRET (OPERATOR - LX AXIS)
-    Turret.getInstance().aimTurretCommand( () -> operatorController.getLeftX() );
-
+    Turret.getInstance().setDefaultCommand(
+      Turret.getInstance().aimTurretCommand( () -> operatorController.getLeftX() )
+    );
   }
 
   /**
