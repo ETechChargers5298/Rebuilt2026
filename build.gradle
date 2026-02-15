@@ -20,6 +20,7 @@ deploy {
             // You can use getTeamOrDefault(team) instead of getTeamNumber if you
             // want to store a team number in this file.
             team = project.frc.getTeamNumber()
+            ip = "10.52.98.2"
             debug = project.frc.getDebugOrDefault(false)
 
             artifacts {
