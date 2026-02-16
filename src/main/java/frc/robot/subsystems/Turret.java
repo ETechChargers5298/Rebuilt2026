@@ -7,6 +7,7 @@ import java.util.Locale.LanguageRange;
 import java.util.function.DoubleSupplier;
 
 import com.ctre.phoenix6.StatusSignal;
+import com.ctre.phoenix6.hardware.TalonFX;
 // import com.ctre.phoenix6.hardware.TalonFX;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.encoder.DetachedEncoder;
@@ -24,9 +25,10 @@ public class Turret extends SubsystemBase {
 
   // TURRET FIELDS
   private static Turret instance;
-  private SparkMax turretMotor;
-  private RelativeEncoder turretEncoder; // turret sensor LEFT/RIGHT() == relative position with throughbore
+  private TalonFX turretMotor;
+  // private RelativeEncoder turretEncoder; // turret sensor LEFT/RIGHT() == relative position with throughbore
 
+  
   public double distanceFromHub = 0;
   public double angleToHub = 0;
   public double turretMotorSpeed = 0;
@@ -35,8 +37,10 @@ public class Turret extends SubsystemBase {
 
   // TURRET CONSTRUCTOR
   private Turret() {
-    turretMotor = new SparkMax(Ports.TURRET_MOTOR_PORT, MotorType.kBrushless);
-    turretEncoder = turretMotor.getAlternateEncoder();    //REV throughbore connected to Turret Sparkmax
+    //turretMotor = new SparkMax(Ports.TURRET_MOTOR_PORT, MotorType.kBrushless);
+    turretMotor = new TalonFX(Ports.TURRET_MOTOR_PORT);
+    // turretEncoder = turretMotor.getAlternateEncoder();    //REV throughbore connected to Turret Sparkmax
+    
   }
 
   // TURRET SINGLETON
@@ -59,9 +63,9 @@ public class Turret extends SubsystemBase {
     turretMotor.set(direction);
   }
 
-   public double getTurretAngle(){ 
-    return turretEncoder.getPosition();
-  }
+  //  public double getTurretAngle(){ 
+  //   return turretEncoder.getPosition();
+  // }
 
   // BASIC TURRET COMMANDS
 
@@ -69,13 +73,13 @@ public class Turret extends SubsystemBase {
   public Command aimTurretCommand(DoubleSupplier speedSupplier) {
     return run(
       () -> {
-        aimTurret(speedSupplier.getAsDouble());
+        aimTurret(speedSupplier.getAsDouble()/4);
       });
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    SmartDashboard.putNumber("turretAngle", getTurretAngle());
+    // SmartDashboard.putNumber("turretAngle", getTurretAngle());
   }
 }

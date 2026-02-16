@@ -8,6 +8,8 @@ import java.util.function.DoubleSupplier;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -19,6 +21,7 @@ public class Flywheel extends SubsystemBase {
   private static Flywheel instance;
   private SparkMax flywheelMotor;
   private RelativeEncoder flywheelEncoder; // Flywheel speed sensor (in sparkmax)
+  public double setSpeed;
 
   // FLYWHEEL SINGLETON
   public static Flywheel getInstance(){
@@ -35,7 +38,7 @@ public class Flywheel extends SubsystemBase {
 
   // BASIC FLYWHEEL METHODS
   public void revFlywheel(){
-    flywheelMotor.set(-1.0);
+    flywheelMotor.set(setSpeed);
   }
 
   public void stopFlywheel(){
@@ -46,6 +49,10 @@ public class Flywheel extends SubsystemBase {
     //  StatusSignal<AngularVelocity> velocitySignal = launcherMotor.getVelocity();
     // return velocitySignal.getValueAsDouble();
     return flywheelEncoder.getVelocity();
+  }
+
+  public void speedUp(double direction){
+    flywheelMotor.set(direction);
   }
 
 
@@ -63,12 +70,24 @@ public class Flywheel extends SubsystemBase {
       () -> {
         stopFlywheel();
       });
-  }
+    }
+  
+  public Command flyWheelCommand(DoubleSupplier speed){
+    return run(
+      () -> {
+        speedUp(speed.getAsDouble());
+      
+      });
+    }
+
+  
   
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
     SmartDashboard.putNumber("flyWheelSpeed", getLauncherSpeed());
+    SmartDashboard.putNumber("Flywheel setSpeed", setSpeed);
+    
   }
 }

@@ -10,6 +10,8 @@ import com.ctre.phoenix6.StatusSignal;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -22,6 +24,8 @@ public class Angler extends SubsystemBase {
   private SparkMax angleMotor;
   private RelativeEncoder anglerEncoder; // Angle sensor UP/DOWN () == Relative position 
   public double angleAngler = 0;
+    private DigitalInput limitSwitch;
+
 
 
   // ANGLER SINGLETON
@@ -34,7 +38,9 @@ public class Angler extends SubsystemBase {
   // ANGLER CONSTRUCTOR
   public Angler() {
     angleMotor = new SparkMax(Ports.ANGLE_MOTOR_PORT, MotorType.kBrushless);
-    anglerEncoder = angleMotor.getAlternateEncoder();   //REV throughbore connected to Angler Sparkmax
+    anglerEncoder = angleMotor.getEncoder();
+        limitSwitch = new DigitalInput(0); 
+   //REV throughbore connected to Angler Sparkmax
   }
 
 
@@ -48,7 +54,7 @@ public class Angler extends SubsystemBase {
   }
 
   public void aimAngler(double direction){
-    angleMotor.set(direction);
+    angleMotor.set(-direction);
   }
 
   public double getAnglerAngle(){
@@ -79,6 +85,9 @@ public class Angler extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     SmartDashboard.putNumber("anglerAngle", getAnglerAngle());
+    if(!limitSwitch.get()){
+      anglerEncoder.setPosition(0);
+    }
   }
 
   @Override

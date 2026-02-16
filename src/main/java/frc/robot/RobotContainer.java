@@ -171,7 +171,7 @@ public class RobotContainer {
     Intake.getInstance().setDefaultCommand(  Intake.getInstance().stopEatingCommand()  );
 
     // EAT FUEL (OPERATOR - LB)
-    operatorController.leftBumper().whileTrue( Intake.getInstance().eatFuelCommand() );
+   // operatorController.leftBumper().whileTrue( Intake.getInstance().eatFuelCommand() );
 
     // SPIT FUEL (OPERATOR - LT)
     operatorController.leftTrigger().whileTrue(  Intake.getInstance().spitFuelCommand()   );
@@ -219,11 +219,27 @@ public class RobotContainer {
     //---------- FLYWHEEL JOYSTICK CONTROLLER  BINDINGS----------//
 
     // STOP FLYWHEEL by default
-     Flywheel.getInstance().setDefaultCommand(Flywheel.getInstance().stopFlywheelCommand()  );
+    Flywheel.getInstance().setDefaultCommand(Flywheel.getInstance().revFlywheelCommand()  );
 
     // REV FLYWHEEL (OPERATOR - RB)
-    operatorController.rightBumper().whileTrue(Flywheel.getInstance().revFlywheelCommand());
+    operatorController.rightBumper().onTrue(new InstantCommand(() -> {
+
+      Flywheel.getInstance().setSpeed += 0.01;
+      Flywheel.getInstance().setSpeed = Math.min(Flywheel.getInstance().setSpeed, 0);
+
+    }));
     
+
+    
+    operatorController.leftBumper().onTrue(new InstantCommand(() -> {
+
+      Flywheel.getInstance().setSpeed -= 0.01;
+      Flywheel.getInstance().setSpeed = Math.max(Flywheel.getInstance().setSpeed, -1);
+
+    }));
+    // Flywheel.getInstance().setDefaultCommand(
+    //   Flywheel.getInstance().flyWheelCommand( () -> MathUtil.applyDeadband(operatorController.getLeftX(), 0.1) )
+    // );
 
     //---------- ANGLER JOYSTICK CONTROLLER BINDINGS ----------//
 
@@ -238,10 +254,10 @@ public class RobotContainer {
     //---------- TURRET JOYSTICK CONTROLLER BINDINGS ----------//
 
     // AIM TURRET (OPERATOR - LX AXIS)
-    Turret.getInstance().setDefaultCommand(
-      Turret.getInstance().aimTurretCommand( () -> MathUtil.applyDeadband(operatorController.getLeftX(), 0.1) )
-    );
-  }
+  //   Turret.getInstance().setDefaultCommand(
+  //     Turret.getInstance().aimTurretCommand( () -> MathUtil.applyDeadband(operatorController.getLeftX(), 0.1) )
+  //   );
+   }
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
