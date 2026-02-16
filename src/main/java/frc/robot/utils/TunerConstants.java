@@ -86,7 +86,7 @@ public class TunerConstants {
     // Configs for the Pigeon 2; leave this null to skip applying Pigeon 2 configs
     public static final Pigeon2Configuration pigeonConfigs = new Pigeon2Configuration()
         .withMountPose(new MountPoseConfigs()
-            .withMountPosePitch(90)
+            .withMountPosePitch(0)
             .withMountPoseRoll(0)
             .withMountPoseYaw(0)
         );
@@ -150,7 +150,7 @@ public class TunerConstants {
 
 
     // Front Left
-    private static final Angle kFrontLeftEncoderOffset = Rotations.of(-0.14501953125);
+    private static final Angle kFrontLeftEncoderOffset = Rotations.of(-0.139404296875);
     private static final boolean kFrontLeftSteerMotorInverted = false;
     private static final boolean kFrontLeftEncoderInverted = true;
     private static final Distance kFrontLeftXPos = Inches.of(11.5);
@@ -164,14 +164,14 @@ public class TunerConstants {
     private static final Distance kFrontRightYPos = Inches.of(-11.5);
 
     // Back Left
-    private static final Angle kBackLeftEncoderOffset = Rotations.of(-0.227783203125);
+    private static final Angle kBackLeftEncoderOffset = Rotations.of(0.438720703125);
     private static final boolean kBackLeftSteerMotorInverted = false;
     private static final boolean kBackLeftEncoderInverted = true;
     private static final Distance kBackLeftXPos = Inches.of(-11.5);
     private static final Distance kBackLeftYPos = Inches.of(11.5);
 
     // Back Right
-    private static final Angle kBackRightEncoderOffset = Rotations.of(-0.319091796875);
+    private static final Angle kBackRightEncoderOffset = Rotations.of(0.353515625);
     private static final boolean kBackRightSteerMotorInverted = false;
     private static final boolean kBackRightEncoderInverted = true;
     private static final Distance kBackRightXPos = Inches.of(-11.5);
