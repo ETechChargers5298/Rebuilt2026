@@ -138,12 +138,13 @@ public class AprilCam {
             for (PhotonTrackedTarget t: getTargets())
             {
                 // look for the target with the desired Id
-                // if (t.getFiducialId() == desiredTargetId)
-                // {
-                //     return t;
-                // }
+                 if (t.getFiducialId() == desiredTargetId)
+                 {
                     return t;
-            }
+                 }
+                    return t;
+            
+                }
         }
         //return null if you can't find the desiredTarget
         System.out.println("AprilCam cannot find desired target " + desiredTargetId);
