@@ -13,6 +13,8 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Ports;
+import frc.robot.Robot;
+
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.spark.*;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
@@ -29,9 +31,11 @@ public class Intake extends SubsystemBase {
 
   // Intake Constructor
   private Intake() {
-    eatMotor = new SparkMax(Ports.EAT_MOTOR_PORT,MotorType.kBrushless);
-    extendMotor = new SparkMax(Ports.EXTEND_MOTOR_PORT,MotorType.kBrushless);
-    extendEncoder = extendMotor.getAbsoluteEncoder();
+    if (Robot.isReal()){
+      eatMotor = new SparkMax(Ports.EAT_MOTOR_PORT,MotorType.kBrushless);
+      extendMotor = new SparkMax(Ports.EXTEND_MOTOR_PORT,MotorType.kBrushless);
+      extendEncoder = extendMotor.getAbsoluteEncoder();
+    }
   }
 
   // Intake Singleton - ensures only 1 instance of Intake is constructed

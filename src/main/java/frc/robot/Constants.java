@@ -113,14 +113,14 @@ public final class Constants {
   public static class VisionConstants{
 
     //Camera Name
-    public static final String CAM1_NAME = "SparkyCam1";
+    public static final String CAM1_NAME = "sparkyCam1";
     public static double CAM1_X_OFFSET_TO_FRONT = -(0.236 + RobotConstants.BUMPER_WIDTH); //cam mounted 12.5" back from front bumper
     public static double CAM1_X_OFFSET_TO_CENTER = CAM1_X_OFFSET_TO_FRONT + RobotConstants.BUMPER_TO_ROBOT_CENTER_DISTANCE;
     public static double CAM1_Y_OFFSET_TO_CENTER = 0; //-0.034; //-0.013;
     public static Translation3d CAM1_POSITION_OFFSET = new Translation3d(CAM1_X_OFFSET_TO_CENTER, CAM1_Y_OFFSET_TO_CENTER,0.0); // is cam mounted at center? how far back from front of bumper?
     public static Rotation3d CAM1_ANGLE_OFFSET = new Rotation3d(0,0,0); // is cam mounted facing forward, upright? 
 
-    public static final String CAM2_NAME = "SparkyCam2"; 
+    public static final String CAM2_NAME = "sparkyCam2"; 
     public static double CAM2_X_OFFSET_TO_CENTER = CAM1_X_OFFSET_TO_CENTER;
     public static double CAM2_Y_OFFSET_TO_CENTER = Units.inchesToMeters(6.5);
     public static Translation3d CAM2_POSITION_OFFSET = new Translation3d(CAM2_X_OFFSET_TO_CENTER, CAM2_Y_OFFSET_TO_CENTER,0.0); // is cam mounted at center? how far back from front of bumper?

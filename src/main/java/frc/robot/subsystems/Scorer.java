@@ -21,7 +21,6 @@ import frc.robot.Constants;
 import frc.robot.Ports;
 
 public class Scorer extends SubsystemBase {
-  /** Creates a new ExampleSubsystem. */
 
   // FIELDS
   private static Scorer instance;

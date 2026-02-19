@@ -3,6 +3,20 @@
   "grid_size": 128,
   "tabs": [
     {
+      "name": "Teleoperated",
+      "grid_layout": {
+        "layouts": [],
+        "containers": []
+      }
+    },
+    {
+      "name": "Autonomous",
+      "grid_layout": {
+        "layouts": [],
+        "containers": []
+      }
+    },
+    {
       "name": "Daniel",
       "grid_layout": {
         "layouts": [],
@@ -101,13 +115,6 @@
             }
           }
         ]
-      }
-    },
-    {
-      "name": "Autonomous",
-      "grid_layout": {
-        "layouts": [],
-        "containers": []
       }
     },
     {

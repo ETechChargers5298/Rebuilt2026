@@ -842,9 +842,9 @@ public class Drivetrain extends TunerSwerveDrivetrain implements Subsystem {
     // SmartDashboard.putNumber("Field Angle Radians", getFieldAngleRadians());
     
 
-    // SmartDashboard.putNumber("PoseX", getPose().getX());
-    // SmartDashboard.putNumber("PoseY", getPose().getY());
-    // SmartDashboard.putNumber("PoseAngle", getPose().getRotation().getDegrees());
+    SmartDashboard.putNumber("dt PoseX", getPose().getX());
+    SmartDashboard.putNumber("dt PoseY", getPose().getY());
+    SmartDashboard.putNumber("dt PoseAngle", getPose().getRotation().getDegrees());
 
     SmartDashboard.putNumber("xspeed", xSpeed);
     SmartDashboard.putNumber("yspeed", ySpeed);

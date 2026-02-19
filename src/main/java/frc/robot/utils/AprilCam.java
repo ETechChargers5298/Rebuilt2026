@@ -2,9 +2,11 @@ package frc.robot.utils;
 
 
 import frc.robot.Constants.VisionConstants;
+import frc.robot.subsystems.Drivetrain;
 import frc.robot.FieldConstants;
 import frc.robot.Robot;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,8 +22,10 @@ import org.photonvision.targeting.PhotonTrackedTarget;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
@@ -36,12 +40,14 @@ public class AprilCam {
     private Transform3d camOffset;
     private PhotonPoseEstimator photonPoseEstimator;
     private List<PhotonPipelineResult> results;
+    private List<EstimatedRobotPose> estimatedPoses;
     private PhotonPipelineResult lastResult;
 
     private PhotonTrackedTarget desiredTarget;
     private List<PhotonTrackedTarget> targets;
     public int closestId;
     public double closestDistance;
+    private PhotonTrackedTarget closestTarget;
 
     // Simulation
     private PhotonCameraSim cameraSim;
@@ -54,6 +60,9 @@ public class AprilCam {
         this.camera = new PhotonCamera(name);
         this.camOffset = new Transform3d(pos, angle);
         this.photonPoseEstimator = new PhotonPoseEstimator(FieldConstants.aprilTagFieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, camOffset);
+        this.estimatedPoses = new ArrayList<EstimatedRobotPose>();
+        this.closestTarget = new PhotonTrackedTarget();
+        updateEstimationSDs();
      }
 
      // Constructor 2: simple version
@@ -62,68 +71,82 @@ public class AprilCam {
     }
 
 
-    public void update() {
+    public void update() { // should get called exactly ONCE per robot loop
+        
+        // Update the List of PhotonPipeline results each cycle
         this.results = camera.getAllUnreadResults();
 
-        for (var change: this.results){
-            targets = change.getTargets();
-            updateClosestVisibleId(targets);
+        // Update the List of PhotonTrackedTargets seen each cycle
+        for (var result: results){
+            targets = result.getTargets();
+            updateClosestId();
         }
 
-         //SmartDashboard.putNumber("X", getTargetTransform(target).getX());
-        // SmartDashboard.putNumber("Y", getY());
-        // SmartDashboard.putNumber("Z", getZ());
-        // for (int i = 0; i < getTargets().size(); i++) {
-        //   SmartDashboard.putString("Id" + i, getTargets().get(i).toString());
-        // }
+        // Update the estimation SDs
+        updateEstimationSDs();
+
+        // Display each target info seen
+        SmartDashboard.putNumber("ClosestID",closestId);
+        SmartDashboard.putNumber("closestX", getXClosest());
+        // SmartDashboard.putNumber("closestY", getYClosest());
+        // SmartDashboard.putNumber("closestZ", getZclosest());
+        for (int i = 0; getTargets() != null && i < getTargets().size(); i++) {
+          SmartDashboard.putString("Id" + i, getTargets().get(i).toString());
+        }
     }
 
     // --------------------- GETTING TARGETS -------------------)------------ //
 
-    // Checks if the latest result has any targets
-    // public boolean hasTarget() {
-    //     return result.hasTargets();
-    // }
+    // Checks if a specific result has a target
+    public boolean hasTarget(PhotonPipelineResult result) {
+        return result.hasTargets();
+    }
 
-    //Gets all the AprilTag targets the camera can c urrently see
+    // Checks if any results have targets
+    public boolean hasAnyTarget(){
+        for(PhotonPipelineResult result: results){
+            if(hasTarget(result)){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    //Gets all the AprilTag targets the camera can currently see
     public List<PhotonTrackedTarget> getTargets(){
         return targets;
     }
 
-    public void updateClosestVisibleId(List<PhotonTrackedTarget> help) {
-        //closestId = -1;
-        // double closestDistance = 100;
+    // Private method that occurs in the update
+    private void updateClosestId() {
 
-        if(help == null || help.isEmpty()) return;
+        // Stop trying if there are no targets visible
+        if(targets == null || targets.isEmpty()) return;
 
-        int bestId = -1;
-        double bestDistance = Double.MAX_VALUE;
+        // Initialize variable to find best ID & distance
+        int closestId = -1;
+        double minDistance = Double.MAX_VALUE;
         
-        for(PhotonTrackedTarget t: help) {
-            // double currentDistance = Math.sqrt(Math.pow(getTargetTransform(t).getX(), 2) + Math.pow(getTargetTransform(t).getY(), 2));
-            Transform3d transform = getTargetTransform(t);
-            if(transform == null) continue;
-            double currentDistance = Math.sqrt(Math.pow(transform.getX(), 2) + Math.pow(getTargetTransform(t).getY(), 2));
+        // Loop through all the targets
+        for(PhotonTrackedTarget t: targets) {
+        
+            // Calculate distance between the camera and the target
+            double checkDistance = Math.sqrt(Math.pow(getTargetTransform(t).getX(), 2) + Math.pow(getTargetTransform(t).getY(), 2));
 
-            if(currentDistance < bestDistance){
-                bestDistance = currentDistance;
-                bestId = t.fiducialId;
+            // Update the minDistance if needed
+            if(checkDistance < minDistance){
+                minDistance = checkDistance;
+                closestId = t.fiducialId;
+                this.closestTarget = t;
             }
+        }
 
-
-        //     if(currentDistance < closestDistance) {
-        //         closestDistance = currentDistance;
-        //         closestId = t.fiducialId;
-        //         this.closestDistance = closestDistance;
-        //     }
-        // }
-        // this.closestId = closestId;
+        // If there was a closestId found, update the fields
+        if (closestId != -1){
+            this.closestId = closestId;
+            this.closestDistance = minDistance;
+        }
     }
-    if (bestId != -1){
-        this.closestId = bestId;
-        this.closestDistance = bestDistance;
-    }
-}
 
     // Gets the current "best" target
     // public PhotonTrackedTarget getBestTarget(){
@@ -142,7 +165,7 @@ public class AprilCam {
                  {
                     return t;
                  }
-                    return t;
+                // return t;  // this automatically return the first ID it sees
             
                 }
         }
@@ -153,14 +176,14 @@ public class AprilCam {
     }
 
     // Checks if a desired AprilTag is visible
-    // public boolean hasDesiredTarget(int desiredTargetId) {
-    //     ///use the getDesiredTarget method to see if it returns null (not correct target) or not
-    //     if (getDesiredTarget(desiredTargetId)!= null)
-    //     {
-    //         return true;
-    //     }
-    //     return false;
-    // }
+    public boolean hasDesiredTarget(int desiredTargetId) {
+        ///use the getDesiredTarget method to see if it returns null (not correct target) or not
+        if (getDesiredTarget(desiredTargetId)!= null)
+        {
+            return true;
+        }
+        return false;
+    }
 
     // --------------------- GETTING DATA FROM A TARGET ------------------------------- //
     // https://docs.photonvision.org/en/v2025.1.1/docs/programming/photonlib/getting-target-data.html#getting-data-from-a-target
@@ -178,77 +201,44 @@ public class AprilCam {
     // Gets the Transform3d object of a specific AprilTag object
     private Transform3d getTargetTransform(PhotonTrackedTarget target){
         if(target == null) {
-            return null;
+            System.out.println("No target found");
+            return new Transform3d();
         }
-        return target.getBestCameraToTarget();
+
+        return new Transform3d();
+        // return target.getBestCameraToTarget();
     }
 
-    // // Gets the X value of a desired target
-    public double getXDesired(PhotonTrackedTarget target){
-        if(target == null) { return Float.NaN; }
-        return getTargetTransform(target).getX();
-    }
-
-    // // Gets the X value of the "Best" target
-    // public double getXBest(){
-    //     return getXDesired( results.getBestTarget() );
-    // }
-    
-    // // Gets the Y value of a desired target
-    // public double getYDesired(PhotonTrackedTarget target){
-    //     if(target == null) { return Float.NaN; }
-    //     return getTargetTransform(target).getY();
-    // }
-
-    // // Gets the Y value of the "Best" target
-    // public double getYBest(){
-    //     return getYDesired( results.getBestTarget() );
-    // }
-
-    // // Gets the Z value of a desired target
-    // public double getZDesired(PhotonTrackedTarget target){
-    //     if(target == null) { return Float.NaN; }
-    //     return getTargetTransform(target).getZ();
-    // }
-
-    // // Gets the Z value of the "Best" target
-    // public double getZBest(){
-    //     return getZDesired( results.getBestTarget() );
-    // }
 
 
     // --------------------- POSE ESTIMATION ------------------------------- //
-
-    // Check out this page: https://docs.photonvision.org/en/latest/docs/examples/poseest.html
-    // Here is the example Vision class from PhotonVision: https://github.com/PhotonVision/photonvision/blob/main/photonlib-java-examples/poseest/src/main/java/frc/robot/Vision.java
- 
    
-    /**
-     * The latest estimated robot pose on the field from vision data. This may be empty. This should
-     * only be called once per loop.
-     *
-     * <p>Also includes updates for the standard deviations, which can (optionally) be retrieved with
-     * {@link getEstimationSDs}
-     *
-     * @return An {@link EstimatedRobotPose} with an estimated pose, estimate timestamp, and targets
-     *     used for estimation.
-     */
+    // The latest estimated robot pose on the field from vision data. This may be empty.
+    // This should only be called once per loop
+    public List<EstimatedRobotPose> getUpdatedEstPoses(Pose2d prevEstPose) {
 
-    //https://github.com/PhotonVision/photonvision/blob/main/photonlib-java-examples/poseest/src/main/java/frc/robot/Vision.java 
-    public Optional<EstimatedRobotPose> getEstimatedGlobalPose(Pose2d prevEstPose) {
-        Optional<EstimatedRobotPose> visionEst = Optional.empty();
+        // Create an empty ArrayList to store estimated poses from each tag seen
+        List<EstimatedRobotPose> visionEstPoses = new ArrayList<>();
 
-        //photonPoseEstimator.setReferencePose(prevEstPose);
+        // Give PhotonVision the drivetrain's current best estimate of Pose
+        photonPoseEstimator.setReferencePose(prevEstPose);
 
-        for (var change : this.results) {
-            visionEst = photonPoseEstimator.update(change);
-            updateEstimationSDs(visionEst, change.getTargets());
-            targets = change.getTargets();
+        // Loop through all the results of the camera
+        for (var result : results) {
 
-            updateClosestVisibleId(targets);
+            // Get an update from the result
+            var estPoseUpdate = photonPoseEstimator.update(result);
+
+            // Add to the List of Estimated Poses
+            if (estPoseUpdate.isPresent()) {
+                EstimatedRobotPose pose = estPoseUpdate.get();
+                visionEstPoses.add(pose);
+            }
 
         }
-        return visionEst;
+
+        this.estimatedPoses = visionEstPoses;
+        return visionEstPoses;
     }
 
 
@@ -260,10 +250,10 @@ public class AprilCam {
      * @param estimatedPose The estimated pose to guess standard deviations for.
      * @param targets All targets in this camera frame
      */
-    private void updateEstimationSDs(Optional<EstimatedRobotPose> estimatedPose, List<PhotonTrackedTarget> targets) {
+    private void updateEstimationSDs() {
 
         // No pose input. Default to single-tag std devs
-        if (estimatedPose.isEmpty()) {
+        if (estimatedPoses.isEmpty()) {
             currentSDs = VisionConstants.SINGLE_TAG_SD;
         } 
         
@@ -281,7 +271,8 @@ public class AprilCam {
                 var tagPose = photonPoseEstimator.getFieldTags().getTagPose(target.getFiducialId());
                 if (tagPose.isEmpty()) continue;
                 numTags++;
-                totalDistance += tagPose.get().toPose2d().getTranslation().getDistance(estimatedPose.get().estimatedPose.toPose2d().getTranslation());
+                Translation2d currentTranslation = estimatedPoses.get(0).estimatedPose.toPose2d().getTranslation();  //Drivetrain.getInstance().get  s.get().estimatedPoses.toPose2d().getTranslation()
+                totalDistance += tagPose.get().toPose2d().getTranslation().getDistance(currentTranslation);
                 totalWeight += FieldConstants.TAG_WEIGHTS[target.getFiducialId() - 1]; 
             }
 
@@ -337,6 +328,44 @@ public class AprilCam {
     //     Optional<MultiTargetPNPResult> target = result.getMultiTagResult();
 
     //     return target.get().fiducialIdsUsed.toString();
+    // }
+
+
+    //---------------------HELPER METHODS -------------------------//
+    
+    // // Gets the X value of a desired target
+    // public double getXDesired(PhotonTrackedTarget target){
+    //     if(target == null) { return Float.NaN; }
+    //     return getTargetTransform(target).getX();
+    // }
+
+    // Gets the X value of the "Best" target
+    public double getXClosest(){
+        if(closestTarget == null){ return -1.0;}
+        return getTargetTransform(closestTarget).getX();
+        // return getXDesired( closestTarget );
+    }
+    
+    // // Gets the Y value of a desired target
+    // public double getYDesired(PhotonTrackedTarget target){
+    //     if(target == null) { return Float.NaN; }
+    //     return getTargetTransform(target).getY();
+    // }
+
+    // // Gets the Y value of the "Best" target
+    // public double getYClosest(){
+    //     return getYDesired( closestTarget );
+    // }
+
+    // // Gets the Z value of a desired target
+    // public double getZDesired(PhotonTrackedTarget target){
+    //     if(target == null) { return Float.NaN; }
+    //     return getTargetTransform(target).getZ();
+    // }
+
+    // // Gets the Z value of the "Best" target
+    // public double getZclosest(){
+    //     return getZDesired( closestTarget);
     // }
 
    

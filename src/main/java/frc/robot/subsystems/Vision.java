@@ -1,12 +1,7 @@
 package frc.robot.subsystems;
 
-import frc.robot.Constants;
 import frc.robot.Constants.VisionConstants;
-import frc.robot.FieldConstants;
 import frc.robot.utils.AprilCam;
-
-import org.photonvision.targeting.PhotonTrackedTarget;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -16,61 +11,82 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Vision extends SubsystemBase {
 
+    // VISION CLASS FIELDS
     private static Vision instance;
-    
     public AprilCam cam1;
     public AprilCam cam2;
     public boolean doubleCam = false;
     Drivetrain drivetrain = Drivetrain.getInstance();
 
+    // VISION CONSTRUCTOR
     private Vision() {
-        // Initialize the cameras
+
+        // Initialize cam1
         this.cam1 = new AprilCam(
             VisionConstants.CAM1_NAME,
             VisionConstants.CAM1_POSITION_OFFSET,
             VisionConstants.CAM1_ANGLE_OFFSET
-            );
+        );
 
-            //update cam1
-            cam1.update();
+        // Get first update from cam1
+        cam1.update();
 
+        // Initialize cam2 if desired
         if(doubleCam){
             this.cam2 = new AprilCam(
                 VisionConstants.CAM2_NAME,
                 VisionConstants.CAM2_POSITION_OFFSET,
                 VisionConstants.CAM2_ANGLE_OFFSET
-                );
-                //update cam2
-                cam2.update();
+            );
+            // Get first update from cam2
+            cam2.update();
         }
     }
-        // Set up the cam SINGLTON instance
-        public static Vision getInstance() {
-            if (instance == null) {
-                instance = new Vision();
-            }
-            return instance;
+
+    // VISION SINGLETON
+    public static Vision getInstance() {
+        if (instance == null) {
+            instance = new Vision();
         }
+        return instance;
+    }
+
 
     @Override
     public void periodic() {
-        // This method will be called once per scheduler run
+
         //Get the current best guess of the position of the robot based on its wheels
         Pose2d currentRobotPose = drivetrain.getState().Pose;
 
-        //ask the camera for global pose
+        // Ensure cam1 is up-to-date
         cam1.update();
-        var VisionEst = cam1.getEstimatedGlobalPose(currentRobotPose);
-        
-        //if the camera see's a tag, push into drivetrain
-        VisionEst.ifPresent(est -> {
-            var confidence = cam1.getEstimationSDs();
 
+        // Get the latest pose estimates from cam1
+        var visionEstPoses1 = cam1.getUpdatedEstPoses(currentRobotPose);
+
+        // Get the confidence level from cam1
+        var confidence1 = cam1.getEstimationSDs();
+
+        // Loop through all the pose estimate updates from cam1
+        for(var update : visionEstPoses1){
+            
+            // Add each vision measurement update to the drivetrain's pose estimator
             drivetrain.addVisionMeasurement(
-                est.estimatedPose.toPose2d(), 
-                est.timestampSeconds, 
-                confidence
+                update.estimatedPose.toPose2d(),
+                update.timestampSeconds,
+                confidence1
             );
-        });
-    }
-}
+        }
+
+
+
+        // DISPLAY STUFF ON SMARTDASHBOARD
+
+        // cam1.hasTarget(cam1.targets)
+
+
+    }  // close periodic
+        
+
+
+} // close Vision class
