@@ -60,32 +60,13 @@ public class Vision extends SubsystemBase {
     @Override
     public void periodic() {
 
-        //Get the current best guess of the position of the robot based on its wheels
-        Pose2d currentRobotPose = drivetrain.getState().Pose;
+       // Process Camera 1
+        processCamera(cam1);
 
-        // Ensure cam1 is up-to-date
-        cam1.update();
-
-        // Get the latest pose estimates from cam1
-        var visionEstPoses1 = cam1.getUpdatedEstPoses(currentRobotPose);
-
-        // Get the confidence level from cam1
-        // var confidence1 = cam1.getEstimationSDs();
-        var confidence1 = edu.wpi.first.math.VecBuilder.fill(0.1,0.1,0.1); // test high trust in vision
-
-
-        // Loop through all the pose estimate updates from cam1
-        for(var update : visionEstPoses1){
-            
-            // Add each vision measurement update to the drivetrain's pose estimator
-            drivetrain.addVisionMeasurement(
-                update.estimatedPose.toPose2d(),
-                update.timestampSeconds,
-                confidence1
-            );
+        // Process Camera 2 (if enabled)
+        if (doubleCam) {
+            processCamera(cam2);
         }
-
-
 
         // DISPLAY STUFF ON SMARTDASHBOARD
 
@@ -93,6 +74,35 @@ public class Vision extends SubsystemBase {
 
 
     }  // close periodic
+
+
+
+    private void processCamera(AprilCam cam) {
+
+        //Get the current best guess of the position of the robot based on its wheels
+        Pose3d currentRobotPose = new Pose3d(drivetrain.getState().Pose);
+
+        // Ensure cam is up-to-date
+        cam.update();
+
+        // Get the latest pose estimates from cam1
+        var visionEstPoses1 = cam.getLatestEstimates(currentRobotPose);
+
+        // Loop through all the pose estimate updates from cam1
+        for(var update : visionEstPoses1){
+
+            // Get the confidence level from cam
+            // var confidence = cam.getEstimationSDs();
+            var confidence = edu.wpi.first.math.VecBuilder.fill(0.1,0.1,0.1); // test high trust in vision
+            
+            // Add each vision measurement update to the drivetrain's pose estimator
+            drivetrain.addVisionMeasurement(
+                update.estimatedPose.toPose2d(),
+                update.timestampSeconds,
+                confidence
+            );
+        }
+    }
         
 
 

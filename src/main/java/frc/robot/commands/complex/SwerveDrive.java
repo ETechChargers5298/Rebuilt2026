@@ -39,7 +39,7 @@ public class SwerveDrive extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    drivetrain.stopDrive();
+    // drivetrain.stopDrive();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -47,9 +47,9 @@ public class SwerveDrive extends Command {
   public void execute() {
     drivetrain.allianceCentric = true;
     
-    drivetrain.setXSpeed(MathUtil.applyDeadband(xSpeed.get(), 0.1) * SwerveConstantsOld.TOP_SPEED);
-    drivetrain.setYSpeed(MathUtil.applyDeadband(ySpeed.get(), 0.1) * SwerveConstantsOld.TOP_SPEED);
-    drivetrain.setRotSpeed(MathUtil.applyDeadband(rotSpeed.get(), 0.1) * SwerveConstantsOld.TOP_ANGULAR_SPEED);
+    // drivetrain.setXSpeed(MathUtil.applyDeadband(xSpeed.get(), 0.1) * SwerveConstantsOld.TOP_SPEED);
+    // drivetrain.setYSpeed(MathUtil.applyDeadband(ySpeed.get(), 0.1) * SwerveConstantsOld.TOP_SPEED);
+    // drivetrain.setRotSpeed(MathUtil.applyDeadband(rotSpeed.get(), 0.1) * SwerveConstantsOld.TOP_ANGULAR_SPEED);
 
     // drivetrain.move(
     //   MathUtil.applyDeadband(xSpeed.get(), 0.1), 
@@ -68,7 +68,7 @@ public class SwerveDrive extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-      drivetrain.stopDrive();
+      // drivetrain.stopDrive();
   }
 
   // Returns true when the command should end.

@@ -97,17 +97,6 @@ public class Drivetrain extends TunerSwerveDrivetrain implements Subsystem {
   private final SwerveRequest.SysIdSwerveRotation m_rotationCharacterization = new SwerveRequest.SysIdSwerveRotation();
 
 
-
-
-
-  // OLD FIELDS
-  // private final List<SwerveModule> modulesList;  
-  // private static final SwerveDriveKinematics driveKinematics;
-  // private final SwerveDrivePoseEstimator poseEstimator;
-
-
-
-
   //--------------------- CONSTRUCTORS -----------------------------------------------//
 
 
@@ -188,14 +177,6 @@ public class Drivetrain extends TunerSwerveDrivetrain implements Subsystem {
     var stateStdDevs = VecBuilder.fill(0.1, 0.1, 0.1);
     var visionStdDevs = VecBuilder.fill(1, 1, 1);
 
-    // this.poseEstimator =  new SwerveDrivePoseEstimator(
-    //   SwerveConstantsOld.DRIVE_KINEMATICS,
-    //   getRobotHeading(),
-    //   getSwerveModulePos(),
-    //   FieldConstants.getRobotPoseInitialFMS().toPose2d(), // Starting pose based on FMS Alliance + Driver Station
-    //   stateStdDevs,
-    //   visionStdDevs);
-
     // autoConfig();
     // sysIdConfig();
 
@@ -269,325 +250,233 @@ public class Drivetrain extends TunerSwerveDrivetrain implements Subsystem {
 
 
   //--------------------------- OLD DT Methods -------------------------------------------//
-  // sets forward/backward motion of robot
-  public void setXSpeed(double xSpeed){
-    this.xSpeed = xSpeed;
-  }
+  // // sets forward/backward motion of robot
+  // public void setXSpeed(double xSpeed){
+  //   this.xSpeed = xSpeed;
+  // }
 
-  // sets strafing right/left speed of robot
-  public void setYSpeed(double ySpeed){
-    this.ySpeed = ySpeed;
-  }
+  // // sets strafing right/left speed of robot
+  // public void setYSpeed(double ySpeed){
+  //   this.ySpeed = ySpeed;
+  // }
 
-  // sets rotation right/left speed of robot
-  public void setRotSpeed(double rotSpeed){
-    this.rotSpeed = rotSpeed;
-  }
+  // // sets rotation right/left speed of robot
+  // public void setRotSpeed(double rotSpeed){
+  //   this.rotSpeed = rotSpeed;
+  // }
 
-  // sets whether driving is fieldcentric or not
-  public void setFieldCentric(boolean fieldCentric) {
-    this.fieldCentric = fieldCentric;
-  }  
-  public boolean getFieldCentric() {
-    return fieldCentric;
-  }
+  // // sets whether driving is fieldcentric or not
+  // public void setFieldCentric(boolean fieldCentric) {
+  //   this.fieldCentric = fieldCentric;
+  // }  
+  // public boolean getFieldCentric() {
+  //   return fieldCentric;
+  // }
 
-  /**
-   * Making a drive function to make the speed for drive a fraction of total
-   * @author Aiden Sing
-   * @param xSpeed speed of the robot front to back
-   * @param ySpeed speed of robot left to right
-   * @param rotSpeed speed of robot turning
-   */
-  public void setDrive(double xSpeed, double ySpeed, double rotSpeed) {
-    this.xSpeed = xSpeed;
-    this.ySpeed = ySpeed;
-    this.rotSpeed = rotSpeed;
-  }
+  // /**
+  //  * Making a drive function to make the speed for drive a fraction of total
+  //  * @author Aiden Sing
+  //  * @param xSpeed speed of the robot front to back
+  //  * @param ySpeed speed of robot left to right
+  //  * @param rotSpeed speed of robot turning
+  //  */
+  // public void setDrive(double xSpeed, double ySpeed, double rotSpeed) {
+  //   this.xSpeed = xSpeed;
+  //   this.ySpeed = ySpeed;
+  //   this.rotSpeed = rotSpeed;
+  // }
 
-  public void setDrive(double xSpeed, double ySpeed, double rotSpeed, boolean fieldCentric, boolean allianceCentric) {
-    this.xSpeed = xSpeed;
-    this.ySpeed = ySpeed;
-    this.rotSpeed = rotSpeed;
-    this.fieldCentric = fieldCentric;
-    this.allianceCentric = allianceCentric;
-  }
+  // public void setDrive(double xSpeed, double ySpeed, double rotSpeed, boolean fieldCentric, boolean allianceCentric) {
+  //   this.xSpeed = xSpeed;
+  //   this.ySpeed = ySpeed;
+  //   this.rotSpeed = rotSpeed;
+  //   this.fieldCentric = fieldCentric;
+  //   this.allianceCentric = allianceCentric;
+  // }
 
-  public void stopDrive() {
-    setDrive(0.0,0.0,0.0);
-  }
+  // public void stopDrive() {
+  //   setDrive(0.0,0.0,0.0);
+  // }
 
-  /**
-   * Method to drive the robot using joystick info.
-   *
-   * @param xSpeed        Speed of the robot in the x direction (forward).
-   * @param ySpeed        Speed of the robot in the y direction (sideways).
-   * @param rot           Angular rate of the robot.
-   * @param fieldcentric Whether the provided x and y speeds are relative to the field.
-   * @param rateLimit     Whether to enable rate limiting for smoother control.
-   */
-  public void move(double xSpeed, double ySpeed, double rot, boolean fieldcentric, boolean allianceCentric) {
+  // /**
+  //  * Method to drive the robot using joystick info.
+  //  *
+  //  * @param xSpeed        Speed of the robot in the x direction (forward).
+  //  * @param ySpeed        Speed of the robot in the y direction (sideways).
+  //  * @param rot           Angular rate of the robot.
+  //  * @param fieldcentric Whether the provided x and y speeds are relative to the field.
+  //  * @param rateLimit     Whether to enable rate limiting for smoother control.
+  //  */
+  // public void move(double xSpeed, double ySpeed, double rot, boolean fieldcentric, boolean allianceCentric) {
 
-    double xSpeedCommanded = -xSpeed;
-    double ySpeedCommanded = ySpeed;
-    double rotSpeedCommanded = rot;
+  //   double xSpeedCommanded = -xSpeed;
+  //   double ySpeedCommanded = ySpeed;
+  //   double rotSpeedCommanded = rot;
 
-    // Convert the commanded speeds into the correct units for the drivetrain
-    double xSpeedDelivered = xSpeedCommanded;
-    double ySpeedDelivered = ySpeedCommanded;
-    double rotSpeedDelivered = rotSpeedCommanded;
+  //   // Convert the commanded speeds into the correct units for the drivetrain
+  //   double xSpeedDelivered = xSpeedCommanded;
+  //   double ySpeedDelivered = ySpeedCommanded;
+  //   double rotSpeedDelivered = rotSpeedCommanded;
 
-    //SwerveModuleState[] 
-    // var swerveModuleStates = SwerveConstants.DRIVE_KINEMATICS.toSwerveModuleStates(
-    //     fieldcentric
-    //         ? ChassisSpeeds.fromfieldcentricSpeeds(xSpeedDelivered, ySpeedDelivered, rotDelivered, Rotation2d.fromDegrees(m_gyro.getAngle(IMUAxis.kZ)))
-    //         : new ChassisSpeeds(xSpeedDelivered, ySpeedDelivered, rotDelivered));
-    // SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, SwerveConstants.TOP_SPEED);
+  //   //SwerveModuleState[] 
+  //   // var swerveModuleStates = SwerveConstants.DRIVE_KINEMATICS.toSwerveModuleStates(
+  //   //     fieldcentric
+  //   //         ? ChassisSpeeds.fromfieldcentricSpeeds(xSpeedDelivered, ySpeedDelivered, rotDelivered, Rotation2d.fromDegrees(m_gyro.getAngle(IMUAxis.kZ)))
+  //   //         : new ChassisSpeeds(xSpeedDelivered, ySpeedDelivered, rotDelivered));
+  //   // SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, SwerveConstants.TOP_SPEED);
 
-    //Store an array of speeds for each wheel. By default do robot centric speeds but if fieldCentric use fromFieldRelativeSpeeds
-    ChassisSpeeds speeds = new ChassisSpeeds(xSpeedDelivered, ySpeedDelivered, rotSpeedDelivered);
+  //   //Store an array of speeds for each wheel. By default do robot centric speeds but if fieldCentric use fromFieldRelativeSpeeds
+  //   ChassisSpeeds speeds = new ChassisSpeeds(xSpeedDelivered, ySpeedDelivered, rotSpeedDelivered);
 
-    if (fieldCentric) {
-      var rotation = getPose().getRotation();
+  //   if (fieldCentric) {
+  //     var rotation = getPose().getRotation();
       
-      if(allianceCentric) {
-      var allianceOptional = DriverStation.getAlliance();
-      if (allianceOptional.isPresent() && allianceOptional.get() == DriverStation.Alliance.Red) {
-        // Flip the rotation if our driverstation is red alliance so that driving is "driver centric"
-        rotation = rotation.rotateBy(Rotation2d.fromDegrees(180));
-      }
-    }
-      speeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeedDelivered, ySpeedDelivered, rotSpeedDelivered, rotation);
-    }
+  //     if(allianceCentric) {
+  //     var allianceOptional = DriverStation.getAlliance();
+  //     if (allianceOptional.isPresent() && allianceOptional.get() == DriverStation.Alliance.Red) {
+  //       // Flip the rotation if our driverstation is red alliance so that driving is "driver centric"
+  //       rotation = rotation.rotateBy(Rotation2d.fromDegrees(180));
+  //     }
+  //   }
+  //     speeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeedDelivered, ySpeedDelivered, rotSpeedDelivered, rotation);
+  //   }
 
-    //Store the states of each module
-    //SwerveModuleState[] swerveModuleStates = driveKinematics.toSwerveModuleStates(speeds);
+  //   //Store the states of each module
+  //   //SwerveModuleState[] swerveModuleStates = driveKinematics.toSwerveModuleStates(speeds);
     
-    //cleans up any weird speeds that may be too high after kinematics equation
-   // SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, SwerveConstantsOld.TOP_SPEED);
+  //   //cleans up any weird speeds that may be too high after kinematics equation
+  //  // SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, SwerveConstantsOld.TOP_SPEED);
 
-    // setting the state for each module as an array
-    // for(int i = 0; i < modules.length; i++) {
-    //   modules[i].setDesiredState(swerveModuleStates[i]);
-    // }
-  }
+  //   // setting the state for each module as an array
+  //   // for(int i = 0; i < modules.length; i++) {
+  //   //   modules[i].setDesiredState(swerveModuleStates[i]);
+  //   // }
+  // }
 
-  /**
-   * Sets the wheels into an X formation to prevent movement.
-   */
-  public void setX() {
-    // frontL.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(45)));
-    // frontR.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(-45)));
-    // backL.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(-45)));
-    // backR.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(45)));
-  }
+  // /**
+  //  * Sets the wheels into an X formation to prevent movement.
+  //  */
+  // public void setX() {
+  //   // frontL.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(45)));
+  //   // frontR.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(-45)));
+  //   // backL.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(-45)));
+  //   // backR.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(45)));
+  // }
 
-  // Helps AutoBuilder do stuff - ONLY USED BY PATH PLANNER
-  public void driveRobotRelative(ChassisSpeeds robotRelativeSpeeds) {
+  // // Helps AutoBuilder do stuff - ONLY USED BY PATH PLANNER
+  // public void driveRobotRelative(ChassisSpeeds robotRelativeSpeeds) {
 
-    SmartDashboard.putNumber("PP Xspeed", robotRelativeSpeeds.vxMetersPerSecond);
-    SmartDashboard.putNumber("PP Yspeeds", robotRelativeSpeeds.vyMetersPerSecond);
+  //   SmartDashboard.putNumber("PP Xspeed", robotRelativeSpeeds.vxMetersPerSecond);
+  //   SmartDashboard.putNumber("PP Yspeeds", robotRelativeSpeeds.vyMetersPerSecond);
 
-    double speedFactor = 1;
+  //   double speedFactor = 1;
     
-    ChassisSpeeds speeds = ChassisSpeeds.discretize(robotRelativeSpeeds, 0.02);
-    //negative Y-values fix something
+  //   ChassisSpeeds speeds = ChassisSpeeds.discretize(robotRelativeSpeeds, 0.02);
+  //   //negative Y-values fix something
     
-    this.move(-speeds.vxMetersPerSecond * speedFactor, speeds.vyMetersPerSecond * speedFactor, speeds.omegaRadiansPerSecond, false, false);
+  //   this.move(-speeds.vxMetersPerSecond * speedFactor, speeds.vyMetersPerSecond * speedFactor, speeds.omegaRadiansPerSecond, false, false);
 
 
-    //Store the states of each module
-    // SwerveModuleState[] swerveModuleStates = driveKinematics.toSwerveModuleStates(speeds);
+  //   //Store the states of each module
+  //   // SwerveModuleState[] swerveModuleStates = driveKinematics.toSwerveModuleStates(speeds);
     
-    // //cleans up any weird speeds that may be too high after kinematics equation
-    // SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, SwerveConstants.TOP_SPEED);
+  //   // //cleans up any weird speeds that may be too high after kinematics equation
+  //   // SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, SwerveConstants.TOP_SPEED);
 
-    // // setting the state for each module as an array
-    // for(int i = 0; i < modules.length; i++) {
-    //   modules[i].setDesiredState(swerveModuleStates[i]);
-    // }
+  //   // // setting the state for each module as an array
+  //   // for(int i = 0; i < modules.length; i++) {
+  //   //   modules[i].setDesiredState(swerveModuleStates[i]);
+  //   // }
 
-  }
+  // }
 
 
     
   //---------------[OLD] SWERVEMODULE HELPER METHODS --------------//
 
-  // public ChassisSpeeds getSpeeds() {
-  //   return driveKinematics.toChassisSpeeds(getModuleStates());
+  // /**
+  //  * Sets the swerve ModuleStates.
+  //  *
+  //  * @param desiredStates The desired SwerveModule states.
+  //  */
+  // public void setModuleStates(SwerveModuleState[] desiredStates) {
+  //   SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, SwerveConstantsOld.TOP_SPEED);
+  //   // for(int i = 0; i < modules.length; i++) {
+  //   //   modules[i].setDesiredState(desiredStates[i]);
+  //   // }
   // }
 
-  /**
-   * Sets the swerve ModuleStates.
-   *
-   * @param desiredStates The desired SwerveModule states.
-   */
-  public void setModuleStates(SwerveModuleState[] desiredStates) {
-    SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, SwerveConstantsOld.TOP_SPEED);
-    // for(int i = 0; i < modules.length; i++) {
-    //   modules[i].setDesiredState(desiredStates[i]);
-    // }
-  }
+  // // method to return all the positions of the 4 modules
+  // public SwerveModulePosition[] getSwerveModulePos() {  
+  //   SwerveModulePosition[] modulePosition = new SwerveModulePosition[4];
+  //   // for(int i = 0; i < modules.length; i++) {
+  //   //   SwerveModulePosition currentPos = modules[i].getPosition();
+  //   //   modulePosition[i] = new SwerveModulePosition(currentPos.distanceMeters, currentPos.angle); //negative on distance BAD!
+  //   // }
+  //   return modulePosition;
+  // }
 
-  // method to return all the positions of the 4 modules
-  public SwerveModulePosition[] getSwerveModulePos() {  
-    SwerveModulePosition[] modulePosition = {
-      new SwerveModulePosition(),
-      new SwerveModulePosition(),
-      new SwerveModulePosition(),
-      new SwerveModulePosition()
-    };
-    
-    // for(int i = 0; i < modules.length; i++) {
-    //   SwerveModulePosition currentPos = modules[i].getPosition();
-    //   modulePosition[i] = new SwerveModulePosition(currentPos.distanceMeters, currentPos.angle); //negative on distance BAD!
-    // }
-
-    return modulePosition;
-  }
-
-  public SwerveModuleState[] getModuleStates() {
-    SwerveModuleState[] states = new SwerveModuleState[4];
-    // for (int i = 0; i < modules.length; i++) {
-    //   states[i] = modules[i].getState();
-    // }
-    return states;
-  }
+  // public SwerveModuleState[] getModuleStates() {
+  //   SwerveModuleState[] states = new SwerveModuleState[4];
+  //   // for (int i = 0; i < modules.length; i++) {
+  //   //   states[i] = modules[i].getState();
+  //   // }
+  //   return states;
+  // }
 
   
   
-  //---------------NAVX METHODS --------------//
-
-  /**
-   * Returns the heading of the robot.
-   *
-   * @return the robot's heading in degrees, from -180 to 180
-   */
-  public Rotation2d getRobotHeading() {
-    //return Rotation2d.fromDegrees(navX.getAngle());
-    //return Rotation2d.fromDegrees(m_gyro.getAngle(IMUAxis.kZ)).getDegrees();
-        // return navX.getRotation2d();
-    return Rotation2d.fromDegrees(0.0);
-  }
-
-  public double getRobotAngleDegrees() {
-    return getRobotHeading().getDegrees();
-  }
-
- public double getRobotAngleRadians() {
-    return getRobotHeading().getRadians();
-  }
-
-  // Resets the drive encoders to currently read a position of 0.
-  public void resetEncoders() {
-    // for(int i = 0; i < modules.length; i++) {
-    //   modules[i].resetEncoders();
-    // }
-  }
-
-  // Zeroes the heading of the robot, previously called resetIMU()
-  public void zeroRobotHeading() {
-    // navX.reset();
-  }
-
-
-  /**
-   * Returns the turn rate of the robot.
-   *
-   * @return The turn rate of the robot, in degrees per second
-   */
-  public double getTurnRate() {
-    // return navX.getVelocityZ() * (SwerveConstants.TURN_INVERSION ? -1.0 : 1.0);
-    return 0.0;
-    //return m_gyro.getRate(IMUAxis.kZ) * (SwerveConstants.kGyroReversed ? -1.0 : 1.0);
-  }
-
-  public float getPitch() {
-    // return navX.getPitch();
-    return 0.0f;
-  }
-
-  public float getRoll() {
-    // return navX.getRoll();
-    return 0.0f;
-  }
-
-
-
-    //---------------POSE ESTIMATION METHODS --------------//
-   /**
-   * Resets the poseEstimator to the specified pose.
-   * @param pose The pose to which to set the poseEstimator
-   */
-  public void resetPose(Pose2d newPose) {
-    // poseEstimator.resetPosition(getRobotHeading(), getSwerveModulePos(), newPose);
-  }
-
-  // public void updatePoseFromOdometry() {
-  //   // poseEstimator.update(getRobotHeading(), getSwerveModulePos());
-  // }
-
-  public Field2d getField() {
-    return field;
-  }
-
+  //---------------ROBOT POSE & HEADING METHODS --------------//
 
   /**
    * Returns the currently-estimated pose of the robot relative to the FIELD
    * @return The pose.
    */
   public Pose2d getPose() {
-    // return poseEstimator.getEstimatedPosition();
-    return new Pose2d();
+    return getState().Pose;
   }
 
-  // public double getFieldAngleDegrees(){
-  //   return getPose().getRotation().getDegrees();
-  // }
-
-  // public double getFieldAngleRadians(){
-  //   return getPose().getRotation().getRadians();
-  // }
-
+  // Returns the X position of the robot (in meters)
+  public double getRobotX(){
+    return getPose().getX();
+  }
   
+  // Returns the X position of the robot (in meters)
+  public double getRobotY(){
+    return getPose().getY();
+  }
 
+  // Returns the heading of the robot as a Rotation2d object
+  public Rotation2d getRobotHeading() {
+    return getState().Pose.getRotation();
+  }
 
-  // public void updateModuleTelemetry() {
-  //   // for(int i = 0; i < modules.length; i++) {
-  //   //   modules[i].updateTelemetry();
-  //   // }
-  // }
+  // Returns the heading of the robot in degrees, from -180 to 180
+  public double getRobotAngleDegrees() {
+    return getRobotHeading().getDegrees();
+  }
 
+  // Returns the heading of the robot in radians, from -3.14 to 3.14
+ public double getRobotAngleRadians() {
+    return getRobotHeading().getRadians();
+  }
 
+  // Zeroes the heading of the robot to 0 degrees
+  public void zeroRobotHeading() {
+    seedFieldCentric();
+  }
 
-   // Updates pose estimate based on 2 cameras (used by Vision class)
-  // public void updateEstimates(EstimatedRobotPose estimatedPose1, Matrix<N3, N1> standardDev1, EstimatedRobotPose estimatedPose2, Matrix<N3, N1> standardDev2) {
-    
-  //   Pose3d estimate1 = new Pose3d();
-  //   Pose3d estimate2 = new Pose3d();
-    
-  //   estimate1 = estimatedPose1.estimatedPose;
-  //   estimate2 = estimatedPose2.estimatedPose;
+  /**
+   * Resets the poseEstimator to the specified pose.
+   * @param pose The pose to which to set the poseEstimator
+   */
+  public void resetPose(Pose2d newPose) {
+    resetPose(newPose);
+  }
 
-  //   poseEstimator.addVisionMeasurement(
-  //     estimate1.toPose2d(),
-  //     estimatedPose1.timestampSeconds,
-  //     standardDev1
-  //   );
-
-  //   poseEstimator.addVisionMeasurement(
-  //     estimate2.toPose2d(),
-  //     estimatedPose2.timestampSeconds,
-  //     standardDev2
-  //   );
-
-  //   field.getObject("Cam 1 Est Pose").setPose(estimate1.toPose2d());
-  //   field.getObject("Cam 2 Est Pose").setPose(estimate2.toPose2d());
-
-  // }
-
-
-
+  public Field2d getField() {
+    return field;
+  }
 
 
 
@@ -830,30 +719,20 @@ public class Drivetrain extends TunerSwerveDrivetrain implements Subsystem {
   @Override
   public void periodic() {
 
-    // updatePoseFromOdometry();
-    // updateModuleTelemetry();
-    move(this.xSpeed, this.ySpeed, this.rotSpeed, this.fieldCentric, this.allianceCentric);
-    
-    // SmartDashboard.putNumber("NavX Compass Heading", navX.getCompassHeading());
+    // move(this.xSpeed, this.ySpeed, this.rotSpeed, this.fieldCentric, this.allianceCentric);
 
-    SmartDashboard.putNumber("Robot Angle Degrees", getRobotAngleDegrees());
-    SmartDashboard.putNumber("Robot Angle Radians", getRobotAngleRadians());
-    // SmartDashboard.putNumber("Field Angle Degrees", getFieldAngleDegrees());
-    // SmartDashboard.putNumber("Field Angle Radians", getFieldAngleRadians());
-    
+    SmartDashboard.putNumber("Robot X", getRobotX());
+    SmartDashboard.putNumber("Robot Y", getRobotY());
+    SmartDashboard.putNumber("Robot Angle (Degrees)", getRobotAngleDegrees());
+    SmartDashboard.putNumber("Robot Angle (Radians)", getRobotAngleRadians());
 
-    SmartDashboard.putNumber("dt PoseX", getPose().getX());
-    SmartDashboard.putNumber("dt PoseY", getPose().getY());
-    SmartDashboard.putNumber("dt PoseAngle", getPose().getRotation().getDegrees());
 
     SmartDashboard.putNumber("xspeed", xSpeed);
     SmartDashboard.putNumber("yspeed", ySpeed);
     SmartDashboard.putNumber("rotspeed", rotSpeed);
 
-    // field.setRobotPose(getPose());
-    SmartDashboard.putData("PoseEstimator Field", field);
-    SmartDashboard.putBoolean("fieldCentric", fieldCentric);
-    // SmartDashboard.putNumber("FL distanceMeters", frontL.getPosition().distanceMeters);
+    // SmartDashboard.putData("PoseEstimator Field", field);
+    // SmartDashboard.putBoolean("fieldCentric", fieldCentric);
 
     checkAllianceColor();
 

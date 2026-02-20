@@ -59,7 +59,8 @@ public class AprilCam {
     public AprilCam(String name, Translation3d pos, Rotation3d angle){
         this.camera = new PhotonCamera(name);
         this.camOffset = new Transform3d(pos, angle);
-        this.photonPoseEstimator = new PhotonPoseEstimator(FieldConstants.aprilTagFieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, camOffset);
+        this.photonPoseEstimator = new PhotonPoseEstimator(FieldConstants.aprilTagFieldLayout, camOffset);
+        // this.photonPoseEstimator = new PhotonPoseEstimator(FieldConstants.aprilTagFieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, camOffset);
         this.estimatedPoses = new ArrayList<EstimatedRobotPose>();
         this.closestTarget = new PhotonTrackedTarget();
         updateEstimationSDs();
@@ -67,9 +68,11 @@ public class AprilCam {
 
      // Constructor 2: simple version
     public AprilCam(String name) {
-        this(name,new Translation3d(), new Rotation3d());
+        this(name, new Translation3d(), new Rotation3d());
     }
 
+
+    // ---------------- UPDATES ----------------------------------//
 
     public void update() { // should get called exactly ONCE per robot loop
         
@@ -94,6 +97,40 @@ public class AprilCam {
           SmartDashboard.putString("Id" + i, getTargets().get(i).toString());
         }
     }
+   
+    // The latest estimated robot pose on the field from vision data. This may be empty.
+    // This should only be called once per loop by Vision class
+    public List<EstimatedRobotPose> getLatestEstimates(Pose3d currentDrivetrainPose) {
+
+        // Create an empty ArrayList to store estimated poses from each tag seen
+        List<EstimatedRobotPose> estimateUpdates = new ArrayList<>();
+
+        // Loop through all the results of the camera
+        for (var result : results) {
+
+            // Get an update from the result if we see multiple tags
+            var estimateUpdate = photonPoseEstimator.estimateCoprocMultiTagPose(result);
+
+            // If we didn't see enough tags for Multi-Tag, try the best single tag
+            if (estimateUpdate.isEmpty()) {
+                estimateUpdate = photonPoseEstimator.estimateLowestAmbiguityPose(result);
+                // estimateUpdate = photonPoseEstimator.estimateClosestToReferencePose(result, currentDrivetrainPose);
+            }
+
+            // Add to the List of Estimated Poses
+            if (estimateUpdate.isPresent()) {
+                EstimatedRobotPose pose = estimateUpdate.get();
+                estimateUpdates.add(pose);
+            }
+
+        }
+
+        this.estimatedPoses = estimateUpdates;
+        return estimateUpdates;
+    }
+
+
+
 
     // --------------------- GETTING TARGETS -------------------)------------ //
 
@@ -148,10 +185,6 @@ public class AprilCam {
         }
     }
 
-    // Gets the current "best" target
-    // public PhotonTrackedTarget getBestTarget(){
-    //     return result.getBestTarget();
-    // }
 
     // Gets a target object for a specific AprilTag
     public PhotonTrackedTarget getDesiredTarget(int desiredTargetId) {
@@ -211,35 +244,6 @@ public class AprilCam {
 
 
 
-    // --------------------- POSE ESTIMATION ------------------------------- //
-   
-    // The latest estimated robot pose on the field from vision data. This may be empty.
-    // This should only be called once per loop
-    public List<EstimatedRobotPose> getUpdatedEstPoses(Pose2d prevEstPose) {
-
-        // Create an empty ArrayList to store estimated poses from each tag seen
-        List<EstimatedRobotPose> visionEstPoses = new ArrayList<>();
-
-        // Give PhotonVision the drivetrain's current best estimate of Pose
-        photonPoseEstimator.setReferencePose(prevEstPose);
-
-        // Loop through all the results of the camera
-        for (var result : results) {
-
-            // Get an update from the result
-            var estPoseUpdate = photonPoseEstimator.update(result);
-
-            // Add to the List of Estimated Poses
-            if (estPoseUpdate.isPresent()) {
-                EstimatedRobotPose pose = estPoseUpdate.get();
-                visionEstPoses.add(pose);
-            }
-
-        }
-
-        this.estimatedPoses = visionEstPoses;
-        return visionEstPoses;
-    }
 
 
     /*
