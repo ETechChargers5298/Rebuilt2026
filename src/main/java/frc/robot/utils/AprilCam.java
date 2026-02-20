@@ -245,7 +245,6 @@ public class AprilCam {
     /*
      * Calculates new standard deviations This algorithm is a heuristic that creates dynamic standard
      * deviations based on number of tags, estimation strategy, and distance from the tags.
-     * Uses higher weights for reef tags!
      * This should only be used when there are targets visible
      * @param estimatedPose The estimated pose to guess standard deviations for.
      * @param targets All targets in this camera frame
@@ -298,9 +297,8 @@ public class AprilCam {
                     estimatedSDs = estimatedSDs.times(1 + (avgDist * avgDist / 30));
                 }
 
-                // Weight reef tags higher
-                estimatedSDs = estimatedSDs.times(avgWeight);
-                currentSDs = estimatedSDs;
+                // apply weights to tags
+                currentSDs = estimatedSDs.times(avgWeight);
             }
         }
     }

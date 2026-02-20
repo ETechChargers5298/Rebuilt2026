@@ -70,7 +70,9 @@ public class Vision extends SubsystemBase {
         var visionEstPoses1 = cam1.getUpdatedEstPoses(currentRobotPose);
 
         // Get the confidence level from cam1
-        var confidence1 = cam1.getEstimationSDs();
+        // var confidence1 = cam1.getEstimationSDs();
+        var confidence1 = edu.wpi.first.math.VecBuilder.fill(0.1,0.1,0.1); // test high trust in vision
+
 
         // Loop through all the pose estimate updates from cam1
         for(var update : visionEstPoses1){
@@ -79,8 +81,7 @@ public class Vision extends SubsystemBase {
             drivetrain.addVisionMeasurement(
                 update.estimatedPose.toPose2d(),
                 update.timestampSeconds,
-                edu.wpi.first.math.VecBuilder.fill(0.1,0.1,0.1) // test high trust in vision
-                // confidence1
+                confidence1
             );
         }
 
