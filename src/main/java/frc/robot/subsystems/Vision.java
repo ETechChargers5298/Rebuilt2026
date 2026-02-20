@@ -2,8 +2,11 @@ package frc.robot.subsystems;
 
 import frc.robot.Constants.VisionConstants;
 import frc.robot.utils.AprilCam;
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -17,6 +20,8 @@ public class Vision extends SubsystemBase {
     public AprilCam cam2;
     public boolean doubleCam = false;
     Drivetrain drivetrain = Drivetrain.getInstance();
+    AprilTagFieldLayout fieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2026RebuiltWelded);
+
 
     // VISION CONSTRUCTOR
     private Vision() {
@@ -74,7 +79,8 @@ public class Vision extends SubsystemBase {
             drivetrain.addVisionMeasurement(
                 update.estimatedPose.toPose2d(),
                 update.timestampSeconds,
-                confidence1
+                edu.wpi.first.math.VecBuilder.fill(0.1,0.1,0.1) // test high trust in vision
+                // confidence1
             );
         }
 

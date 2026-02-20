@@ -22,73 +22,53 @@ public class FieldConstants {
 
     public static int NUM_TAGS = 32;
     public static AprilTagFieldLayout aprilTagFieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2026RebuiltWelded);
-    public static final int[] FIELD_TAGS = {6, 7, 8, 9, 10, 11, 17, 18, 19, 20, 21, 22};
-    public static final double[] TAG_WEIGHTS = { 0.25, 0.25, 0.25, 0.25, 0.25, 1, 1, 1, 1, 1, 1, 0.25, 0.25, 0.25, 0.25, 0.25, 1, 1, 1, 1, 1, 1};
+    public static final int[] FIELD_TAGS = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32};
+    public static final double[] TAG_WEIGHTS = { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
 
-    // See dimensions in CAD model: https://cad.onshape.com/documents/de2f7209733ab7e329c09bfb/w/543129b7970a07a101364ab9/e/610a7d2c02088aeabb91946e?renderMode=0&uiState=6972fd8c35795524f0b5acbd
+    // See dimensions in ETech CAD model: https://cad.onshape.com/documents/de2f7209733ab7e329c09bfb/w/543129b7970a07a101364ab9/e/610a7d2c02088aeabb91946e?renderMode=0&uiState=6972fd8c35795524f0b5acbd
     // Official OnShape Field: https://cad.onshape.com/documents/8a691e28680da30504859fce/w/c6aa636fb23edb3f1e272fb1/e/f4e47c668796f504844c94a0
     // ETech Spreadsheet with dimensions: https://docs.google.com/spreadsheets/d/1ADu-O-9LnCuzFm0Oi5kvYeQFNI42bzS47ktMrjclpx8/edit?gid=252485470#gid=252485470
     public static final double FIELD_LENGTH_X = 17.548;
     public static final double FIELD_WIDTH_Y = 8.052;
-    public static final double BLUE_CENTER_CAGE_Y = 6.169;
-    public static final double RED_CENTER_CAGE_Y = 1.883;
     public static final double FIELD_CENTER_Y = FIELD_WIDTH_Y/2; //4.026
-    public static final double BLUE_STARTING_LINE = 7.606; //"back" edge of 2" starting line
-    public static final double BLUE_STARTING_X = BLUE_STARTING_LINE - RobotConstants.BUMPER_TO_ROBOT_CENTER_DISTANCE;  //7.174 Center of Robot when Starting
-    public static final double RED_STARTING_X = FIELD_LENGTH_X - BLUE_STARTING_X;
-    public static final double BLUE_AUTO_ANGLE = 180;
-    public static final double RED_AUTO_ANGLE = 0;
+    public static final double BLUE_WALL = 0.000;
+    public static final double RED_WALL = FIELD_LENGTH_X;  
+    public static final double BLUE_STARTING_LINE = 3.646; // center of robot when bumper is on top of 2" starting line
+    public static final double RED_STARTING_LINE = FIELD_LENGTH_X - BLUE_STARTING_LINE;
+    public static final double BLUE_LEFT_TRENCH_CENTER = 7.412;
+    public static final double BLUE_DEPOT_CENTER = 5.965;
+    public static final double BLUE_LEFT_BUMP_CENTER = 5.571;
+    public static final double BLUE_HUB_CENTER = FIELD_CENTER_Y;
+    public static final double BLUE_RIGHT_BUMP_CENTER = 2.481;
+    public static final double BLUE_RIGHT_TRENCH_CENTER = 0.639;
+    public static final double RED_LEFT_TRENCH_CENTER = BLUE_RIGHT_TRENCH_CENTER;
+    public static final double RED_DEPOT_CENTER = FIELD_WIDTH_Y - BLUE_DEPOT_CENTER;
+    public static final double RED_LEFT_BUMP_CENTER = BLUE_RIGHT_BUMP_CENTER;
+    public static final double RED_HUB_CENTER = FIELD_CENTER_Y;
+    public static final double RED_RIGHT_BUMP_CENTER = BLUE_LEFT_BUMP_CENTER;
+    public static final double RED_RIGHT_TRENCH_CENTER = BLUE_LEFT_TRENCH_CENTER;
+    public static final double BLUE_AUTO_ANGLE = 0;
+    public static final double RED_AUTO_ANGLE = 180;
 
     public static final Translation2d fieldCenter = new Translation2d(FIELD_LENGTH_X/2, FIELD_WIDTH_Y/2);
 
-    // Center-of-Robot Poses from AUTO Starting Positions
-    public static final Pose3d blueBargeSideAutoPose = new Pose3d(new Pose2d(BLUE_STARTING_X, BLUE_CENTER_CAGE_Y, Rotation2d.fromDegrees(BLUE_AUTO_ANGLE)));
-    public static final Pose3d blueCenterAutoPose = new Pose3d( new Pose2d(BLUE_STARTING_X, FIELD_CENTER_Y, Rotation2d.fromDegrees(BLUE_AUTO_ANGLE)));
-    public static final Pose3d blueProcessorSideAutoPose = new Pose3d( new Pose2d(BLUE_STARTING_X, RED_CENTER_CAGE_Y, Rotation2d.fromDegrees(BLUE_AUTO_ANGLE)));
-    public static final Pose3d redBargeSideAutoPose = new Pose3d( new Pose2d(RED_STARTING_X, RED_CENTER_CAGE_Y, Rotation2d.fromDegrees(RED_AUTO_ANGLE)));
-    public static final Pose3d redCenterAutoPose = new Pose3d( new Pose2d(RED_STARTING_X, FIELD_CENTER_Y, Rotation2d.fromDegrees(RED_AUTO_ANGLE)));
-    public static final Pose3d redProcessorSideAutoPose = new Pose3d(new Pose2d(RED_STARTING_X, BLUE_CENTER_CAGE_Y, Rotation2d.fromDegrees(-45)));
-
-    // Center-of-Robot Poses facing CORAL STATION
-    public static final Pose3d blueCoralStationLeftPose = getRobotPoseToCoralStation(Alliance.Blue,"LEFT");
-    public static final Pose3d blueCoralStationRightPose = getRobotPoseToCoralStation(Alliance.Blue,"RIGHT");
-    public static final Pose3d redCoralStationLeftPose = getRobotPoseToCoralStation(Alliance.Red,"LEFT");
-    public static final Pose3d redCoralStationRightPose = getRobotPoseToCoralStation(Alliance.Red,"RIGHT");
+    // Center-of-Robot Poses
+    public static final Pose3d blueHubStartPose = new Pose3d(new Pose2d(BLUE_STARTING_LINE, BLUE_HUB_CENTER, Rotation2d.fromDegrees(BLUE_AUTO_ANGLE)));
+    public static final Pose3d blueLeftTrenchStartPose = new Pose3d( new Pose2d(BLUE_STARTING_LINE, BLUE_LEFT_TRENCH_CENTER, Rotation2d.fromDegrees(BLUE_AUTO_ANGLE)));
+    public static final Pose3d blueDepotStartPose = new Pose3d( new Pose2d(BLUE_STARTING_LINE, BLUE_DEPOT_CENTER, Rotation2d.fromDegrees(BLUE_AUTO_ANGLE)));
+    public static final Pose3d redHubStartPose = new Pose3d(new Pose2d(RED_STARTING_LINE, RED_HUB_CENTER, Rotation2d.fromDegrees(RED_AUTO_ANGLE)));
+    public static final Pose3d redLeftTrenchStartPose = new Pose3d( new Pose2d(RED_STARTING_LINE, RED_LEFT_TRENCH_CENTER, Rotation2d.fromDegrees(RED_AUTO_ANGLE)));
+    public static final Pose3d redDepotStartPose = new Pose3d( new Pose2d(RED_STARTING_LINE, RED_DEPOT_CENTER, Rotation2d.fromDegrees(RED_AUTO_ANGLE)));
+    public static final Pose3d blueDepotGatherPose = new Pose3d( new Pose2d(BLUE_WALL, BLUE_DEPOT_CENTER, Rotation2d.fromDegrees(BLUE_AUTO_ANGLE)));
+    public static final Pose3d redDepotGatherPose = new Pose3d( new Pose2d(RED_WALL, RED_DEPOT_CENTER, Rotation2d.fromDegrees(RED_AUTO_ANGLE)));
+    public static final Pose3d blueRightTrenchStartPose = new Pose3d( new Pose2d(BLUE_STARTING_LINE, BLUE_RIGHT_TRENCH_CENTER, Rotation2d.fromDegrees(BLUE_AUTO_ANGLE)));
+    public static final Pose3d redRightTrenchStartPose = new Pose3d( new Pose2d(RED_STARTING_LINE, RED_RIGHT_TRENCH_CENTER, Rotation2d.fromDegrees(RED_AUTO_ANGLE)));
 
 
     //--------------- ROBOT CENTER POSE METHODS ------------------//
 
-    // Returns a robot's center pose to a specific branch
-    public static Pose3d getRobotPoseToBranch(int tagID, String branchDirection){
-        Pose3d branchPose = getBranchPose(tagID, branchDirection); 
-        Pose3d flippedPose = getRobotPoseSpin180(branchPose);
-        Pose3d centerOfRobotPose = getCenterPoseFromFrontPose(flippedPose, Units.inchesToMeters(3));
-        return centerOfRobotPose;
-    }
-
-    // Returns a robot's center pose to a specific coral station
-    public static Pose3d getRobotPoseToCoralStation(Alliance alliance, String stationDirection){
-        Pose3d coralStationPose = getCoralStationPose(alliance, stationDirection);
-        // System.out.print("\n\nCoral Station Pose:");
-        // printPose3d(coralStationPose);
-
-        Pose3d flippedPose = getRobotPoseSpin180(coralStationPose);
-        // System.out.print("\nFlippedPose:    ");
-        // printPose3d(flippedPose);
-
-        Pose3d centerOfRobotPose = getCenterPoseFromFrontPose(flippedPose, 0.0);
-        // System.out.print("\ncenterRobotPose:");
-        // printPose3d(centerOfRobotPose);
-
-        Pose3d facingBackwardsPose = getRobotPoseSpin180(centerOfRobotPose); //have robot facing away from the Coral Station to load
-        // System.out.print("\nfacingBackwards:");
-        // printPose3d(facingBackwardsPose);
-
-        return facingBackwardsPose;
-    }
-
      // Returns a robot's center pose when facing a specific aprilTag
-     public static Pose3d getRobotPoseToTag(int tagID){
+     public static Pose3d getRobotPoseFromTag(int tagID){
 
         Pose3d tagPose = aprilTagFieldLayout.getTagPose(tagID).get();
 
@@ -134,9 +114,9 @@ public class FieldConstants {
     }
     
     // Gets our initial Pose based on the FMS alliance/location
-    // Location 1 is Left Side (Barge)
-    // location 2 is in the Middle
-    // location 3 is Right Side (Processor)
+    // Location 1 is Left Side (Depot)
+    // location 2 is in the Middle (Hub)
+    // location 3 is Right Side (Outpost)
     public static Pose3d getRobotPoseInitialFMS(){
 
         Optional<Alliance> allianceOptional = DriverStation.getAlliance();
@@ -157,132 +137,61 @@ public class FieldConstants {
     // Returns the Robot center's pose given specific starting positions
     public static Pose3d getRobotPoseInitial(Alliance alliance, int location){
         
-        if (location == 1 && alliance == DriverStation.Alliance.Blue) { return blueBargeSideAutoPose; }
-        else if (location == 2 && alliance == DriverStation.Alliance.Blue) { return blueCenterAutoPose; }
-        else if (location == 3 && alliance == DriverStation.Alliance.Blue) { return blueProcessorSideAutoPose; }
-        else if (location == 1 && alliance == DriverStation.Alliance.Red) { return redBargeSideAutoPose; }
-        else if (location == 2 && alliance == DriverStation.Alliance.Red) { return redCenterAutoPose; }
-        else if (location == 3 && alliance == DriverStation.Alliance.Red) { return redProcessorSideAutoPose; }
+        if (location == 1 && alliance == DriverStation.Alliance.Blue) { return blueDepotStartPose; }
+        else if (location == 2 && alliance == DriverStation.Alliance.Blue) { return blueHubStartPose; }
+        else if (location == 3 && alliance == DriverStation.Alliance.Blue) { return blueRightTrenchStartPose; }
+        else if (location == 1 && alliance == DriverStation.Alliance.Red) { return redDepotStartPose; }
+        else if (location == 2 && alliance == DriverStation.Alliance.Red) { return redHubStartPose; }
+        else if (location == 3 && alliance == DriverStation.Alliance.Red) { return redRightTrenchStartPose; }
 
         return new Pose3d();
     }
 
-    //--------------- FIELD ELEMENT POSE METHODS ------------------//
-
-    // Returns the Pose3d of a BRANCH (facing out of the Reef), adjusting for an offset from the aprilTag on that face
-    public static Pose3d getBranchPose(int tagID, String branchDirection){
-
-        Pose3d tagPose = aprilTagFieldLayout.getTagPose(tagID).get();
-
-        //Get the coordinate of tag on field
-        Translation3d tagTranslation = tagPose.getTranslation();
-        double tagAngle = tagPose.getRotation().getAngle();
-
-        //Create offset from tag to desired branch
-        Translation3d branchOffset = new Translation3d();
-        double calibrationDistance = Units.inchesToMeters(0.5); 
-        double branchOffsetDistance = Units.inchesToMeters(6.5) + calibrationDistance;
-        
-        if (branchDirection.equals("LEFT")){
-            branchOffset = new Translation3d(Math.sin(tagAngle) * branchOffsetDistance, -Math.cos(tagAngle) * branchOffsetDistance, 0);
-        }  else  if (branchDirection.equals("RIGHT")){
-            branchOffset = new Translation3d(-Math.sin(tagAngle) * branchOffsetDistance, Math.cos(tagAngle) * branchOffsetDistance, 0);
-        } else if(branchDirection.equals("CENTER")){
-            //no branch offset
-        }
-
-        // Add tag and branch offset to get desired target coordinate --> target "Pose" to front of Bumper
-        Translation3d targetCoordinate = branchOffset.plus(tagTranslation);
-        Pose3d targetPose = new Pose3d(targetCoordinate, tagPose.getRotation());
-        
-        return targetPose;
-    }
-
-    // Returns the Pose3d of a Robot backin up to the CORAL STATION
-    public static Pose3d getCoralStationPose(Alliance alliance, String stationDirection){
-
-        // Determine the tag at the desired Coral Station
-        int tagID = getTagFromCoralStation(alliance, stationDirection);
-
-        // Get the Pose3d of the Coral Station
-        Pose3d tagPose = aprilTagFieldLayout.getTagPose(tagID).get();
-
-        //Get the coordinate of tag on field
-        Translation3d tagTranslation = tagPose.getTranslation();
-        double tagAngle = tagPose.getRotation().getAngle();
-
-        //Create offset from tag to easier coral slot location?
-        Translation3d coralslotOffset = new Translation3d();
-        double coralslotOffsetDistance = Units.inchesToMeters(0.0);
-        
-        if (stationDirection.equals("LEFT")){
-            coralslotOffset = new Translation3d(Math.sin(tagAngle) * coralslotOffsetDistance, -Math.cos(tagAngle) * coralslotOffsetDistance, 0);
-        }  else  if (stationDirection.equals("RIGHT")){
-            coralslotOffset = new Translation3d(-Math.sin(tagAngle) * coralslotOffsetDistance, Math.cos(tagAngle) * coralslotOffsetDistance, 0);
-        }
-
-        // Add tag and branch offset to get desired target coordinate --> target Robot Pose at center of Robot
-        Translation3d targetCoordinate = coralslotOffset.plus(tagTranslation);
-        Pose3d targetPose = new Pose3d(targetCoordinate, tagPose.getRotation());
-        
-        return targetPose;
-    }
-
     // Returns the Pose3d of an AprilTag given its ID number
-    public static Pose3d getTagPose(int tagID){
+    public static Pose3d getPoseFromTag(int tagID){
         return aprilTagFieldLayout.getTagPose(tagID).get();
     }
 
-
-    //--------------- TAG ID METHODS ------------------//
-
-    // Returns the nearest reef apriltag from an input pose
-    public static int getNearestReefTag(Pose3d currentRobotPose) {
+        // Returns the nearest reef apriltag from an input pose
+    public static int getNearestTag(Pose3d currentRobotPose) {
 
         double minDistance = 0.0;
         int closestTag = -1;
 
-        for(int reefTag: FIELD_TAGS){
+        for(int tag: FIELD_TAGS){
             
-            Pose3d reefFacePose = aprilTagFieldLayout.getTagPose(reefTag).get();
-            closestTag = reefTag;
-            double dx = reefFacePose.getX() - currentRobotPose.getX();
-            double dy = reefFacePose.getY() - currentRobotPose.getY();
-            // double distance = Math.sqrt(Math.pow(dx,2)+Math.pow(dy,2));
+            Pose3d facePose = aprilTagFieldLayout.getTagPose(tag).get();
+            double dx = facePose.getX() - currentRobotPose.getX();
+            double dy = facePose.getY() - currentRobotPose.getY();
+            double distance = Math.sqrt(Math.pow(dx,2)+Math.pow(dy,2));
 
-            // if(distance < minDistance){
-            //     minDistance = distance;
-            //     closestTag = reefTag;
-            // }
+            if(distance < minDistance){
+                minDistance = distance;
+                closestTag = tag;
+            }
         }
         return closestTag;
     }
 
 
-    public static int getTagFromReef(Alliance alliance, String reefFace){
-        
-        if(reefFace.equals("A") && alliance == Alliance.Blue) return 18;
-        else if(reefFace.equals("B") & alliance == Alliance.Blue) return 17;
-        else if(reefFace.equals("C") & alliance == Alliance.Blue) return 22;
-        else if(reefFace.equals("D") & alliance == Alliance.Blue) return 21;
-        else if(reefFace.equals("E") & alliance == Alliance.Blue) return 20;
-        else if(reefFace.equals("F") & alliance == Alliance.Blue) return 19;
-        else if(reefFace.equals("A") && alliance == Alliance.Red) return 7;
-        else if(reefFace.equals("B") & alliance == Alliance.Red) return 8;
-        else if(reefFace.equals("C") & alliance == Alliance.Red) return 9;
-        else if(reefFace.equals("D") & alliance == Alliance.Red) return 10;
-        else if(reefFace.equals("E") & alliance == Alliance.Red) return 11;
-        else if(reefFace.equals("F") & alliance == Alliance.Red) return 6;
-        else return -1;
-    }
 
     // Determine the tag at the desired Coral Station
-    public static int getTagFromCoralStation(Alliance alliance, String stationDirection){
+    public static int getTagFromElement(Alliance alliance, String element){
 
-        if (alliance == Alliance.Blue && stationDirection.equals("LEFT")) return 13;
-        else if (alliance == Alliance.Blue && stationDirection.equals("RIGHT")) return 12;
-        else if (alliance == Alliance.Red && stationDirection.equals("LEFT")) return 1;
-        else if (alliance == Alliance.Red && stationDirection.equals("RIGHT")) return 2;
+        if (alliance == Alliance.Blue && element.equals("LEFT_TRENCH")) return 23;
+        else if (alliance == Alliance.Blue && element.equals("HUB")) return 26;
+        else if (alliance == Alliance.Blue && element.equals("HUB2")) return 25;
+        else if (alliance == Alliance.Blue && element.equals("RIGHT_TRENCH")) return 28;
+        else if (alliance == Alliance.Blue && element.equals("OUTPOST")) return 29;
+        else if (alliance == Alliance.Blue && element.equals("OUTPOST2")) return 30;
+
+        else if (alliance == Alliance.Red && element.equals("LEFT_TRENCH")) return 7;
+        else if (alliance == Alliance.Red && element.equals("HUB")) return 10;
+        else if (alliance == Alliance.Red && element.equals("HUB2")) return 9;
+        else if (alliance == Alliance.Red && element.equals("RIGHT_TRENCH")) return 12;
+        else if (alliance == Alliance.Red && element.equals("OUTPOST")) return 13;
+        else if (alliance == Alliance.Red && element.equals("OUTPOST2")) return 14;
+
         else return -1;
     }
 

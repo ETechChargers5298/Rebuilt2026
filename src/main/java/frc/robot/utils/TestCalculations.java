@@ -1,5 +1,7 @@
 package frc.robot.utils;
 
+import java.lang.reflect.Field;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -17,28 +19,17 @@ public class TestCalculations {
         // Testing Variables
         Alliance alliance = Alliance.Blue;
         int startLocation = 3;
-        String reefFace = "C";  //Blue D = 21
-        String branchDirection = "LEFT";
-        String stationDirection = "RIGHT";
+        String element = "HUB"; //Blue Hub Front Center = 10
         
 
         // Print the starting point Pose coordinates (center of robot)
-        printPoseRobotStart(alliance, startLocation);
-        
-        // Print the AprilTag Reef Pose coordinates
-        printPoseTagReef(alliance, reefFace);
+        printRobotPoseStart(alliance, startLocation);
 
-        // Print the Branch pose coordinates (center of robot)
-        printPoseRobotToBranch(alliance, reefFace, branchDirection);
+        // Print the AprilTag Pose coordinates
+        printTagPoseOfElement(alliance, element);
 
-        // Print the Branch's Pose
-        // printPoseBranch(alliance, reefFace, branchDirection);
-
-        // Print the AprilTag CS Pose coordinates
-        printPoseTagCoralStation(alliance, stationDirection);
-
-        // Print the Robot's Pose when Gathering from Coral Station
-        printPoseRobotToCoralStation(alliance, stationDirection);
+        // Print the Robot's Pose when directly facing an Element's central tag
+        printRobotPoseToElement(alliance, element);
 
 
     
@@ -46,14 +37,8 @@ public class TestCalculations {
         double currentX = 2.0;
         double currentY = 4.0;
         Pose3d currentPose = new Pose3d( new Pose2d(currentX, currentY, new Rotation2d(0)));
-        int closestTag = FieldConstants.getNearestReefTag(currentPose);
+        int closestTag = FieldConstants.getNearestTag(currentPose);
         System.out.println("Closest Tag to (" + currentX + ", " + currentY + ") is " + closestTag);
-
-        String branchDirFromButton = "LEFT"; 
-        Pose3d closestBranchPose = FieldConstants.getRobotPoseToBranch(closestTag, branchDirFromButton);
-        System.out.println("\n\nROBOT POSE FACING CLOSEST BRANCH from (" + currentX + "," + currentY + ") is at "+ alliance + " - tag " + closestTag + " - " + branchDirFromButton + " branch:");
-        FieldConstants.printPose3d(closestBranchPose);
-
 
         System.out.println("\n");
 
@@ -66,30 +51,27 @@ public class TestCalculations {
         
         Alliance[] alliances = {Alliance.Blue, Alliance.Red};
         int[] startLocations = {1,2,3};
-        String[] reefFaces = {"A", "B", "C", "D", "E","F"};
+        String[] elements = {"LEFT_TRENCH", "HUB", "HUB2", "RIGHT_TRENCH", "OUTPOST","OUTPOST2"};
 
         for (Alliance a: alliances){
 
             // Starting Poses
             for(int startLoc : startLocations){
-                printPoseRobotStart(a, startLoc);
+                printRobotPoseStart(a, startLoc);
             }
 
             System.out.println();
 
-            // Reef Face Poses
-            for(String face: reefFaces){
-                printPoseRobotToBranch(a,face, "LEFT");
-                printPoseRobotToBranch(a, face, "CENTER");
-                printPoseRobotToBranch(a,face, "RIGHT");
+            // Robot Poses to Tags
+            for(String e: elements){
+                printRobotPoseToElement(a, e);
             }
             System.out.println();
 
-            // Coral Station Poses
-            printPoseTagCoralStation(a, "LEFT");
-            printPoseRobotToCoralStation(a, "LEFT");
-            printPoseTagCoralStation(a, "RIGHT");
-            printPoseRobotToCoralStation(a, "RIGHT");
+            // Tag Poses
+            for(String e: elements){
+                printTagPoseOfElement(a, e);
+            }
             System.out.println();
         }
 
@@ -103,51 +85,24 @@ public class TestCalculations {
     }
 
 
-    public static void printPoseRobotStart(Alliance alliance, int startLocation){
+    public static void printRobotPoseStart(Alliance alliance, int startLocation){
         Pose3d startPose = FieldConstants.getRobotPoseInitial(alliance, startLocation);
         System.out.printf("\nROBOT POSE START " + alliance + " "+startLocation+":  \t");
         FieldConstants.printPose3d(startPose);
     }
 
-    // public static void printPoseRobotToCenterReef(Alliance alliance, String reefFace){
-    //     int tagId = FieldConstants.getTagFromReef(alliance, reefFace);
-    //     Pose3d targetPose = FieldConstants.getRobotPoseTo(tagId, branchDirection);
-    //     System.out.print("\nROBOT POSE BRANCH "+ alliance + " - " + reefFace + " - " + branchDirection + ":");
-    //     FieldConstants.printPose3d(targetPose);
-    // }
-
-    public static void printPoseRobotToBranch(Alliance alliance, String reefFace, String branchDirection){
-        int tagId = FieldConstants.getTagFromReef(alliance, reefFace);
-        Pose3d targetPose = FieldConstants.getRobotPoseToBranch(tagId, branchDirection);
-        System.out.print("\nROBOT POSE BRANCH "+ alliance + " - " + reefFace + " - " + branchDirection + ":");
+    public static void printRobotPoseToElement(Alliance alliance, String element){
+        int tagId = FieldConstants.getTagFromElement(alliance, element);
+        Pose3d targetPose = FieldConstants.getRobotPoseFromTag(tagId);
+        System.out.print("\nROBOT POSE "+ alliance + " - " + element + " (id " + tagId +"):");
         FieldConstants.printPose3d(targetPose);
     }
 
-    public static void printPoseTagReef(Alliance alliance, String reefFace){
-        int tagId = FieldConstants.getTagFromReef(alliance, reefFace);
-        Pose3d reefTagPose = FieldConstants.getTagPose(tagId);
-        System.out.print("\nREEF POSE FOR APRILTAG#" + tagId +":");
-        FieldConstants.printPose3d(reefTagPose);
-    }
-
-    public static void printPoseTagCoralStation(Alliance alliance, String stationDirection){
-        int csTagId = FieldConstants.getTagFromCoralStation(alliance, stationDirection);
-        Pose3d csTagPose = FieldConstants.getTagPose(csTagId);
-        System.out.print("\nCORAL STATION POSE AT " + csTagId + " " + alliance + " "+ stationDirection+":");
-        FieldConstants.printPose3d(csTagPose);
-    }
-
-    public static void printPoseRobotToCoralStation(Alliance alliance, String stationDirection){
-        Pose3d coralStationPose = FieldConstants.getRobotPoseToCoralStation(alliance, stationDirection);
-        System.out.print("\nROBOT POSE TO CS " + alliance + " "+ stationDirection+":\t");
-        FieldConstants.printPose3d(coralStationPose);
-    }
-
-    public static void printPoseRobotToTag(Alliance alliance, String reefFace){
-        int tagId = FieldConstants.getTagFromReef(alliance, reefFace);
-        Pose3d robotPose = FieldConstants.getRobotPoseToTag(tagId);
-        System.out.print("\nROBOT POSE FACING TAG #" + tagId + " (" + alliance + "):\t");
-        FieldConstants.printPose3d(robotPose);
+    public static void printTagPoseOfElement(Alliance alliance, String element){
+        int tagId = FieldConstants.getTagFromElement(alliance, element);
+        Pose3d tagPose = FieldConstants.getPoseFromTag(tagId);
+        System.out.print("\nTAG POSE #" + tagId + " (" + alliance + "):\t");
+        FieldConstants.printPose3d(tagPose);
     }
 
 
