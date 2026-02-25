@@ -63,6 +63,17 @@ public class Turret extends SubsystemBase {
     turretMotor.set(direction);
   }
 
+
+
+
+  public double getAngleToHubFromRobotPerspective(){
+    return 0.0;
+  }
+
+  public double getAngleToHubFromTurretPerspective(){
+    return 180 - getAngleToHubFromRobotPerspective();
+  }
+
   //  public double getTurretAngle(){ 
   //   return turretEncoder.getPosition();
   // }

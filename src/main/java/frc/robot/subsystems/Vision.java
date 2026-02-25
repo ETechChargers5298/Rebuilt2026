@@ -106,4 +106,13 @@ public class Vision extends SubsystemBase {
         
 
 
+    public double getDistanceToHub(){
+        return 0.0;
+    }
+
+    public double getAngleToHubFromFieldPerspective(){
+        return 0.0;
+    }
+
+
 } // close Vision class
