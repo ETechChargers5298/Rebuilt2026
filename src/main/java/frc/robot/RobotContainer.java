@@ -9,6 +9,7 @@ import frc.robot.commands.Autos;
 import frc.robot.commands.PivotIntake;
 // import frc.robot.commands.PivotIntake;
 import frc.robot.commands.basic.*;
+import frc.robot.commands.complex.MoveTurretToSetPoint;
 import frc.robot.subsystems.*;
 import frc.robot.utils.TunerConstants;
 import frc.robot.utils.Telemetry;
@@ -258,6 +259,10 @@ public class RobotContainer {
   //   Turret.getInstance().setDefaultCommand(
   //     Turret.getInstance().aimTurretCommand( () -> MathUtil.applyDeadband(operatorController.getLeftX(), 0.1) )
   //   );
+
+    operatorController.leftStick().whileTrue(new MoveTurretToSetPoint( () -> Turret.getInstance().getAngleToHubFromTurretPerspective()  )  );
+
+
    }
 
   /**
