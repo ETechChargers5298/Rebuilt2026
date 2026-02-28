@@ -6,6 +6,7 @@ package frc.robot.subsystems;
 import java.util.Locale.LanguageRange;
 import java.util.function.DoubleSupplier;
 
+
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.hardware.TalonFX;
 // import com.ctre.phoenix6.hardware.TalonFX;
@@ -18,6 +19,7 @@ import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.math.util.Units;
 import frc.robot.Constants;
 import frc.robot.Ports;
 import frc.robot.subsystems.Drivetrain;
@@ -68,8 +70,8 @@ public class Turret extends SubsystemBase {
 
 //
   public double getAngleToHubFromRobotPerspective(){
-      double hubX = 182.11; //From field drawings, not sure which is X or Y
-      double hubY = 317.69 / 2; //From field drawings
+      double hubX = Units.inchesToMeters(182.11); //From field drawings, not sure which is X or Y
+      double hubY = Units.inchesToMeters(317.69 / 2); //From field drawings
       double robotX = Drivetrain.getInstance().getRobotX();
       double robotY = Drivetrain.getInstance().getRobotY();
 
