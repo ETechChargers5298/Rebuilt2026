@@ -5,6 +5,7 @@
 package frc.robot.subsystems;
 import java.util.Locale.LanguageRange;
 import java.util.function.DoubleSupplier;
+import java.util.function.Supplier;
 
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -20,6 +21,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Ports;
+import frc.robot.subsystems.Drivetrain;
 
 public class Turret extends SubsystemBase {
 
@@ -63,19 +65,44 @@ public class Turret extends SubsystemBase {
     turretMotor.set(direction);
   }
 
+
+
+//
+  public double getAngleToHubFromRobotPerspective(){
+      double hubX = 182.11; //From field drawings, not sure which is X or Y
+      double hubY = 317.69 / 2; //From field drawings
+      double robotX = Drivetrain.getInstance().getRobotX();
+      double robotY = Drivetrain.getInstance().getRobotY();
+
+    return Math.toDegrees(Math.atan2(hubY - robotY, hubX - robotX));
+  }
+
+  public double getAngleToHubFromTurretPerspective(){
+    return 180 - getAngleToHubFromRobotPerspective();
+  }
+
   //  public double getTurretAngle(){ 
   //   return turretEncoder.getPosition();
   // }
 
-  // BASIC TURRET COMMANDS
+  // TURRET COMMANDS
 
   // In-line Command to rotate the turret based on provided speed
-  public Command aimTurretCommand(DoubleSupplier speedSupplier) {
+  public Command moveTurretCommand(DoubleSupplier speedSupplier) {
     return run(
       () -> {
         aimTurret(speedSupplier.getAsDouble()/4);
       });
   }
+
+
+  // In-line Command to rotate the turret to a specific angle - in degrees
+  public Command aimTurretToSetPointCommand( Supplier<Double> turretAngle) {
+  
+
+    return null;
+  }
+
 
   @Override
   public void periodic() {

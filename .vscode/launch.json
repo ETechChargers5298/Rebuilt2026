@@ -6,6 +6,13 @@
   "configurations": [
     {
       "type": "java",
+      "name": "TestCalculations",
+      "request": "launch",
+      "mainClass": "frc.robot.utils.TestCalculations",
+      "projectName": "Rebuilt2026"
+    },
+    {
+      "type": "java",
       "name": "Main",
       "request": "launch",
       "mainClass": "frc.robot.Main",
