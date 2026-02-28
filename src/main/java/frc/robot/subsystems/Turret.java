@@ -9,7 +9,13 @@ import java.util.function.Supplier;
 
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.hardware.TalonFX;
-// import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.DutyCycleOut;
+import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
+
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.encoder.DetachedEncoder;
 import com.revrobotics.spark.SparkMax;
@@ -27,7 +33,7 @@ public class Turret extends SubsystemBase {
 
   // TURRET FIELDS
   private static Turret instance;
-  private TalonFX turretMotor;
+  //private TalonFX turretMotor;
   // private RelativeEncoder turretEncoder; // turret sensor LEFT/RIGHT() == relative position with throughbore
 
   
@@ -38,13 +44,33 @@ public class Turret extends SubsystemBase {
   public double angleAngler = 0;
 
   // TURRET CONSTRUCTOR
-  private Turret() {
+  //private Turret() {
     //turretMotor = new SparkMax(Ports.TURRET_MOTOR_PORT, MotorType.kBrushless);
-    turretMotor = new TalonFX(Ports.TURRET_MOTOR_PORT);
-    // turretEncoder = turretMotor.getAlternateEncoder();    //REV throughbore connected to Turret Sparkmax
-    
-  }
+  private final TalonFX turretMotor = new TalonFX(Ports.TURRET_MOTOR_PORT);
 
+    //motor gear ratio
+    private final double GEAR_RATIO = 10.0;
+    // turretEncoder = turretMotor.getAlternateEncoder();    //REV throughbore connected to Turret Sparkmax
+    public Turret() {
+
+      TalonFXConfiguration config = new TalonFXConfiguration();
+    // Configure Soft Limits directly on the Kraken hardware!
+    // This is safer because the motor stops itself even if the code crashes.
+      
+    config.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
+    config.SoftwareLimitSwitch.ForwardSoftLimitThreshold = (375.0 / 360.0) * GEAR_RATIO; // In Rotations
+        
+    config.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
+    config.SoftwareLimitSwitch.ReverseSoftLimitThreshold = (-5.0 / 360.0) * GEAR_RATIO;
+
+    config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+        
+    turretMotor.getConfigurator().apply(config);
+        
+    // Zero the motor on boot (Assumes turret is centered)      
+    turretMotor.setPosition(0);
+  }
+  
   // TURRET SINGLETON
   public static Turret getInstance(){
     if (instance == null)
