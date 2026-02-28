@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Ports;
+import frc.robot.subsystems.Drivetrain;
 
 public class Turret extends SubsystemBase {
 
@@ -65,9 +66,14 @@ public class Turret extends SubsystemBase {
 
 
 
-
+//
   public double getAngleToHubFromRobotPerspective(){
-    return 0.0;
+      double hubX = 182.11; //From field drawings, not sure which is X or Y
+      double hubY = 317.69 / 2; //From field drawings
+      double robotX = Drivetrain.getInstance().getRobotX();
+      double robotY = Drivetrain.getInstance().getRobotY();
+
+    return Math.toDegrees(Math.atan2(hubY - robotY, hubX - robotX));
   }
 
   public double getAngleToHubFromTurretPerspective(){
