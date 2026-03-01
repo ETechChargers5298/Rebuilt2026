@@ -45,9 +45,10 @@ import static edu.wpi.first.units.Units.*;
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
-  
-  //VISION! (Comment IN to use vision)
-   private final Vision vision = Vision.getInstance();
+
+  // SUBSYSTEM CONSTRUCTIONS
+  public final Turret turret = new Turret ("LEFT");
+  private final Vision vision = Vision.getInstance();    //VISION! (Comment IN to use vision)
 
 
   // CTRE SWERVE FIELDS
@@ -225,20 +226,16 @@ public class RobotContainer {
 
     // REV FLYWHEEL (OPERATOR - RB)
     operatorController.rightBumper().onTrue(new InstantCommand(() -> {
-
       Flywheel.getInstance().setSpeed += 0.01;
       Flywheel.getInstance().setSpeed = Math.min(Flywheel.getInstance().setSpeed, 0);
-
     }));
     
-
     
     operatorController.leftBumper().onTrue(new InstantCommand(() -> {
-
       Flywheel.getInstance().setSpeed -= 0.01;
       Flywheel.getInstance().setSpeed = Math.max(Flywheel.getInstance().setSpeed, -1);
-
     }));
+
     // Flywheel.getInstance().setDefaultCommand(
     //   Flywheel.getInstance().flyWheelCommand( () -> MathUtil.applyDeadband(operatorController.getLeftX(), 0.1) )
     // );
@@ -260,8 +257,8 @@ public class RobotContainer {
   //     Turret.getInstance().aimTurretCommand( () -> MathUtil.applyDeadband(operatorController.getLeftX(), 0.1) )
   //   );
 
-    operatorController.leftStick().whileTrue(Turret.getInstance().aimTurretToSetPointCommand( 
-      () -> Turret.getInstance().getAngleToHubFromTurretPerspective()  
+    operatorController.leftStick().whileTrue(turret.aimTurretToSetPointCommand( 
+      () -> turret.getAngleToHubFromTurretPerspective()  
     ));
 
 
