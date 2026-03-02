@@ -260,8 +260,8 @@ public class RobotContainer {
     //---------- TURRET JOYSTICK CONTROLLER BINDINGS ----------//
 
     // AIM TURRET (OPERATOR - LX AXIS)
-    Turret.getInstance().setDefaultCommand(
-      Turret.getInstance().moveTurretCommand( () -> MathUtil.applyDeadband(operatorController.getLeftX(), 0.1) )
+    TurretLeft.getInstance().setDefaultCommand(
+      TurretLeft.getInstance().moveTurretCommand( () -> MathUtil.applyDeadband(operatorController.getLeftX(), 0.1) )
     );
 
     operatorController.leftStick().whileTrue(turretLeft.aimTurretToSetPointCommand( 
