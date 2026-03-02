@@ -222,20 +222,27 @@ public class RobotContainer {
     //---------- FLYWHEEL JOYSTICK CONTROLLER  BINDINGS----------//
 
     // STOP FLYWHEEL by default
-    Flywheel.getInstance().setDefaultCommand(Flywheel.getInstance().revFlywheelCommand()  );
+    Flywheel.getInstance().setDefaultCommand(Flywheel.getInstance().stopFlywheelCommand()  );
+    // Flywheel.getInstance().setDefaultCommand(Flywheel.getInstance().revFlywheelCommand()  );
+
 
     // REV FLYWHEEL (OPERATOR - RB)
-    operatorController.rightBumper().onTrue(new InstantCommand(() -> {
-      Flywheel.getInstance().setSpeed += 0.01;
-      Flywheel.getInstance().setSpeed = Math.min(Flywheel.getInstance().setSpeed, 0);
-    }));
-    
-    
-    operatorController.leftBumper().onTrue(new InstantCommand(() -> {
-      Flywheel.getInstance().setSpeed -= 0.01;
-      Flywheel.getInstance().setSpeed = Math.max(Flywheel.getInstance().setSpeed, -1);
-    }));
+     operatorController.rightBumper().whileTrue(Flywheel.getInstance().revFlywheelCommand());
+      // operatorController.rightBumper().onTrue(new InstantCommand(() -> {
 
+    //   Flywheel.getInstance().setSpeed += 0.01;
+    //   Flywheel.getInstance().setSpeed = Math.min(Flywheel.getInstance().setSpeed, 0);
+
+    // }));
+    
+
+    
+    // operatorController.leftBumper().onTrue(new InstantCommand(() -> {
+
+    //   Flywheel.getInstance().setSpeed -= 0.01;
+    //   Flywheel.getInstance().setSpeed = Math.max(Flywheel.getInstance().setSpeed, -1);
+
+    // }));
     // Flywheel.getInstance().setDefaultCommand(
     //   Flywheel.getInstance().flyWheelCommand( () -> MathUtil.applyDeadband(operatorController.getLeftX(), 0.1) )
     // );
@@ -253,9 +260,9 @@ public class RobotContainer {
     //---------- TURRET JOYSTICK CONTROLLER BINDINGS ----------//
 
     // AIM TURRET (OPERATOR - LX AXIS)
-  //   Turret.getInstance().setDefaultCommand(
-  //     Turret.getInstance().aimTurretCommand( () -> MathUtil.applyDeadband(operatorController.getLeftX(), 0.1) )
-  //   );
+    Turret.getInstance().setDefaultCommand(
+      Turret.getInstance().moveTurretCommand( () -> MathUtil.applyDeadband(operatorController.getLeftX(), 0.1) )
+    );
 
     operatorController.leftStick().whileTrue(turretLeft.aimTurretToSetPointCommand( 
       () -> turretLeft.getAngleToHubFromTurretPerspective()  
