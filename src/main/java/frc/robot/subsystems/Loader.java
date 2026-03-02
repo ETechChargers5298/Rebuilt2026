@@ -35,7 +35,7 @@ public class Loader extends SubsystemBase {
 
   public void loadFuel()
   {
-    loaderMotor.set(1);
+    loaderMotor.set(-1);
   }
 
   public void unloadFuel()

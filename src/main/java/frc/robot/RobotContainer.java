@@ -47,7 +47,7 @@ import static edu.wpi.first.units.Units.*;
 public class RobotContainer {
   
   //VISION! (Comment IN to use vision)
-   private final Vision vision = Vision.getInstance();
+  //  private final Vision vision = Vision.getInstance();
 
 
   // CTRE SWERVE FIELDS
@@ -221,24 +221,27 @@ public class RobotContainer {
     //---------- FLYWHEEL JOYSTICK CONTROLLER  BINDINGS----------//
 
     // STOP FLYWHEEL by default
-    Flywheel.getInstance().setDefaultCommand(Flywheel.getInstance().revFlywheelCommand()  );
+    Flywheel.getInstance().setDefaultCommand(Flywheel.getInstance().stopFlywheelCommand()  );
+    // Flywheel.getInstance().setDefaultCommand(Flywheel.getInstance().revFlywheelCommand()  );
+
 
     // REV FLYWHEEL (OPERATOR - RB)
-    operatorController.rightBumper().onTrue(new InstantCommand(() -> {
+     operatorController.rightBumper().whileTrue(Flywheel.getInstance().revFlywheelCommand());
+      // operatorController.rightBumper().onTrue(new InstantCommand(() -> {
 
-      Flywheel.getInstance().setSpeed += 0.01;
-      Flywheel.getInstance().setSpeed = Math.min(Flywheel.getInstance().setSpeed, 0);
+    //   Flywheel.getInstance().setSpeed += 0.01;
+    //   Flywheel.getInstance().setSpeed = Math.min(Flywheel.getInstance().setSpeed, 0);
 
-    }));
+    // }));
     
 
     
-    operatorController.leftBumper().onTrue(new InstantCommand(() -> {
+    // operatorController.leftBumper().onTrue(new InstantCommand(() -> {
 
-      Flywheel.getInstance().setSpeed -= 0.01;
-      Flywheel.getInstance().setSpeed = Math.max(Flywheel.getInstance().setSpeed, -1);
+    //   Flywheel.getInstance().setSpeed -= 0.01;
+    //   Flywheel.getInstance().setSpeed = Math.max(Flywheel.getInstance().setSpeed, -1);
 
-    }));
+    // }));
     // Flywheel.getInstance().setDefaultCommand(
     //   Flywheel.getInstance().flyWheelCommand( () -> MathUtil.applyDeadband(operatorController.getLeftX(), 0.1) )
     // );
@@ -256,13 +259,13 @@ public class RobotContainer {
     //---------- TURRET JOYSTICK CONTROLLER BINDINGS ----------//
 
     // AIM TURRET (OPERATOR - LX AXIS)
-  //   Turret.getInstance().setDefaultCommand(
-  //     Turret.getInstance().aimTurretCommand( () -> MathUtil.applyDeadband(operatorController.getLeftX(), 0.1) )
-  //   );
+    Turret.getInstance().setDefaultCommand(
+      Turret.getInstance().moveTurretCommand( () -> MathUtil.applyDeadband(operatorController.getLeftX(), 0.1) )
+    );
 
-    operatorController.leftStick().whileTrue(Turret.getInstance().aimTurretToSetPointCommand( 
-      () -> Turret.getInstance().getAngleToHubFromTurretPerspective()  
-    ));
+    // operatorController.leftStick().whileTrue(Turret.getInstance().aimTurretToSetPointCommand( 
+    //   () -> Turret.getInstance().getAngleToHubFromTurretPerspective()  
+    // ));
 
 
    }
