@@ -45,9 +45,10 @@ import static edu.wpi.first.units.Units.*;
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
-  
-  //VISION! (Comment IN to use vision)
-  //  private final Vision vision = Vision.getInstance();
+
+  // SUBSYSTEM CONSTRUCTIONS
+  public final Turret turret = new Turret ("LEFT");
+  private final Vision vision = Vision.getInstance();    //VISION! (Comment IN to use vision)
 
 
   // CTRE SWERVE FIELDS
