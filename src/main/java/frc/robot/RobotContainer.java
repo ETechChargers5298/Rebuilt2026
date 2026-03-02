@@ -47,7 +47,7 @@ import static edu.wpi.first.units.Units.*;
 public class RobotContainer {
 
   // SUBSYSTEM CONSTRUCTIONS
-  public final Turret turret = new Turret ("LEFT");
+  public final TurretLeft turretLeft = TurretLeft.getInstance();
   private final Vision vision = Vision.getInstance();    //VISION! (Comment IN to use vision)
 
 
@@ -257,8 +257,8 @@ public class RobotContainer {
   //     Turret.getInstance().aimTurretCommand( () -> MathUtil.applyDeadband(operatorController.getLeftX(), 0.1) )
   //   );
 
-    operatorController.leftStick().whileTrue(turret.aimTurretToSetPointCommand( 
-      () -> turret.getAngleToHubFromTurretPerspective()  
+    operatorController.leftStick().whileTrue(turretLeft.aimTurretToSetPointCommand( 
+      () -> turretLeft.getAngleToHubFromTurretPerspective()  
     ));
 
 

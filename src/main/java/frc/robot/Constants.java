@@ -78,6 +78,13 @@ public final class Constants {
     public static final double JAW_MAX_ANGLE = -80;//25;
     // public static final double JAW_AUTO_ANGLE = 80;
 
+
+    //turret offsetrs
+    public static final double LEFT_TURRET_X_OFFSET = Units.inchesToMeters(-6.0);
+    public static final double LEFT_TURRET_Y_OFFSET = Units.inchesToMeters(-6.0);
+    public static final double RIGHT_TURRET_X_OFFSET = Units.inchesToMeters(6.0);
+    public static final double RIGHT_TURRET_Y_OFFSET = Units.inchesToMeters(6.0);
+
   }
 
   public static class RobotConstants{

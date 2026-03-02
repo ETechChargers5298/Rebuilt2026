@@ -39,8 +39,8 @@ public class Turret extends SubsystemBase {
   public String side;
   public static boolean LEFT = false;
   public static boolean RIGHT = false;
-  public double X_OFFSET = Units.inchesToMeters(-6.0);
-  public double Y_OFFSET = Units.inchesToMeters(6.0);
+  public double xOffset = Units.inchesToMeters(-6.0);
+  public double yOffset = Units.inchesToMeters(6.0);
   public double distanceFromHub = 0;
   public double angleToHub = 0;
   public double turretMotorSpeed = 0;
@@ -51,7 +51,7 @@ public class Turret extends SubsystemBase {
   
   
   // TURRET CONSTRUCTOR
-  public Turret(String side) {
+  public Turret(String side, double xOffset, double yOffset) {
 
     // Check which side Turret is being constructed
     this.side = side;
@@ -61,7 +61,7 @@ public class Turret extends SubsystemBase {
       }
       RIGHT = true;
     } else if (side.equals("LEFT")){
-      this.Y_OFFSET = -Y_OFFSET;
+      this.yOffset = -yOffset;
       System.out.println("WARNING: There is already a LEFT Turret instantiated in the code!");
       LEFT = true;
     } else {
@@ -115,8 +115,8 @@ public class Turret extends SubsystemBase {
     double hubY = Units.inchesToMeters(317.69 / 2); //From field drawings
     double robotX = Drivetrain.getInstance().getRobotX();
     double robotY = Drivetrain.getInstance().getRobotY();
-    double turretX = robotX + X_OFFSET;
-    double turretY = robotY + Y_OFFSET;
+    double turretX = robotX + xOffset;
+    double turretY = robotY + yOffset;
     return Math.toDegrees(Math.atan2(hubY - turretY, hubX - turretX));
   }
 
@@ -140,7 +140,6 @@ public class Turret extends SubsystemBase {
 
   // In-line Command to rotate the turret to a specific angle - in degrees
   public Command aimTurretToSetPointCommand( Supplier<Double> turretAngle) {
-  
 
     return null;
   }
