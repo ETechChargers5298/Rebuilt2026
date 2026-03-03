@@ -4,9 +4,12 @@ import frc.robot.commands.PivotIntake;
 import frc.robot.subsystems.*;
 import frc.robot.utils.TunerConstants;
 import frc.robot.utils.Telemetry;
-import frc.robot.subsystems.Vision;
+
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.commands.PathPlannerAuto;
+
 // import com.pathplanner.lib.auto.AutoBuilder;
 // import com.pathplanner.lib.commands.FollowPathCommand;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -58,7 +61,7 @@ public class RobotContainer {
   private final Telemetry logger = new Telemetry(MaxSpeed);
 
   //PATHPLANNER FIELDS
-  // private final SendableChooser<Command> autoChooser;
+  private final SendableChooser<Command> autoChooser;
   
 
 
@@ -69,8 +72,22 @@ public class RobotContainer {
     // On any computer connected to the robot, open Elastic, go to the File menu, and select Load Layout From Robot (or press Ctrl + D)
     WebServer.start(5800, Filesystem.getDeployDirectory().getPath());
 
-    // autoChooser = AutoBuilder.buildAutoChooser("Tests");
-    // SmartDashboard.putData("Auto Mode", autoChooser);
+    
+        // For convenience a programmer could change this when going to competition.
+    boolean isCompetition = true;
+
+    // Build an auto chooser. This will use Commands.none() as the default option.
+    // As an example, this will only show autos that start with "comp" while at
+    // competition as defined by the programmer
+    // autoChooser = AutoBuilder.buildAutoChooser("someAuto");
+    autoChooser = AutoBuilder.buildAutoChooserWithOptionsModifier(
+      (stream) -> isCompetition
+        ? stream.filter(auto -> auto.getName().startsWith("comp"))
+        : stream
+    );
+
+    SmartDashboard.putData("Auto Chooser", autoChooser);
+
     configureBindings();
     // Warmup PathPlanner to avoid Java pauses
     // FollowPathCommand.warmupCommand().schedule();
@@ -241,17 +258,27 @@ public class RobotContainer {
       () -> scorerLeft.getAngleToHubFromTurretPerspective()  
     ));
 
-
-   }
+  }
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *
    * @return the command to run in autonomous
-   */
-  public Command getAutonomousCommand() {
+   */    
+   public Command getAutonomousCommand() {
 
-    //FROM CTRE PATHPLANNER
+      //FROM CTRE PATHPLANNERpublic Command getAutonomousCommand() {
+      // This method loads the auto when it is called, however, it is recommended
+      // to first load your paths/autos when code starts, then return the
+      // pre-loaded auto/path
+      // return new PathPlannerAuto("Example Auto");
+      return autoChooser.getSelected();
+
+    }
+
+  }
+    
+    
     //return autoChooser.getSelected();
     
     // return new Command() {
@@ -264,23 +291,18 @@ public class RobotContainer {
     // return Autos.exampleAuto();
 
     // FROM CTRE TUNER: Simple drive forward auton
-    final var idle = new SwerveRequest.Idle();
-    return Commands.sequence(
-        // Reset our field centric heading to match the robot
-        // facing away from our alliance station wall (0 deg).
-        drivetrain.runOnce(() -> drivetrain.seedFieldCentric(Rotation2d.kZero)),
-        // Then slowly drive forward (away from us) for 5 seconds.
-        drivetrain.applyRequest(() ->
-            TunerConstants.drive.withVelocityX(0.5)
-                .withVelocityY(0)
-                .withRotationalRate(0)
-        )
-        .withTimeout(5.0),
-        // Finally idle for the rest of auton
-        drivetrain.applyRequest(() -> idle)
-    );
-
-
-
-  }
-}
+    // final var idle = new SwerveRequest.Idle();
+    // return Commands.sequence(
+    //     // Reset our field centric heading to match the robot
+    //     // facing away from our alliance station wall (0 deg).
+    //     drivetrain.runOnce(() -> drivetrain.seedFieldCentric(Rotation2d.kZero)),
+    //     // Then slowly drive forward (away from us) for 5 seconds.
+    //     drivetrain.applyRequest(() ->
+    //         TunerConstants.drive.withVelocityX(0.5)
+    //             .withVelocityY(0)
+    //             .withRotationalRate(0)
+    //     )
+    //     .withTimeout(5.0),
+    //     // Finally idle for the rest of auton
+    //     drivetrain.applyRequest(() -> idle)
+    // );
