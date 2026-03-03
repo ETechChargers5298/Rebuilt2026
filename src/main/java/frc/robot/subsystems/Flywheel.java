@@ -18,17 +18,11 @@ import frc.robot.Ports;
 public class Flywheel extends SubsystemBase {
   
   // FLYWHEEL FIELDS
-  private static Flywheel instance;
   private SparkMax flywheelMotor;
   private RelativeEncoder flywheelEncoder; // Flywheel speed sensor (in sparkmax)
   public double setSpeed;
 
-  // FLYWHEEL SINGLETON
-  public static Flywheel getInstance(){
-    if (instance == null)
-      instance = new Flywheel();
-      return instance;
-  }
+
 
   // FLYWHEEL CONSTRUCTOR
   private Flywheel() {

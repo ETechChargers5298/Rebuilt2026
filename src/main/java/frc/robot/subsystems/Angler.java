@@ -20,7 +20,7 @@ import frc.robot.Ports;
 public class Angler extends SubsystemBase {
 
   // ANGLER FIELDS
-  private static Angler instance;
+
   private SparkMax angleMotor;
   private RelativeEncoder anglerEncoder; // Angle sensor UP/DOWN () == Relative position 
   public double angleAngler = 0;
