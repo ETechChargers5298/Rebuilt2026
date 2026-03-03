@@ -49,6 +49,7 @@ public class FieldConstants {
     public static final double RED_RIGHT_TRENCH_CENTER = BLUE_LEFT_TRENCH_CENTER;
     public static final double BLUE_AUTO_ANGLE = 0;
     public static final double RED_AUTO_ANGLE = 180;
+    public static final double BLUE_HUB_CENTER_X = Units.inchesToMeters(182.11); //From field drawings
 
     public static final Translation2d fieldCenter = new Translation2d(FIELD_LENGTH_X/2, FIELD_WIDTH_Y/2);
 

@@ -1,30 +1,26 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
-
 package frc.robot.subsystems;
 
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
-
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Ports;
 
+
 public class Conveyor extends SubsystemBase {
 
-  //Fields?
+  // CONVEYOR FIELDS
   private static Conveyor instance;
   private SparkMax conveyorMotor;
 
 
-  //Conveyor Constructor
+  // CONVEYOR CONSTRUCTOR
   private Conveyor() 
   {
     conveyorMotor = new SparkMax(Ports.CONVEYOR_MOTOR_PORT, MotorType.kBrushless);
   }
 
-  //Conveyor Singleton
+  // CONVEYOR SINGLETON
   public static Conveyor getInstance()
   {
     if(instance == null)
@@ -34,7 +30,7 @@ public class Conveyor extends SubsystemBase {
     return instance;
   }
 
-  //Methods
+  // CONVEYOR METHODS
   public void conveyIn()
   {
     conveyorMotor.set(1.0);
@@ -55,16 +51,15 @@ public class Conveyor extends SubsystemBase {
     conveyorMotor.set(speed);
   }
 
-    public Command conveyInCommand() {
-    // Inline construction of command goes here.
+  // CONVEYOR BASIC COMMANDS
+  public Command conveyInCommand() {
     return run(
         () -> {
           conveyIn();
         });
   }
 
-    public Command conveyOutCommand() {
-    // Inline construction of command goes here.
+  public Command conveyOutCommand() {
     return run(
         () -> {
           conveyOut();

@@ -1,13 +1,8 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
-
 package frc.robot.subsystems;
+
 import java.util.Locale.LanguageRange;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
-
-
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
@@ -34,15 +29,9 @@ import frc.robot.subsystems.Drivetrain;
 public class Turret extends SubsystemBase {
 
   // TURRET FIELDS
-  private final TalonFX turretMotor = new TalonFX(Ports.TURRET_MOTOR_PORT);
+  private final TalonFX turretMotor;
   // private RelativeEncoder turretEncoder; // turret sensor LEFT/RIGHT() == relative position with throughbore
-  public String side;
-  public static boolean LEFT = false;
-  public static boolean RIGHT = false;
-  public double xOffset = Units.inchesToMeters(-6.0);
-  public double yOffset = Units.inchesToMeters(6.0);
-  public double distanceFromHub = 0;
-  public double angleToHub = 0;
+
   public double turretMotorSpeed = 0;
   public double turretAngle = 0;
   public double angleAngler = 0;
@@ -51,22 +40,9 @@ public class Turret extends SubsystemBase {
   
   
   // TURRET CONSTRUCTOR
-  public Turret(String side, double xOffset, double yOffset) {
+  public Turret(String side, int motorPort) {
 
-    // Check which side Turret is being constructed
-    this.side = side;
-    if(side.equals("RIGHT")){
-      if(RIGHT){
-        System.out.println("WARNING: There is already a Rigth Turret instantiated in the code!");
-      }
-      RIGHT = true;
-    } else if (side.equals("LEFT")){
-      this.yOffset = -yOffset;
-      System.out.println("WARNING: There is already a LEFT Turret instantiated in the code!");
-      LEFT = true;
-    } else {
-      System.out.println("Use either \"RIGHT\" or \"LEFT\" to instantiate a Turret object");
-    }
+    turretMotor = new TalonFX(motorPort);
 
     // turretEncoder = turretMotor.getAlternateEncoder();    //REV throughbore connected to Turret Sparkmax_
 
@@ -106,25 +82,6 @@ public class Turret extends SubsystemBase {
   public void zeroTurretAngle(){
     turretMotor.setPosition(0);
   }      
-    
-
-
-  // if you are the turret's center (facing forward with intake in front), to which angle is the hub?
-  public double getAngleToHubFromRobotPerspective(){
-    double hubX = Units.inchesToMeters(182.11); //From field drawings, not sure which is X or Y
-    double hubY = Units.inchesToMeters(317.69 / 2); //From field drawings
-    double robotX = Drivetrain.getInstance().getRobotX();
-    double robotY = Drivetrain.getInstance().getRobotY();
-    double turretX = robotX + xOffset;
-    double turretY = robotY + yOffset;
-    return Math.toDegrees(Math.atan2(hubY - turretY, hubX - turretX));
-  }
-
-  // if you are at the turret's center (facing backward/starting angle), to which angle is the hub?
-  public double getAngleToHubFromTurretPerspective(){
-    return 180.0 - getAngleToHubFromRobotPerspective();
-  }
-
 
 
   // TURRET COMMANDS

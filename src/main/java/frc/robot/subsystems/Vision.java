@@ -11,7 +11,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 
-
 public class Vision extends SubsystemBase {
 
     // VISION CLASS FIELDS
@@ -104,15 +103,5 @@ public class Vision extends SubsystemBase {
         }
     }
         
-
-
-    public double getDistanceToHub(){
-        return 0.0;
-    }
-
-    public double getAngleToHubFromFieldPerspective(){
-        return 0.0;
-    }
-
 
 } // close Vision class

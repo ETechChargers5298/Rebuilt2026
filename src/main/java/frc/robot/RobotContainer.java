@@ -1,41 +1,26 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
-
 package frc.robot;
 
-import frc.robot.Ports;
-import frc.robot.commands.Autos;
 import frc.robot.commands.PivotIntake;
-// import frc.robot.commands.PivotIntake;
-import frc.robot.commands.basic.*;
 import frc.robot.subsystems.*;
 import frc.robot.utils.TunerConstants;
 import frc.robot.utils.Telemetry;
 import frc.robot.subsystems.Vision;
-
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
-
 // import com.pathplanner.lib.auto.AutoBuilder;
 // import com.pathplanner.lib.commands.FollowPathCommand;
-
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.FunctionalCommand;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.net.WebServer; // For the WebServer class
 import edu.wpi.first.wpilibj.Filesystem; // For the Filesystem class
-
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
-
 import static edu.wpi.first.units.Units.*;
 
 /**
@@ -47,7 +32,10 @@ import static edu.wpi.first.units.Units.*;
 public class RobotContainer {
 
   // SUBSYSTEM CONSTRUCTIONS
-  public final TurretLeft turretLeft = TurretLeft.getInstance();
+  public final ScorerLeft scorerLeft = ScorerLeft.getInstance();
+  public final ScorerRight scorerRight = ScorerRight.getInstance();
+  public final Loader loader = Loader.getInstance();
+  public final Intake intake = Intake.getInstance();
   private final Vision vision = Vision.getInstance();    //VISION! (Comment IN to use vision)
 
 
@@ -100,7 +88,6 @@ public class RobotContainer {
   private void configureBindings() {
 
     // Link for map of Joystick Controllers: https://docs.google.com/presentation/d/1W7NYwlgP1rfN15ja3PuY3GGtcSFDY97u9_2YbxYBe2A/edit?slide=id.g18d2b75b637cb431_3#slide=id.g18d2b75b637cb431_3
-
 
     //---------- DRIVETRAIN JOYSTICK CONTROLLER BINDINGS----------//
     
@@ -174,7 +161,7 @@ public class RobotContainer {
     Intake.getInstance().setDefaultCommand(  Intake.getInstance().stopEatingCommand()  );
 
     // EAT FUEL (OPERATOR - LB)
-   // operatorController.leftBumper().whileTrue( Intake.getInstance().eatFuelCommand() );
+    operatorController.leftBumper().whileTrue( Intake.getInstance().eatFuelCommand() );
 
     // SPIT FUEL (OPERATOR - LT)
     operatorController.leftTrigger().whileTrue(  Intake.getInstance().spitFuelCommand()   );
@@ -189,8 +176,6 @@ public class RobotContainer {
     operatorController.x().whileTrue(new PivotIntake(0));//retract intake temp point
    
 
-
-
     //---------- CONVEYOR JOYSTICK CONTROLLER BINDINGS ----------//
 
     // STOPS CONVEYER by default
@@ -204,10 +189,7 @@ public class RobotContainer {
       
 
     //---------- LOADER JOYSTICK CONTROLLER BINDINGS ----------//
-
-    // LOAD FUEL TO LAUNCHER (OPERATOR - RT)
-
-    
+   
     // STOPS LOADER by default
     Loader.getInstance().setDefaultCommand(Loader.getInstance().stopLoadCommand());
 
@@ -215,57 +197,48 @@ public class RobotContainer {
     operatorController.rightTrigger().whileTrue( Loader.getInstance().loadInCommand());
       
     // LOAD OUT (OPERATOR - ???)
-    //operatorController.???().whileTrue(Loader.getInstance().unloadCommand());
+    //operatorController.???().whileTrue(loader.unloadCommand());
 
 
 
     //---------- FLYWHEEL JOYSTICK CONTROLLER  BINDINGS----------//
 
     // STOP FLYWHEEL by default
-    Flywheel.getInstance().setDefaultCommand(Flywheel.getInstance().stopFlywheelCommand()  );
-    // Flywheel.getInstance().setDefaultCommand(Flywheel.getInstance().revFlywheelCommand()  );
-
+    scorerLeft.flywheel.setDefaultCommand(scorerLeft.flywheel.stopFlywheelCommand()  );
 
     // REV FLYWHEEL (OPERATOR - RB)
-     operatorController.rightBumper().whileTrue(Flywheel.getInstance().revFlywheelCommand());
-      // operatorController.rightBumper().onTrue(new InstantCommand(() -> {
-
-    //   Flywheel.getInstance().setSpeed += 0.01;
-    //   Flywheel.getInstance().setSpeed = Math.min(Flywheel.getInstance().setSpeed, 0);
-
+    operatorController.rightBumper().whileTrue(scorerLeft.flywheel.revFlywheelCommand());
+    
+    // operatorController.rightBumper().onTrue(new InstantCommand(() -> {
+    //   scorerLeft.flywheel.setSpeed += 0.01;
+    //   scorerLeft.flywheel.setSpeed = Math.min(scorerLeft.flywheel.setSpeed, 0);
     // }));
-    
-
-    
     // operatorController.leftBumper().onTrue(new InstantCommand(() -> {
-
-    //   Flywheel.getInstance().setSpeed -= 0.01;
-    //   Flywheel.getInstance().setSpeed = Math.max(Flywheel.getInstance().setSpeed, -1);
-
+    //   scorerLeft.flywheel.setSpeed -= 0.01;
+    //   scorerLeft.flywheel.setSpeed = Math.max(scorerLeft.flywheel.setSpeed, -1);
     // }));
-    // Flywheel.getInstance().setDefaultCommand(
-    //   Flywheel.getInstance().flyWheelCommand( () -> MathUtil.applyDeadband(operatorController.getLeftX(), 0.1) )
+    // scorerLeft.flywheel.setDefaultCommand(
+    //   scorerLeft.flywheel.flyWheelCommand( () -> MathUtil.applyDeadband(operatorController.getLeftX(), 0.1) )
     // );
 
     //---------- ANGLER JOYSTICK CONTROLLER BINDINGS ----------//
 
     // AIM ANGLER (OPERATOR - RY AXIS)
-    Angler.getInstance().setDefaultCommand(
-      Angler.getInstance().aimAnglerCommand( () -> MathUtil.applyDeadband(operatorController.getRightY(), 0.1) )
+    scorerLeft.angler.setDefaultCommand(
+      scorerLeft.angler.aimAnglerCommand( () -> MathUtil.applyDeadband(operatorController.getRightY(), 0.1) )
     );
-    // ANGLE UP (OPERATOR - X) - will not stop moving without defaul Angler command
-    // operatorController.x().whileTrue(Scorer.getInstance().angleUpCommand());
-    
+
 
     //---------- TURRET JOYSTICK CONTROLLER BINDINGS ----------//
 
     // AIM TURRET (OPERATOR - LX AXIS)
-    TurretLeft.getInstance().setDefaultCommand(
-      TurretLeft.getInstance().moveTurretCommand( () -> MathUtil.applyDeadband(operatorController.getLeftX(), 0.1) )
+    scorerLeft.turret.setDefaultCommand(
+      scorerLeft.turret.moveTurretCommand( () -> MathUtil.applyDeadband(operatorController.getLeftX(), 0.1) )
     );
 
-    operatorController.leftStick().whileTrue(turretLeft.aimTurretToSetPointCommand( 
-      () -> turretLeft.getAngleToHubFromTurretPerspective()  
+    // AIM TURRET TO HUB (OPERATOR - L3)
+    operatorController.leftStick().whileTrue(scorerLeft.turret.aimTurretToSetPointCommand( 
+      () -> scorerLeft.getAngleToHubFromTurretPerspective()  
     ));
 
 

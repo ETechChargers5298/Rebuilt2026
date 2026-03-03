@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 import java.util.function.DoubleSupplier;
+import java.util.function.Supplier;
 
 import com.ctre.phoenix6.StatusSignal;
 // import com.ctre.phoenix6.hardware.TalonFX;
@@ -23,24 +24,19 @@ public class Angler extends SubsystemBase {
 
   private SparkMax angleMotor;
   private RelativeEncoder anglerEncoder; // Angle sensor UP/DOWN () == Relative position 
-  public double angleAngler = 0;
-    private DigitalInput limitSwitch;
+  public double anglerAngle = 0;
+  private DigitalInput limitSwitch;
 
-
-
- 
 
   // ANGLER CONSTRUCTOR
-  public Angler() {
-    angleMotor = new SparkMax(Ports.ANGLE_MOTOR_PORT, MotorType.kBrushless);
+  public Angler(String side, int motorPort, int limitPort) {
+    angleMotor = new SparkMax(motorPort, MotorType.kBrushless);
     anglerEncoder = angleMotor.getEncoder();
-        limitSwitch = new DigitalInput(0); 
-   //REV throughbore connected to Angler Sparkmax
+    limitSwitch = new DigitalInput(limitPort);    //REV throughbore connected to Angler Sparkmax
   }
 
 
   // BASIC ANGLER METHODS
-
   public void aimup(){
     angleMotor.set(1);
   }
@@ -73,6 +69,13 @@ public class Angler extends SubsystemBase {
       () -> {
         aimAngler(speedSupplier.getAsDouble());
       });
+  }
+
+  // In-line Command to angle the angler up to a specific angle - in degrees
+  public Command aimAnglerToSetPointCommand( Supplier<Double> anglerAngle) {
+
+
+    return null;
   }
 
 

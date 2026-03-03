@@ -1,19 +1,18 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
-
 package frc.robot.subsystems;
+
 import java.util.function.DoubleSupplier;
+import java.util.function.Supplier;
+
 // import com.ctre.phoenix6.hardware.TalonFX;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
-
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Ports;
+
 
 public class Flywheel extends SubsystemBase {
   
@@ -23,10 +22,9 @@ public class Flywheel extends SubsystemBase {
   public double setSpeed;
 
 
-
   // FLYWHEEL CONSTRUCTOR
-  private Flywheel() {
-    flywheelMotor = new SparkMax(Ports.FLYWHEEL_MOTOR_PORT, MotorType.kBrushless);
+  public Flywheel(String side, int motorPort) {
+    flywheelMotor = new SparkMax(motorPort, MotorType.kBrushless);
     flywheelEncoder = flywheelMotor.getEncoder();  //Built in encoder
   }
 
@@ -46,8 +44,8 @@ public class Flywheel extends SubsystemBase {
     return flywheelEncoder.getVelocity();
   }
 
-  public void speedUp(double direction){
-    flywheelMotor.set(direction);
+  public void speedUp(double speed){
+    flywheelMotor.set(speed);
   }
 
 
@@ -71,11 +69,16 @@ public class Flywheel extends SubsystemBase {
     return run(
       () -> {
         speedUp(speed.getAsDouble());
-      
       });
     }
 
-  
+  // In-line Command to spin the flywheel up to a specific revolutions per minute
+  public Command spinFlywheelToSetPointCommand( Supplier<Double> flywheelRpm) {
+
+
+    return null;
+  }
+
   
 
   @Override

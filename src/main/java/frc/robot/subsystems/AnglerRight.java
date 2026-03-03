@@ -1,17 +1,26 @@
 package frc.robot.subsystems;
 
-public class AnglerRight extends Angler{
+import frc.robot.Ports;
 
-    private static AnglerRight instance;
 
-    private AnglerRight(){
-        super();
-    }
+public class AnglerRight extends Angler {
 
-     // AnglerRight SINGLETON
+  // ANGLERRIGHT FIELDS
+  private static AnglerRight instance;
+
+  // ANGLERRIGHT CONSTRUCTOR
+  private AnglerRight(){
+    super("RIGHT",
+      Ports.ANGLER_RIGHT_MOTOR_PORT,
+      Ports.ANGLER_RIGHT_LIMIT_SWITCH_PORT
+    );
+  }
+
+  // ANGLERRIGHT SINGLETON
   public static AnglerRight getInstance(){
-  if (instance == null)
-    instance = new AnglerRight();
+    if (instance == null){
+      instance = new AnglerRight();
+    }
     return instance;
   }
 

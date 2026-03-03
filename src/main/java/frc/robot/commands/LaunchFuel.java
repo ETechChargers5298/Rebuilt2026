@@ -4,25 +4,28 @@
 
 package frc.robot.commands;
 
-import frc.robot.subsystems.Angler;
+import frc.robot.subsystems.ScorerLeft;
+import frc.robot.subsystems.ScorerRight;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.Command;
 
 /** An example command that uses an example subsystem. */
-public class Launcher extends Command {
-  @SuppressWarnings("PMD.UnusedPrivateField")
-  private final Angler scorer;
+public class LaunchFuel extends Command {
+
+  private final ScorerLeft scorerLeft;
+  private final ScorerRight scorerRight;
 
   private double kP = 0, kI = 0, kD = 0;
   private PIDController launchPid = new PIDController(kP, kI, kD);
   private double setPoint = 0;
 
 
-  public Launcher() {
-    scorer = Angler.getInstance();
+  public LaunchFuel() {
+    scorerLeft = ScorerLeft.getInstance();
+    scorerRight = ScorerRight.getInstance();
 
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(scorer);
+    addRequirements(scorerLeft.flywheel, scorerRight.flywheel);
   }
 
   // Called when the command is initially scheduled.
@@ -36,12 +39,15 @@ public class Launcher extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    // scorer.
+  
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+
+
+  }
 
   // Returns true when the command should end.
   @Override
