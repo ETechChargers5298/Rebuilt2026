@@ -28,12 +28,7 @@ public class Angler extends SubsystemBase {
 
 
 
-  // ANGLER SINGLETON
-  public static Angler getInstance(){
-  if (instance == null)
-    instance = new Angler();
-    return instance;
-  }
+ 
 
   // ANGLER CONSTRUCTOR
   public Angler() {
