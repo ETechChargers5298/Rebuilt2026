@@ -586,7 +586,7 @@ private final SwerveRequest.ApplyRobotSpeeds m_pathApplyRobotSpeeds = new Swerve
   );
 
   /* The SysId routine to test */
-  private SysIdRoutine m_sysIdRoutineToApply = m_sysIdRoutineTranslation;
+  private SysIdRoutine m_sysIdRoutineToApply = m_sysIdRoutineSteer;
 
   /**
    * Runs the SysId Quasistatic test in the given direction for the routine

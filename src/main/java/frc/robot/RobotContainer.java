@@ -6,6 +6,7 @@ import frc.robot.utils.TunerConstants;
 import frc.robot.utils.Telemetry;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
+import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathPlannerAuto;
@@ -152,8 +153,9 @@ public class RobotContainer {
     driverController.start().and(driverController.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
 
     // FIELD-CENTRIC HEADING RESET (DRIVER - LB)
-    driverController.leftBumper().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
-
+    // driverController.leftBumper().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
+    driverController.leftBumper().onTrue(Commands.runOnce(SignalLogger:: start));
+    driverController.rightBumper().onTrue(Commands.runOnce(SignalLogger:: stop));
     // Ensure that the telemetry is updated from our drivetrain's movements
     drivetrain.registerTelemetry(logger::telemeterize);
 
