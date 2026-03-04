@@ -79,12 +79,18 @@ public class RobotContainer {
     // Build an auto chooser. This will use Commands.none() as the default option.
     // As an example, this will only show autos that start with "comp" while at
     // competition as defined by the programmer
-    // autoChooser = AutoBuilder.buildAutoChooser("someAuto");
-    autoChooser = AutoBuilder.buildAutoChooserWithOptionsModifier(
-      (stream) -> isCompetition
-        ? stream.filter(auto -> auto.getName().startsWith("comp"))
-        : stream
-    );
+    autoChooser = AutoBuilder.buildAutoChooser("foward1m");
+    // autoChooser = AutoBuilder.buildAutoChooserWithOptionsModifier(
+    //   (stream) -> isCompetition
+    //     ? stream.filter(auto -> auto.getName().startsWith("comp"))
+    //     : stream
+    // );
+    autoChooser.addOption("Forward 1 meter", new PathPlannerAuto("forward1m"));
+    autoChooser.addOption("H2D", new PathPlannerAuto("Hub-to-Depot"));
+    
+    // autoChooser.setDefaultOption("default", getAutonomousCommand());
+
+
 
     SmartDashboard.putData("Auto Chooser", autoChooser);
 
