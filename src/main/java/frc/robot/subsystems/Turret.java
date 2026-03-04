@@ -97,7 +97,7 @@ public class Turret extends SubsystemBase {
 
   // In-line Command to rotate the turret to a specific angle - in degrees
   public Command aimTurretToSetPointCommand( Supplier<Double> turretAngle) {
-      double turretDeg = getTurretAngle();
+      double turretDeg = turretAngle.get();
       double targetRotations = (turretDeg / 360) * GEAR_RATIO;
       double currentRotations = getTurretAngle();
       double turretTurn = targetRotations - currentRotations;
