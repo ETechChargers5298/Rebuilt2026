@@ -41,9 +41,9 @@ public class TunerConstants {
     // DRIVE GAINS FROM SYSID
     private static final Slot0Configs driveGains = new Slot0Configs()
         .withKP(0.1).withKI(0).withKD(0)
-        .withKS(0.12)  // <-- Replace with Translation kS
-        .withKV(0.124) // <-- Replace with Translation kV
-        .withKA(0.01); // <-- Replace with  Translation kA
+        .withKS(0.26131)  // <-- Replace with Translation kS
+        .withKV(0.12185) // <-- Replace with Translation kV
+        .withKA(0.0018321); // <-- Replace with  Translation kA
 
     // STEER/TURN GAINS FROM SYSID
     private static final Slot0Configs steerGains = new Slot0Configs()
