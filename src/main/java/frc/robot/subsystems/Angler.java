@@ -48,9 +48,9 @@ public class Angler extends SubsystemBase {
     angleMotor.set(-direction);
   }
 
-  public double getAnglerAngle(){
-    return anglerEncoder.getPosition(); 
-  }
+  public double getAnglerAngle(){  // get the angle of the angler
+        return anglerEncoder.getPosition(); 
+    }
 
 
   // BASIC ANGLER COMMANDS
@@ -73,7 +73,6 @@ public class Angler extends SubsystemBase {
 
   // In-line Command to angle the angler up to a specific angle - in degrees
   public Command aimAnglerToSetPointCommand( Supplier<Double> anglerAngle) {
-
 
     return null;
   }
