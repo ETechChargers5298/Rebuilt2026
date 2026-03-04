@@ -73,8 +73,8 @@ public class RobotContainer {
     WebServer.start(5800, Filesystem.getDeployDirectory().getPath());
 
     
-        // For convenience a programmer could change this when going to competition.
-    boolean isCompetition = true;
+    // For convenience a programmer could change this when going to competition.
+    boolean isCompetition = false;
 
     // Build an auto chooser. This will use Commands.none() as the default option.
     // As an example, this will only show autos that start with "comp" while at

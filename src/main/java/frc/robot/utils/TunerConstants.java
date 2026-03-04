@@ -35,22 +35,32 @@ public class TunerConstants {
     public static final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
 
 
+    // SYSID VALUES
+    // Tune these gains for a specific robot (backup vs final)
 
-
-
-    // Both sets of gains need to be tuned to your individual robot.
-
-    // The steer motor uses any SwerveModule.SteerRequestType control request with the
-    // output type specified by SwerveModuleConstants.SteerMotorClosedLoopOutput
-    private static final Slot0Configs steerGains = new Slot0Configs()
-        .withKP(100).withKI(0).withKD(0.5)
-        .withKS(0.1).withKV(2.48).withKA(0)
-        .withStaticFeedforwardSign(StaticFeedforwardSignValue.UseClosedLoopSign);
-    // When using closed-loop control, the drive motor uses the control
-    // output type specified by SwerveModuleConstants.DriveMotorClosedLoopOutput
+    // DRIVE GAINS FROM SYSID
     private static final Slot0Configs driveGains = new Slot0Configs()
         .withKP(0.1).withKI(0).withKD(0)
-        .withKS(0).withKV(0.124);
+        .withKS(0.12)  // <-- Replace with Translation kS
+        .withKV(0.124) // <-- Replace with Translation kV
+        .withKA(0.01); // <-- Replace with  Translation kA
+
+    // STEER/TURN GAINS FROM SYSID
+    private static final Slot0Configs steerGains = new Slot0Configs()
+        .withKP(100).withKI(0).withKD(0.5)
+        .withKS(0.1)   // <-- Replace with Steer kS
+        .withKV(2.48)  // <-- Replace with Steer kV
+        .withKA(0.005); // <-- Replace with Steer kA
+
+
+    // ROTATION GAINS FROM SYSID
+    public static class RotationConstants {
+        public static final double kS = 0.15; // Replace with your Rotation kS
+        public static final double kV = 0.12; // Replace with your Rotation kV
+        public static final double kA = 0.01; // Replace with your Rotation kA
+    }
+
+
 
     // The closed-loop output type to use for the steer motors;
     // This affects the PID/FF gains for the steer motors
