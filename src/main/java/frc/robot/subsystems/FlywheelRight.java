@@ -10,7 +10,7 @@ public class FlywheelRight extends Flywheel{
 
   // FLYWHEELLEFT CONSTRUCTOR
   private FlywheelRight(){
-    super("RIGHT", Ports.FLYWHEEL_LEFT_MOTOR_PORT);
+    super("RIGHT", Ports.FLYWHEEL_RIGHT_MOTOR_PORT);
   }
 
   // FLYWHEEL SINGLETON

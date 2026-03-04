@@ -16,7 +16,11 @@ public class Scorer {
     public double angleToHub = 0;
     private double xOffset;
     private double yOffset;
-
+    private double hubX = FieldConstants.BLUE_HUB_CENTER_X; 
+    private double hubY = FieldConstants.FIELD_CENTER_Y; //meters
+    private double robotX = Drivetrain.getInstance().getRobotX();
+    private double robotY = Drivetrain.getInstance().getRobotY();
+    private double robotAngle = Drivetrain.getInstance().getRobotAngleDegrees();
 
     // SCORER CONSTRUCTOR
     public Scorer(String side, double xOffset, double yOffset){
@@ -43,15 +47,12 @@ public class Scorer {
 
     // Distance from TurretCenter -->  Alliance Hub Center
     public double getDistanceToHub(){
-        return 0.0;
+        
+        return Math.sqrt(Math.pow(hubX-robotX,2)+Math.pow(hubY-robotY,2));
     }
 
     // Angle from HubCenter --> TurretCenter --> Field X-axis 0
     public double getAngleToHubFromFieldPerspective(){
-        double hubX = FieldConstants.BLUE_HUB_CENTER_X; 
-        double hubY = FieldConstants.FIELD_CENTER_Y; //meters
-        double robotX = Drivetrain.getInstance().getRobotX();
-        double robotY = Drivetrain.getInstance().getRobotY();
         double turretX = robotX + xOffset;
         double turretY = robotY + yOffset;
         return Math.toDegrees(Math.atan2(hubY - turretY, hubX - turretX));
@@ -61,7 +62,7 @@ public class Scorer {
     public double getAngleToHubFromRobotPerspective(){
 
 
-        return 0.0;
+        return getAngleToHubFromFieldPerspective() - robotAngle;
     }
 
     // Angle from HubCenter - ScorerCenter - Turret X-axis
