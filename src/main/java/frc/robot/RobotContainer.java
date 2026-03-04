@@ -254,9 +254,9 @@ public class RobotContainer {
     );
 
     // AIM TURRET TO HUB (OPERATOR - L3)
-    operatorController.leftStick().whileTrue(scorerLeft.turret.aimTurretToSetPointCommand( 
-      () -> scorerLeft.getAngleToHubFromTurretPerspective()  
-    ));
+    // operatorController.leftStick().whileTrue(scorerLeft.turret.aimTurretToSetPointCommand( 
+    //   () -> scorerLeft.getAngleToHubFromTurretPerspective()  
+    // ));
 
   }
 
