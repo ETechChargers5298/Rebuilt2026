@@ -20,6 +20,7 @@ public class Scorer {
     private double hubY = FieldConstants.FIELD_CENTER_Y; //meters
     private double robotX = Drivetrain.getInstance().getRobotX();
     private double robotY = Drivetrain.getInstance().getRobotY();
+    private double robotAngle = Drivetrain.getInstance().getRobotAngleDegrees();
 
     // SCORER CONSTRUCTOR
     public Scorer(String side, double xOffset, double yOffset){
@@ -61,7 +62,7 @@ public class Scorer {
     public double getAngleToHubFromRobotPerspective(){
 
 
-        return 0.0;
+        return getAngleToHubFromFieldPerspective() - robotAngle;
     }
 
     // Angle from HubCenter - ScorerCenter - Turret X-axis
