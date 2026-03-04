@@ -6,6 +6,7 @@ import frc.robot.utils.TunerConstants;
 import frc.robot.utils.Telemetry;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
+import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathPlannerAuto;
@@ -79,12 +80,18 @@ public class RobotContainer {
     // Build an auto chooser. This will use Commands.none() as the default option.
     // As an example, this will only show autos that start with "comp" while at
     // competition as defined by the programmer
-    // autoChooser = AutoBuilder.buildAutoChooser("someAuto");
-    autoChooser = AutoBuilder.buildAutoChooserWithOptionsModifier(
-      (stream) -> isCompetition
-        ? stream.filter(auto -> auto.getName().startsWith("comp"))
-        : stream
-    );
+    autoChooser = AutoBuilder.buildAutoChooser("foward1m");
+    // autoChooser = AutoBuilder.buildAutoChooserWithOptionsModifier(
+    //   (stream) -> isCompetition
+    //     ? stream.filter(auto -> auto.getName().startsWith("comp"))
+    //     : stream
+    // );
+    autoChooser.addOption("Forward 1 meter", new PathPlannerAuto("forward1m"));
+    autoChooser.addOption("H2D", new PathPlannerAuto("Hub-to-Depot"));
+    
+    // autoChooser.setDefaultOption("default", getAutonomousCommand());
+
+
 
     SmartDashboard.putData("Auto Chooser", autoChooser);
 
@@ -152,8 +159,9 @@ public class RobotContainer {
     driverController.start().and(driverController.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
 
     // FIELD-CENTRIC HEADING RESET (DRIVER - LB)
-    driverController.leftBumper().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
-
+    // driverController.leftBumper().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
+    driverController.leftBumper().onTrue(Commands.runOnce(SignalLogger:: start));
+    driverController.rightBumper().onTrue(Commands.runOnce(SignalLogger:: stop));
     // Ensure that the telemetry is updated from our drivetrain's movements
     drivetrain.registerTelemetry(logger::telemeterize);
 
@@ -254,9 +262,9 @@ public class RobotContainer {
     );
 
     // AIM TURRET TO HUB (OPERATOR - L3)
-    operatorController.leftStick().whileTrue(scorerLeft.turret.aimTurretToSetPointCommand( 
-      () -> scorerLeft.getAngleToHubFromTurretPerspective()  
-    ));
+    // operatorController.leftStick().whileTrue(scorerLeft.turret.aimTurretToSetPointCommand( 
+    //   () -> scorerLeft.getAngleToHubFromTurretPerspective()  
+    // ));
 
   }
 
