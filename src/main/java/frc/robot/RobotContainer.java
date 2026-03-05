@@ -88,6 +88,8 @@ public class RobotContainer {
     // );
     autoChooser.addOption("Forward 1 meter", new PathPlannerAuto("forward1m"));
     autoChooser.addOption("H2D", new PathPlannerAuto("Hub-to-Depot"));
+
+    autoChooser.addOption("Trench Right", new PathPlannerAuto("TrenchRight"));
     
     // autoChooser.setDefaultOption("default", getAutonomousCommand());
 
