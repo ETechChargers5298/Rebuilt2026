@@ -98,9 +98,9 @@ public class TunerConstants {
     // Configs for the Pigeon 2; leave this null to skip applying Pigeon 2 configs
     public static final Pigeon2Configuration pigeonConfigs = new Pigeon2Configuration()
         .withMountPose(new MountPoseConfigs()
-            .withMountPosePitch(-.03825373202562332)
-            .withMountPoseRoll(0.312202125787735)
-            .withMountPoseYaw(-0.7408741712557019)
+            .withMountPosePitch(-0.7408745288848877)
+            .withMountPoseRoll(-0.03825372830033302)
+            .withMountPoseYaw(0.31220224499702454)
         );
         
 
@@ -120,8 +120,8 @@ public class TunerConstants {
     private static final double kSteerGearRatio = 25.9; //Consistent across all WCP X2 Swerves
     private static final Distance kWheelRadius = Inches.of(1.75);   //Diameter of 3.5 inch wheel
 
-    private static final boolean kInvertLeftSide = false;
-    private static final boolean kInvertRightSide = true;
+    private static final boolean kInvertLeftSide = true;
+    private static final boolean kInvertRightSide = false;
 
 
 
