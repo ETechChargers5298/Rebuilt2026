@@ -4,6 +4,8 @@ import com.revrobotics.RelativeEncoder;
 
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import frc.robot.FieldConstants;
 
 
@@ -48,6 +50,22 @@ public class Scorer {
 
     // SCORER METHODS
 
+ /*    public Command aimToHub(){
+        return new RunCommand(() -> {
+            
+            double dist = getDistanceToHub();
+            ShotParameter params = getIdealShot(dist);
+
+            double targetFieldAngle = getPredictedTargetAngle();
+
+            turret.setFieldRelativeAngle(targetFieldAngle);
+
+            flywheel.setReferenceRPM(params.rpm);
+            angler.setAngle(params.angle);
+
+        }, turret, flywheel, angler);
+    }
+*/
     // Distance from TurretCenter -->  Alliance Hub Center
     public double getDistanceToHub(){
         
