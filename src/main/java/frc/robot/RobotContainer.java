@@ -144,12 +144,12 @@ public class RobotContainer {
 
     // SWERVE FORWARD HALF-SPEED (DRIVER - DPAD_UP)
     driverController.povUp().whileTrue(drivetrain.applyRequest(() ->
-        forwardStraight.withVelocityX(0.5).withVelocityY(0))
+        forwardStraight.withVelocityX(-0.5).withVelocityY(0))
     );
 
     // SWERVE BACKWARD HALF-SPEED (DRIVER - DPAD_DOWN)
     driverController.povDown().whileTrue(drivetrain.applyRequest(() ->
-        forwardStraight.withVelocityX(-0.5).withVelocityY(0))
+        forwardStraight.withVelocityX(0.5).withVelocityY(0))
     );
 
 
@@ -161,9 +161,9 @@ public class RobotContainer {
     driverController.start().and(driverController.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
 
     // FIELD-CENTRIC HEADING RESET (DRIVER - LB)
-    // driverController.leftBumper().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
-    driverController.leftBumper().onTrue(Commands.runOnce(SignalLogger:: start));
-    driverController.rightBumper().onTrue(Commands.runOnce(SignalLogger:: stop));
+    driverController.leftBumper().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
+  //driverController.leftBumper().onTrue(Commands.runOnce(SignalLogger:: start));
+  //driverController.rightBumper().onTrue(Commands.runOnce(SignalLogger:: stop));
     // Ensure that the telemetry is updated from our drivetrain's movements
     drivetrain.registerTelemetry(logger::telemeterize);
 

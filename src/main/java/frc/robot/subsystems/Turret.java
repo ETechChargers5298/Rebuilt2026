@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import java.rmi.server.ExportException;
 import java.util.Locale.LanguageRange;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
@@ -11,12 +12,14 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.ctre.phoenix6.controls.MotionMagicVoltage;
 
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.encoder.DetachedEncoder;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -37,7 +40,8 @@ public class Turret extends SubsystemBase {
   public double angleAngler = 0;
   private final double GEAR_RATIO = 100.0 / 10.0;      // gear ratio of turret (Big gear of 100: Small gear of 10)
   private final double EXTRA_DEGREES = 5.0;      // additional degrees beyond 360 the turret should rotate in each direction
-  
+  // Define the request once as a field to save memory
+  private final MotionMagicVoltage expoRequest = new MotionMagicVoltage(0);
   
   // TURRET CONSTRUCTOR
   public Turret(String side, int motorPort) {
@@ -47,6 +51,18 @@ public class Turret extends SubsystemBase {
     // turretEncoder = turretMotor.getAlternateEncoder();    //REV throughbore connected to Turret Sparkmax_
 
     TalonFXConfiguration config = new TalonFXConfiguration();
+
+    //Motion Magic PID gains (TUNE IT)
+    config.Slot0.kP = 24.0;
+    config.Slot0.kI = 0.0;
+    config.Slot0.kD = 0.1;
+    config.Slot0.kV = 0.12;
+    config.Slot0.kS = 0.25;
+
+    //Motion Magic profile constraints
+    config.MotionMagic.MotionMagicCruiseVelocity = 80;
+    config.MotionMagic.MotionMagicAcceleration = 160;
+    config.MotionMagic.MotionMagicJerk = 1600;
 
     // Configure Soft Limits directly on the Kraken hardware! (motor will stop even if code crashes)       
     config.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
@@ -75,7 +91,11 @@ public class Turret extends SubsystemBase {
   }
 
   public double getTurretAngle(){ 
-    return turretMotor.getPosition().getValueAsDouble();
+    return (turretMotor.getPosition().getValueAsDouble() / GEAR_RATIO) * 360;
+  }
+
+  private double degreesToMotorRotations(double degrees){
+    return (degrees / 360.0) * GEAR_RATIO;
   }
 
   // Zero the angle of the turret (should be facing towards back of robot)
@@ -97,14 +117,27 @@ public class Turret extends SubsystemBase {
 
   // In-line Command to rotate the turret to a specific angle - in degrees
   public Command aimTurretToSetPointCommand( Supplier<Double> turretAngle) {
-
-    return null;
+    return run(() -> {  
+      double targetRotations = degreesToMotorRotations(turretAngle.get());
+      turretMotor.setControl(expoRequest.withPosition(targetRotations));
+    });
+    
   }
 
+  public void setFieldRelativeAngle(double targetFieldAngle) {
+      double robotAngle = Drivetrain.getInstance().getRobotAngleDegrees();
+      double relativeSetpoint = MathUtil.inputModulus(targetFieldAngle - robotAngle, -180, 180);
+
+      double targetRotations = degreesToMotorRotations(relativeSetpoint);
+      // Apply the Motion Magic Expo request
+      turretMotor.setControl(expoRequest.withPosition(targetRotations));
+  }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
     SmartDashboard.putNumber("turretAngle", getTurretAngle());
+    
   }
+  
 }

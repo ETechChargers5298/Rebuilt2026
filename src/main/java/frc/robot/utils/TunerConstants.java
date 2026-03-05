@@ -24,7 +24,7 @@ public class TunerConstants {
 
 
     // COMMAND-USED CONSTANTS
-    public static double MaxSpeed = 1; //1.0  * TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
+    public static double MaxSpeed = 5; //1.0  * TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
     public static double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
 
      /* Setting up bindings for necessary control of the swerve drive platform */
@@ -48,9 +48,9 @@ public class TunerConstants {
     // STEER/TURN GAINS FROM SYSID
     private static final Slot0Configs steerGains = new Slot0Configs()
         .withKP(100).withKI(0).withKD(0.5)
-        .withKS(0.1)   // <-- Replace with Steer kS
-        .withKV(2.48)  // <-- Replace with Steer kV
-        .withKA(0.005); // <-- Replace with Steer kA
+        .withKS(0.33066)   // <-- Replace with Steer kS
+        .withKV(2.5268)  // <-- Replace with Steer kV
+        .withKA(0.023705); // <-- Replace with Steer kA
 
 
     // ROTATION GAINS FROM SYSID
@@ -98,9 +98,9 @@ public class TunerConstants {
     // Configs for the Pigeon 2; leave this null to skip applying Pigeon 2 configs
     public static final Pigeon2Configuration pigeonConfigs = new Pigeon2Configuration()
         .withMountPose(new MountPoseConfigs()
-            .withMountPosePitch(-.03825373202562332)
-            .withMountPoseRoll(0.312202125787735)
-            .withMountPoseYaw(-0.7408741712557019)
+            .withMountPosePitch(-0.7408745288848877)
+            .withMountPoseRoll(-0.03825372830033302)
+            .withMountPoseYaw(0.31220224499702454)
         );
         
 
@@ -120,8 +120,8 @@ public class TunerConstants {
     private static final double kSteerGearRatio = 25.9; //Consistent across all WCP X2 Swerves
     private static final Distance kWheelRadius = Inches.of(1.75);   //Diameter of 3.5 inch wheel
 
-    private static final boolean kInvertLeftSide = false;
-    private static final boolean kInvertRightSide = true;
+    private static final boolean kInvertLeftSide = true;
+    private static final boolean kInvertRightSide = false;
 
 
 
