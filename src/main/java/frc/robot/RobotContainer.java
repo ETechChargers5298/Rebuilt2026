@@ -142,12 +142,12 @@ public class RobotContainer {
 
     // SWERVE FORWARD HALF-SPEED (DRIVER - DPAD_UP)
     driverController.povUp().whileTrue(drivetrain.applyRequest(() ->
-        forwardStraight.withVelocityX(-0.5).withVelocityY(0))
+        forwardStraight.withVelocityX(0.5).withVelocityY(0))
     );
 
     // SWERVE BACKWARD HALF-SPEED (DRIVER - DPAD_DOWN)
     driverController.povDown().whileTrue(drivetrain.applyRequest(() ->
-        forwardStraight.withVelocityX(0.5).withVelocityY(0))
+        forwardStraight.withVelocityX(-0.5).withVelocityY(0))
     );
 
 
