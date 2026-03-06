@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import java.rmi.server.ExportException;
 import java.util.Locale.LanguageRange;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
@@ -11,12 +12,14 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.ctre.phoenix6.controls.MotionMagicVoltage;
 
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.encoder.DetachedEncoder;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -37,7 +40,9 @@ public class Turret extends SubsystemBase {
   public double angleAngler = 0;
   private final double GEAR_RATIO = 100.0 / 10.0;      // gear ratio of turret (Big gear of 100: Small gear of 10)
   private final double EXTRA_DEGREES = 5.0;      // additional degrees beyond 360 the turret should rotate in each direction
-  
+
+  // Define the request once as a field to save memory
+  private final MotionMagicVoltage expoRequest = new MotionMagicVoltage(0);
   
   // TURRET CONSTRUCTOR
   public Turret(String side, int motorPort) {
@@ -47,6 +52,18 @@ public class Turret extends SubsystemBase {
     // turretEncoder = turretMotor.getAlternateEncoder();    //REV throughbore connected to Turret Sparkmax_
 
     TalonFXConfiguration config = new TalonFXConfiguration();
+
+    //Motion Magic PID gains (TUNE IT)
+    config.Slot0.kP = 24.0;
+    config.Slot0.kI = 0.0;
+    config.Slot0.kD = 0.1;
+    config.Slot0.kV = 0.12;
+    config.Slot0.kS = 0.25;
+
+    //Motion Magic profile constraints
+    config.MotionMagic.MotionMagicCruiseVelocity = 80;
+    config.MotionMagic.MotionMagicAcceleration = 160;
+    config.MotionMagic.MotionMagicJerk = 1600;
 
     // Configure Soft Limits directly on the Kraken hardware! (motor will stop even if code crashes)       
     config.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
@@ -70,12 +87,12 @@ public class Turret extends SubsystemBase {
     turretMotor.set(-1.0);
   }
 
-  public void aimTurret(double speed){
-    turretMotor.set(speed);
+  public double getTurretAngle(){ 
+    return (turretMotor.getPosition().getValueAsDouble() / GEAR_RATIO) * 360;
   }
 
-  public double getTurretAngle(){ 
-    return turretMotor.getPosition().getValueAsDouble();
+  private double degreesToMotorRotations(double degrees){
+    return (degrees / 360.0) * GEAR_RATIO;
   }
 
   // Zero the angle of the turret (should be facing towards back of robot)
@@ -86,6 +103,10 @@ public class Turret extends SubsystemBase {
 
   // TURRET COMMANDS
 
+  public void aimTurret(double speed){
+    turretMotor.set(speed);
+  }
+
   // In-line Command to rotate the turret based on provided speed
   public Command moveTurretCommand(DoubleSupplier speedSupplier) {
     return run(
@@ -94,21 +115,39 @@ public class Turret extends SubsystemBase {
       });
   }
 
+  
+  
+  // Sets the turret to a specific angle using Motion Magic
+  // targetTurretAngle Angle in degrees (will be modulus to -180 to 180)
+  public void setTurretAngle(double targetTurretAngle) {
+      
+      // Normalize the angle so the turret takes the shortest path
+      double relativeSetpoint = MathUtil.inputModulus(targetTurretAngle, -180, 180);
+      
+      // Convert degrees to Kraken rotations
+      double targetRotations = degreesToMotorRotations(relativeSetpoint);
+      
+      // Apply the Motion Magic request to the hardware
+      turretMotor.setControl(expoRequest.withPosition(targetRotations));
+  }
 
   // In-line Command to rotate the turret to a specific angle - in degrees
-  public Command aimTurretToSetPointCommand( Supplier<Double> turretAngle) {
-      double turretDeg = turretAngle.get();
-      double targetRotations = (turretDeg / 360) * GEAR_RATIO;
-      double currentRotations = getTurretAngle();
-      double turretTurn = targetRotations - currentRotations;
-      aimTurret(0.5);
-    return null;
+  public Command aimTurretToSetPointCommand( Supplier<Double> turretAngleSupplier) {
+    return run(() -> {
+      this.setTurretAngle(turretAngleSupplier.get());
+    });
   }
+
+
 
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
     SmartDashboard.putNumber("turretAngle", getTurretAngle());
+    
   }
+  
+
+
 }
