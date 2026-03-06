@@ -612,54 +612,6 @@ private final SwerveRequest.ApplyRobotSpeeds m_pathApplyRobotSpeeds = new Swerve
 
 
 
-
-  //----------------------- PATHPLANNER OLD ---------------------------------------------------------//
-
-  //PathPlanner Drive Controller
-//   public final PPHolonomicDriveController pathFollowerConfig = new PPHolonomicDriveController(
-//     new PIDConstants(SwerveAutoConstants.TRANSLATE_P, SwerveAutoConstants.TRANSLATE_I, SwerveAutoConstants.TRANSLATE_D), // Translation constants 
-//     new PIDConstants(SwerveAutoConstants.TURN_P, SwerveAutoConstants.TURN_I, SwerveAutoConstants.TURN_D) // Rotation constants 
-//   );
-
-  // Configure AutoBuilder for PathPlanner
-//   private void autoConfig(){
-
-//     AutoBuilder.configure(
-//       this::getPose, 
-//       this::resetPose, 
-//       this::getSpeeds, 
-//       this::driveRobotRelative, 
-//       pathFollowerConfig,
-//       new RobotConfig(
-//         RobotConstants.MASS, 
-//         RobotConstants.MOI, 
-//         new ModuleConfig(
-//           SwerveModuleConstants.WHEEL_DIAMETER_METERS/2, 
-//           SwerveConstants.TOP_SPEED, 
-//           SwerveModuleConstants.WHEEL_COEFFICIENT_OF_FRICTION, 
-//           DCMotor.getNEO(1).withReduction(SwerveModuleConstants.DRIVE_GEAR_REDUCTION), 
-//           SwerveModuleConstants.kDrivingMotorCurrentLimit, 
-//           1), 
-//         Constants.SwerveConstants.DRIVE_KINEMATICS.getModules()
-//       ),
-//       () -> {
-//           // Boolean supplier that controls when the path will be mirrored for the red alliance
-//           // This will flip the path being followed to the red side of the field.
-//           // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
-
-//           var alliance = DriverStation.getAlliance();
-//           if (alliance.isPresent()) {
-//               return alliance.get() == DriverStation.Alliance.Red;
-//           }
-//           return false;
-//       },
-//       this
-//     );
-   
-//   }
-
-
-
   // --------------------------  ALLIANCE COLOR ------------------------------------------//
 
   public void checkAllianceColor(){

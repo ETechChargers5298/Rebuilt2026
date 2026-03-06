@@ -10,6 +10,7 @@ import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathPlannerAuto;
+import com.pathplanner.lib.path.PathPlannerPath;
 
 // import com.pathplanner.lib.auto.AutoBuilder;
 // import com.pathplanner.lib.commands.FollowPathCommand;
@@ -63,6 +64,9 @@ public class RobotContainer {
 
   //PATHPLANNER FIELDS
   private final SendableChooser<Command> autoChooser;
+
+  // Command c1 = AutoBuilder.followPath(PathPlannerPath.fromPathFile("forward1m.json"));
+
   
 
 
@@ -80,14 +84,17 @@ public class RobotContainer {
     // Build an auto chooser. This will use Commands.none() as the default option.
     // As an example, this will only show autos that start with "comp" while at
     // competition as defined by the programmer
-    autoChooser = AutoBuilder.buildAutoChooser("foward1m");
+    autoChooser = AutoBuilder.buildAutoChooser("foward1mAuto");
     // autoChooser = AutoBuilder.buildAutoChooserWithOptionsModifier(
     //   (stream) -> isCompetition
     //     ? stream.filter(auto -> auto.getName().startsWith("comp"))
     //     : stream
     // );
-    autoChooser.addOption("Forward 1 meter", new PathPlannerAuto("forward1m"));
+    autoChooser.addOption("Forward 1 meter", new PathPlannerAuto("forward1mAuto"));
+
     autoChooser.addOption("H2D", new PathPlannerAuto("Hub-to-Depot"));
+
+    autoChooser.addOption("Trench Right", new PathPlannerAuto("TrenchRightAuto"));
     
     // autoChooser.setDefaultOption("default", getAutonomousCommand());
 
