@@ -48,7 +48,7 @@ public class Angler extends SubsystemBase {
     angleMotor.set(-direction);
   }
 
-  public double getAnglerAngle(){  // get the angle of the angler
+  public double getAngle(){  // get the angle of the angler
         return anglerEncoder.getPosition(); 
     }
 
@@ -81,7 +81,7 @@ public class Angler extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    SmartDashboard.putNumber("anglerAngle", getAnglerAngle());
+    SmartDashboard.putNumber("anglerAngle", getAngle());
     if(!limitSwitch.get()){
       anglerEncoder.setPosition(0);
     }

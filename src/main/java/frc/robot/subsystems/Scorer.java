@@ -22,9 +22,15 @@ public class Scorer {
     private double yOffset;
     private double hubX = FieldConstants.BLUE_HUB_CENTER_X; 
     private double hubY = FieldConstants.FIELD_CENTER_Y; //meters
-    private double robotX = Drivetrain.getInstance().getRobotX();
-    private double robotY = Drivetrain.getInstance().getRobotY();
-    private double robotAngle = Drivetrain.getInstance().getRobotAngleDegrees();
+    double robotX = Drivetrain.getInstance().getRobotX();
+    double robotY = Drivetrain.getInstance().getRobotY();
+    double robotAngle = Drivetrain.getInstance().getRobotAngleDegrees();
+   
+    // Tolerances for the Scorer
+    private final double TURRET_TOLERANCE_DEG = 1.5;
+    private final double FLYWHEEL_TOLERANCE_RPM = 100.0;
+    private final double ANGLER_TOLERANCE_DEG = 0.5;
+
     
 
     // SCORER CONSTRUCTOR
@@ -50,25 +56,8 @@ public class Scorer {
 
     // SCORER METHODS
 
- /*    public Command aimToHub(){
-        return new RunCommand(() -> {
-            
-            double dist = getDistanceToHub();
-            ShotParameter params = getIdealShot(dist);
-
-            double targetFieldAngle = getPredictedTargetAngle();
-
-            turret.setFieldRelativeAngle(targetFieldAngle);
-
-            flywheel.setReferenceRPM(params.rpm);
-            angler.setAngle(params.angle);
-
-        }, turret, flywheel, angler);
-    }
-*/
     // Distance from TurretCenter -->  Alliance Hub Center
     public double getDistanceToHub(){
-        
         return Math.sqrt(Math.pow(hubX-robotX,2)+Math.pow(hubY-robotY,2));
     }
 
@@ -81,8 +70,6 @@ public class Scorer {
  
     // Angle from HubCenter --> TurretCenter --> RobotFront X-axis (front/intake)
     public double getAngleToHubFromRobotPerspective(){
-
-
         return getAngleToHubFromFieldPerspective() - robotAngle;
     }
 
@@ -92,60 +79,114 @@ public class Scorer {
         return 180.0 - getAngleToHubFromRobotPerspective();
     }
 
-    
-    // Method to be called once per scheduler run
-    public void periodic() {
-        SmartDashboard.putNumber("Distance To Hub", getDistanceToHub());
-        SmartDashboard.putNumber("Angle To Hub - Turret", getAngleToHubFromTurretPerspective());
-    }
 
-    //testing this for getAnglerAngle & flywheel rpm
+    // check if the Scorer mechs are ready for a launch
+    public boolean isReadyToScore() {
+        
+        double dist = getDistanceToHub();
+        var params = getIdealShot(dist);
+        
+        // Check if Turret is aimed towards Hub
+        boolean turretReady = Math.abs(turret.getTurretAngle() - getAngleToHubFromTurretPerspective()) < TURRET_TOLERANCE_DEG;
+        
+        // Check if Flywheel has revved to the desired speed
+        boolean flywheelReady = Math.abs(flywheel.getFlywheelRpm() - params.rpm) < FLYWHEEL_TOLERANCE_RPM;
+        
+        // Check if Angler is to desired angle for launch
+        boolean anglerReady = Math.abs(angler.getAngle() - params.angle) < ANGLER_TOLERANCE_DEG;
+
+        if(turretReady && flywheelReady && anglerReady){
+            return true;
+        } else {
+            return false;
+        }
+    }
+ 
+
+    // SHOT INTERPPOLATION CLASSES
+
+    // Testing this for getAnglerAngle & flywheel rpm
     public class ShotParameter {
+
         public final double distance;
         public final double rpm;
         public final double angle;
 
-    public ShotParameter(double distance, double rpm, double angle) {
-        this.distance = distance;
-        this.rpm = rpm;
-        this.angle = angle;
+        public ShotParameter(double distance, double rpm, double angle) {
+            this.distance = distance;
+            this.rpm = rpm;
+            this.angle = angle;
+        }
     }
-}
 
-public class ShooterInterpolation { 
-    // Your 6 data points sorted by distance
+    // List of experimental data points sorted by distance
     private final ShotParameter[] dataPoints = {
         new ShotParameter(84.0, 4900, 45),
         new ShotParameter(60.0, 4450, 40),
         new ShotParameter(35.0, 4200, 35),
-        new ShotParameter(31.5, 4200, 30)
-        
+        new ShotParameter(31.5, 4200, 30) 
     };
 
     public ShotParameter getIdealShot(double targetDistance) {
-        // 1. Handle edge cases (distance outside your measured range)
-        if (targetDistance <= dataPoints[0].distance) return dataPoints[0];
-        if (targetDistance >= dataPoints[dataPoints.length - 1].distance) 
-            return dataPoints[dataPoints.length - 1];
 
-        // 2. Find the two points we are between
+        // 1. Target is futher away than tested range
+        if (targetDistance <= dataPoints[0].distance){
+            return dataPoints[0];
+        }
+
+        // 2. Target is closer than tested range
+        if (targetDistance <= dataPoints[dataPoints.length - 1].distance) {
+            return dataPoints[dataPoints.length - 1];
+        }
+            
+        // 3. Target is in between data points of tested range
         for (int i = 0; i < dataPoints.length - 1; i++) {
             ShotParameter p1 = dataPoints[i];
             ShotParameter p2 = dataPoints[i + 1];
 
             if (targetDistance >= p1.distance && targetDistance <= p2.distance) {
-                // 3. Calculate interpolation factor (0.0 to 1.0)
+
+                // Calculate interpolation factor (0.0 to 1.0)
                 double t = (targetDistance - p1.distance) / (p2.distance - p1.distance);
                 
-                // 4. Interpolate RPM and Angle
+                // Interpolate RPM and Angle
                 double interpolatedRpm = p1.rpm + t * (p2.rpm - p1.rpm);
                 double interpolatedAngle = p1.angle + t * (p2.angle - p1.angle);
 
                 return new ShotParameter(targetDistance, interpolatedRpm, interpolatedAngle);
             }
         }
-        return dataPoints[0]; // Fallback
+        return dataPoints[0]; 
     }
-}
+
+
+
+    // SCORER COMMANDS
+
+    // Aim method that asks each subsystem to move based on a setpoint, passes a lambda () -> to keep it live
+    public Command AimToHub(){
+        return turret.aimTurretToSetPointCommand(() -> getAngleToHubFromTurretPerspective())
+            .alongWith( flywheel.spinFlywheelToSetPointCommand( ()-> getIdealShot(getDistanceToHub()).rpm))
+            .alongWith(angler.aimAnglerToSetPointCommand(()-> getIdealShot(getDistanceToHub()).angle))
+            .withName("Scorer:AimToHub");
+    }
+
+
+
+     
+    public void update() {
+
+        // update robot's pose each cycle, called in Robot.java's periodic() method
+        robotX = Drivetrain.getInstance().getRobotX();
+        robotY = Drivetrain.getInstance().getRobotY();
+        robotAngle = Drivetrain.getInstance().getRobotAngleDegrees();
+
+        SmartDashboard.putNumber(side + " Scorer: Distance To Hub", getDistanceToHub());
+        SmartDashboard.putNumber(side + " Scorer: Angle To Hub", getAngleToHubFromTurretPerspective());
+        SmartDashboard.putBoolean(side + " Scorer: READY TO FIRE", isReadyToScore());
+    }
+
+
+
 
 }

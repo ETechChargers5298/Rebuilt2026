@@ -40,6 +40,7 @@ public class Turret extends SubsystemBase {
   public double angleAngler = 0;
   private final double GEAR_RATIO = 100.0 / 10.0;      // gear ratio of turret (Big gear of 100: Small gear of 10)
   private final double EXTRA_DEGREES = 5.0;      // additional degrees beyond 360 the turret should rotate in each direction
+
   // Define the request once as a field to save memory
   private final MotionMagicVoltage expoRequest = new MotionMagicVoltage(0);
   
@@ -86,10 +87,6 @@ public class Turret extends SubsystemBase {
     turretMotor.set(-1.0);
   }
 
-  public void aimTurret(double speed){
-    turretMotor.set(speed);
-  }
-
   public double getTurretAngle(){ 
     return (turretMotor.getPosition().getValueAsDouble() / GEAR_RATIO) * 360;
   }
@@ -106,6 +103,10 @@ public class Turret extends SubsystemBase {
 
   // TURRET COMMANDS
 
+  public void aimTurret(double speed){
+    turretMotor.set(speed);
+  }
+
   // In-line Command to rotate the turret based on provided speed
   public Command moveTurretCommand(DoubleSupplier speedSupplier) {
     return run(
@@ -114,24 +115,31 @@ public class Turret extends SubsystemBase {
       });
   }
 
+  
+  
+  // Sets the turret to a specific angle using Motion Magic
+  // targetTurretAngle Angle in degrees (will be modulus to -180 to 180)
+  public void setTurretAngle(double targetTurretAngle) {
+      
+      // Normalize the angle so the turret takes the shortest path
+      double relativeSetpoint = MathUtil.inputModulus(targetTurretAngle, -180, 180);
+      
+      // Convert degrees to Kraken rotations
+      double targetRotations = degreesToMotorRotations(relativeSetpoint);
+      
+      // Apply the Motion Magic request to the hardware
+      turretMotor.setControl(expoRequest.withPosition(targetRotations));
+  }
 
   // In-line Command to rotate the turret to a specific angle - in degrees
-  public Command aimTurretToSetPointCommand( Supplier<Double> turretAngle) {
-    return run(() -> {  
-      double targetRotations = degreesToMotorRotations(turretAngle.get());
-      turretMotor.setControl(expoRequest.withPosition(targetRotations));
+  public Command aimTurretToSetPointCommand( Supplier<Double> turretAngleSupplier) {
+    return run(() -> {
+      this.setTurretAngle(turretAngleSupplier.get());
     });
-    
   }
 
-  public void setFieldRelativeAngle(double targetFieldAngle) {
-      double robotAngle = Drivetrain.getInstance().getRobotAngleDegrees();
-      double relativeSetpoint = MathUtil.inputModulus(targetFieldAngle - robotAngle, -180, 180);
 
-      double targetRotations = degreesToMotorRotations(relativeSetpoint);
-      // Apply the Motion Magic Expo request
-      turretMotor.setControl(expoRequest.withPosition(targetRotations));
-  }
+
 
   @Override
   public void periodic() {
@@ -140,4 +148,6 @@ public class Turret extends SubsystemBase {
     
   }
   
+
+
 }
