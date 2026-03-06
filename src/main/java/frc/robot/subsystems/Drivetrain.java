@@ -497,7 +497,7 @@ private final SwerveRequest.ApplyRobotSpeeds m_pathApplyRobotSpeeds = new Swerve
    * @param pose The pose to which to set the poseEstimator
    */
   public void resetPose(Pose2d newPose) {
-    resetPose(newPose);
+    super.resetPose(newPose);
   }
 
   public Field2d getField() {
