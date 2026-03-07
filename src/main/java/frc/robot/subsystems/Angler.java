@@ -52,7 +52,7 @@ public class Angler extends SubsystemBase {
     config.encoder
       .positionConversionFactor(25)
       .velocityConversionFactor(1);
-
+/* 
     config.closedLoop
       .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
       .p(0.05)
@@ -68,7 +68,7 @@ public class Angler extends SubsystemBase {
     config.closedLoop.maxMotion
       .maxAcceleration(10000)      // RPM per second ramp up
       .allowedProfileError(50);    // Tolerance in RPM
-
+ */
     // Apply the configuration to the motor
     angleMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
   

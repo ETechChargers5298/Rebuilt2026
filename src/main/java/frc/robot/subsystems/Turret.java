@@ -104,7 +104,7 @@ public class Turret extends SubsystemBase {
   // TURRET COMMANDS
 
   public void aimTurret(double speed){
-    turretMotor.set(speed);
+    turretMotor.set(-speed);
   }
 
   // In-line Command to rotate the turret based on provided speed
