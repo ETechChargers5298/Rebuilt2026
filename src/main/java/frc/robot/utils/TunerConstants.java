@@ -37,11 +37,91 @@ public class TunerConstants {
 
     private static Slot0Configs driveGains;
     private static Slot0Configs steerGains;
-    public static final double kSrot = 0;
-    public static final double kVrot = 0; 
-    public static final double kArot = 0;
+    public static double kSrot = 0;
+    public static double kVrot = 0; 
+    public static double kArot = 0;
+    public static Pigeon2Configuration pigeonConfigs;
+        
 
-    
+    // VARIABLES THAT CHANGE BETWEEN VERSIONS OF ROBOT
+    static {
+
+        
+        // COMPETITION BOT
+        if (isCompetitionBot()) {
+
+            //ENCODER OFFSETS (Phoenix)
+            kFrontLeftEncoderOffset = Rotations.of(-0.139404296875);
+            kFrontRightEncoderOffset = Rotations.of(-0.064208984375);
+            kBackLeftEncoderOffset = Rotations.of(0.438720703125);
+            kBackRightEncoderOffset = Rotations.of(0.353515625);
+            pigeonConfigs = new Pigeon2Configuration()
+            .withMountPose(new MountPoseConfigs()
+            .withMountPosePitch(-0.7408745288848877)
+            .withMountPoseRoll(-0.03825372830033302)
+            .withMountPoseYaw(0.31220224499702454));
+
+
+
+            // DRIVE GAINS FROM SYSID
+            driveGains = new Slot0Configs()
+                .withKP(0.1).withKI(0).withKD(0)
+                .withKS(0.26131)  // <-- Replace with Translation kS
+                .withKV(0.12185) // <-- Replace with Translation kV
+                .withKA(0.0018321); // <-- Replace with  Translation kA
+
+            // STEER/TURN GAINS FROM SYSID
+            steerGains = new Slot0Configs()
+                .withKP(100).withKI(0).withKD(0.5)
+                .withKS(0.33066)   // <-- Replace with Steer kS
+                .withKV(2.5268)  // <-- Replace with Steer kV
+                .withKA(0.023705); // <-- Replace with Steer kA
+
+            // ROTATION GAINS FROM SYSID
+            kSrot = 0.15; // Replace with your Rotation kS
+            kVrot = 0.12; // Replace with your Rotation kV
+            kArot = 0.01; // Replace with your Rotation kA
+            }
+
+            
+         else { // BACKUP BOT
+            kFrontLeftEncoderOffset = Rotations.of(-0.139404296875);
+            kFrontRightEncoderOffset = Rotations.of(-0.064208984375);
+            kBackLeftEncoderOffset = Rotations.of(0.438720703125);
+            kBackRightEncoderOffset = Rotations.of(0.353515625);
+
+            pigeonConfigs = new Pigeon2Configuration()
+            .withMountPose(new MountPoseConfigs()
+            .withMountPosePitch(-0.7408745288848877)
+            .withMountPoseRoll(-0.03825372830033302)
+            .withMountPoseYaw(0.31220224499702454));
+            
+            // DRIVE GAINS FROM SYSID
+            driveGains = new Slot0Configs()
+                .withKP(0.1).withKI(0).withKD(0)
+                .withKS(0.26131)  // <-- Replace with Translation kS
+                .withKV(0.12185) // <-- Replace with Translation kV
+                .withKA(0.0018321); // <-- Replace with  Translation kA
+
+            // STEER/TURN GAINS FROM SYSID
+            steerGains = new Slot0Configs()
+                .withKP(100).withKI(0).withKD(0.5)
+                .withKS(0.33066)   // <-- Replace with Steer kS
+                .withKV(2.5268)  // <-- Replace with Steer kV
+                .withKA(0.023705); // <-- Replace with Steer kA
+
+            // ROTATION GAINS FROM SYSID
+            kSrot = 0.15; // Replace with your Rotation kS
+            kVrot = 0.12; // Replace with your Rotation kV
+            kArot = 0.01; // Replace with your Rotation kA
+        }
+
+
+
+
+
+
+    }
 
 
     // The closed-loop output type to use for the steer motors;
@@ -78,13 +158,7 @@ public class TunerConstants {
     private static final CANcoderConfiguration encoderInitialConfigs = new CANcoderConfiguration();
     
     // Configs for the Pigeon 2; leave this null to skip applying Pigeon 2 configs
-    public static final Pigeon2Configuration pigeonConfigs = new Pigeon2Configuration()
-        .withMountPose(new MountPoseConfigs()
-            .withMountPosePitch(-0.7408745288848877)
-            .withMountPoseRoll(-0.03825372830033302)
-            .withMountPoseYaw(0.31220224499702454)
-        );
-        
+
 
     // CAN bus that the devices are located on;
     // All swerve devices must share the same CAN bus
@@ -181,52 +255,7 @@ public class TunerConstants {
         return false; 
     }
 
-    // VARIABLES THAT CHANGE BETWEEN VERSIONS OF ROBOT
-    static {
-        
-        // COMPETITION BOT
-        if (isCompetitionBot()) {
-
-            //ENCODER OFFSETS (Phoenix)
-            kFrontLeftEncoderOffset = Rotations.of(-0.139404296875);
-            kFrontRightEncoderOffset = Rotations.of(-0.064208984375);
-            kBackLeftEncoderOffset = Rotations.of(0.438720703125);
-            kBackRightEncoderOffset = Rotations.of(0.353515625);
-
-            // DRIVE GAINS FROM SYSID
-            final Slot0Configs driveGains = new Slot0Configs()
-                .withKP(0.1).withKI(0).withKD(0)
-                .withKS(0.26131)  // <-- Replace with Translation kS
-                .withKV(0.12185) // <-- Replace with Translation kV
-                .withKA(0.0018321); // <-- Replace with  Translation kA
-
-            // STEER/TURN GAINS FROM SYSID
-            steerGains = new Slot0Configs()
-                .withKP(100).withKI(0).withKD(0.5)
-                .withKS(0.33066)   // <-- Replace with Steer kS
-                .withKV(2.5268)  // <-- Replace with Steer kV
-                .withKA(0.023705); // <-- Replace with Steer kA
-
-            // ROTATION GAINS FROM SYSID
-            final double kSrot = 0.15; // Replace with your Rotation kS
-            final double kVrot = 0.12; // Replace with your Rotation kV
-            final double kArot = 0.01; // Replace with your Rotation kA
-            }
-
-            
-         else { // BACKUP BOT
-            kFrontLeftEncoderOffset = Rotations.of(-0.139404296875);
-            kFrontRightEncoderOffset = Rotations.of(-0.064208984375);
-            kBackLeftEncoderOffset = Rotations.of(0.438720703125);
-            kBackRightEncoderOffset = Rotations.of(0.353515625);
-        }
-
-
-
-
-
-
-    }
+    
 
 
 

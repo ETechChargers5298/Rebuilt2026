@@ -37,13 +37,14 @@ public class Flywheel extends SubsystemBase {
     pidController = flywheelMotor.getClosedLoopController();
     flywheelEncoder = flywheelMotor.getEncoder();  //Built in encoder
 
+    
     // PID gains for Flywheel
     SparkMaxConfig config = new SparkMaxConfig();
 
     config
       .inverted(false)
       .idleMode(IdleMode.kCoast);
-
+/*
     config.encoder
       .positionConversionFactor(1)
       .velocityConversionFactor(1);
@@ -63,11 +64,12 @@ public class Flywheel extends SubsystemBase {
     config.closedLoop.maxMotion
       .maxAcceleration(10000)      // RPM per second ramp up
       .allowedProfileError(50);    // Tolerance in RPM
+   */
 
     // Apply the configuration to the motor
     flywheelMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
   
-  
+
   }
 
 
