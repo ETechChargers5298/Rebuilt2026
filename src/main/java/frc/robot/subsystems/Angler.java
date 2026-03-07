@@ -7,9 +7,15 @@ import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
 import com.ctre.phoenix6.StatusSignal;
+import com.revrobotics.PersistMode;
 // import com.ctre.phoenix6.hardware.TalonFX;
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.spark.FeedbackSensor;
+import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -26,6 +32,7 @@ public class Angler extends SubsystemBase {
   private RelativeEncoder anglerEncoder; // Angle sensor UP/DOWN () == Relative position 
   public double anglerAngle = 0;
   private DigitalInput limitSwitch;
+  private final SparkClosedLoopController pidController;
 
 
   // ANGLER CONSTRUCTOR
@@ -33,6 +40,38 @@ public class Angler extends SubsystemBase {
     angleMotor = new SparkMax(motorPort, MotorType.kBrushless);
     anglerEncoder = angleMotor.getEncoder();
     limitSwitch = new DigitalInput(limitPort);    //REV throughbore connected to Angler Sparkmax
+    pidController = angleMotor.getClosedLoopController();
+
+    // PID gains for Angler
+    SparkMaxConfig config = new SparkMaxConfig();
+
+    config
+      .inverted(false)
+      .idleMode(IdleMode.kBrake);
+
+    config.encoder
+      .positionConversionFactor(25)
+      .velocityConversionFactor(1);
+
+    config.closedLoop
+      .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
+      .p(0.05)
+      .i(0)
+      .d(0.0005);
+
+    // FeedForward for Angler
+    config.closedLoop.feedForward
+    .kG(0.00017)
+    .kS(0.05);    // helps overcome initial friction
+    
+    // MAXMotion Velocity
+    config.closedLoop.maxMotion
+      .maxAcceleration(10000)      // RPM per second ramp up
+      .allowedProfileError(50);    // Tolerance in RPM
+
+    // Apply the configuration to the motor
+    angleMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+  
   }
 
 
@@ -74,7 +113,9 @@ public class Angler extends SubsystemBase {
   // In-line Command to angle the angler up to a specific angle - in degrees
   public Command aimAnglerToSetPointCommand( Supplier<Double> anglerAngle) {
 
-    return null;
+    return run(() -> {
+      pidController.setSetpoint(anglerAngle.get(), SparkMax.ControlType.kPosition);
+    });
   }
 
 
