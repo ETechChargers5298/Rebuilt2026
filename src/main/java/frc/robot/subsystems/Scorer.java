@@ -56,16 +56,28 @@ public class Scorer {
 
     // SCORER METHODS
 
+    // Get the turret's X position in field coordinates (rotated by robot heading)
+    private double getTurretX(){
+        double angleRad = Math.toRadians(robotAngle);
+        return robotX + xOffset * Math.cos(angleRad) - yOffset * Math.sin(angleRad);
+    }
+
+    // Get the turret's Y position in field coordinates (rotated by robot heading)
+    private double getTurretY(){
+        double angleRad = Math.toRadians(robotAngle);
+        return robotY + xOffset * Math.sin(angleRad) + yOffset * Math.cos(angleRad);
+    }
+
     // Distance from TurretCenter -->  Alliance Hub Center
     public double getDistanceToHub(){
-        return Math.sqrt(Math.pow(hubX-robotX,2)+Math.pow(hubY-robotY,2));
+        double tx = getTurretX();
+        double ty = getTurretY();
+        return Math.sqrt(Math.pow(hubX - tx, 2) + Math.pow(hubY - ty, 2));
     }
 
     // Angle from HubCenter --> TurretCenter --> Field X-axis 0
     public double getAngleToHubFromFieldPerspective(){
-        double turretX = robotX + xOffset;
-        double turretY = robotY + yOffset;
-        return Math.toDegrees(Math.atan2(hubY - turretY, hubX - turretX));
+        return Math.toDegrees(Math.atan2(hubY - getTurretY(), hubX - getTurretX()));
     }
  
     // Angle from HubCenter --> TurretCenter --> RobotFront X-axis (front/intake)
