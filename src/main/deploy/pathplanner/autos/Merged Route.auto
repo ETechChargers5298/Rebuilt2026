@@ -7,7 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Start to Depot"
+            "pathName": null
           }
         },
         {
@@ -19,7 +19,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Depot to Hub"
+            "pathName": "Depot-to-Hub"
           }
         },
         {
@@ -31,7 +31,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Depot to Middle"
+            "pathName": "Depot-to-Middle"
           }
         },
         {
@@ -43,7 +43,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Middle to Hub (Via Trench)"
+            "pathName": "Neutral-to-Hub"
           }
         }
       ]
