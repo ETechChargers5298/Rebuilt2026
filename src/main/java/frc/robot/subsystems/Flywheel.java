@@ -6,8 +6,8 @@ import java.util.function.Supplier;
 import com.revrobotics.spark.FeedbackSensor;
 // import com.ctre.phoenix6.hardware.TalonFX;
 import com.revrobotics.spark.SparkClosedLoopController;
-import com.revrobotics.spark.SparkBase.ResetMode;
-import com.revrobotics.spark.SparkBase.PersistMode;
+import com.revrobotics.ResetMode;
+import com.revrobotics.PersistMode;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
@@ -37,13 +37,14 @@ public class Flywheel extends SubsystemBase {
     pidController = flywheelMotor.getClosedLoopController();
     flywheelEncoder = flywheelMotor.getEncoder();  //Built in encoder
 
+    
     // PID gains for Flywheel
     SparkMaxConfig config = new SparkMaxConfig();
 
     config
       .inverted(false)
       .idleMode(IdleMode.kCoast);
-
+/*
     config.encoder
       .positionConversionFactor(1)
       .velocityConversionFactor(1);
@@ -63,11 +64,12 @@ public class Flywheel extends SubsystemBase {
     config.closedLoop.maxMotion
       .maxAcceleration(10000)      // RPM per second ramp up
       .allowedProfileError(50);    // Tolerance in RPM
+   */
 
     // Apply the configuration to the motor
     flywheelMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
   
-  
+
   }
 
 
