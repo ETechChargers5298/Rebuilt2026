@@ -43,82 +43,93 @@ public class TunerConstants {
     public static Pigeon2Configuration pigeonConfigs;
         
 
+    // Check if Roborio is for the Competition Robot
+    public static final String COMPETITION_ROBORIO_SERIAL_NUM = "0329F2C4"; // ID for Current Roborio v2 on COMPBOT
+    public static boolean isCompetitionBot() {
+        String serialNumber = RobotController.getSerialNumber();
+        System.out.println("ROBORIO is " + serialNumber);
+        if (serialNumber.equals(COMPETITION_ROBORIO_SERIAL_NUM)) {
+            System.out.println("Competition Bot RoboRio found!");
+            return true;
+        }
+        System.out.println("Practice bot!");
+        return false; 
+    }
+
     // VARIABLES THAT CHANGE BETWEEN VERSIONS OF ROBOT
     static {
 
-        
         // COMPETITION BOT
         if (isCompetitionBot()) {
 
-            //ENCODER OFFSETS (Phoenix)
+            // COMPBOT ENCODER OFFSETS (from Phoenix)
             kFrontLeftEncoderOffset = Rotations.of(-0.139404296875);
             kFrontRightEncoderOffset = Rotations.of(-0.064208984375);
             kBackLeftEncoderOffset = Rotations.of(0.438720703125);
             kBackRightEncoderOffset = Rotations.of(0.353515625);
+
+            // COMPBOT PIGEON CONFIG
             pigeonConfigs = new Pigeon2Configuration()
             .withMountPose(new MountPoseConfigs()
             .withMountPosePitch(-0.7408745288848877)
             .withMountPoseRoll(-0.03825372830033302)
             .withMountPoseYaw(0.31220224499702454));
 
-
-
-            // DRIVE GAINS FROM SYSID
+            // COMPBOT DRIVE GAINS (from SYSID)
             driveGains = new Slot0Configs()
                 .withKP(0.1).withKI(0).withKD(0)
-                .withKS(0.26131)  // <-- Replace with Translation kS
-                .withKV(0.12185) // <-- Replace with Translation kV
-                .withKA(0.0018321); // <-- Replace with  Translation kA
+                .withKS(0.26131)
+                .withKV(0.12185)
+                .withKA(0.0018321);
 
-            // STEER/TURN GAINS FROM SYSID
+            // COMPBOT STEER/TURN GAINS (from SYSID)
             steerGains = new Slot0Configs()
                 .withKP(100).withKI(0).withKD(0.5)
-                .withKS(0.33066)   // <-- Replace with Steer kS
-                .withKV(2.5268)  // <-- Replace with Steer kV
-                .withKA(0.023705); // <-- Replace with Steer kA
+                .withKS(0.33066)
+                .withKV(2.5268)
+                .withKA(0.023705);
 
-            // ROTATION GAINS FROM SYSID
-            kSrot = 0.15; // Replace with your Rotation kS
-            kVrot = 0.12; // Replace with your Rotation kV
-            kArot = 0.01; // Replace with your Rotation kA
+            // COMPBOT ROTATION GAINS FROM SYSID
+            // kSrot = 0.15; // Replace with your Rotation kS
+            // kVrot = 0.12; // Replace with your Rotation kV
+            // kArot = 0.01; // Replace with your Rotation kA
             }
 
             
-         else { // BACKUP BOT
+         else {
+
+            // BACKUPBOT ENCODER OFFSETS (from Phoenix)
             kFrontLeftEncoderOffset = Rotations.of(-0.139404296875);
             kFrontRightEncoderOffset = Rotations.of(-0.064208984375);
             kBackLeftEncoderOffset = Rotations.of(0.438720703125);
             kBackRightEncoderOffset = Rotations.of(0.353515625);
 
+            // BACKUPBOT PIGEON CONFIG
             pigeonConfigs = new Pigeon2Configuration()
             .withMountPose(new MountPoseConfigs()
             .withMountPosePitch(-0.7408745288848877)
             .withMountPoseRoll(-0.03825372830033302)
             .withMountPoseYaw(0.31220224499702454));
             
-            // DRIVE GAINS FROM SYSID
+            // BACKUPBOT DRIVE GAINS (from SYSID)
             driveGains = new Slot0Configs()
                 .withKP(0.1).withKI(0).withKD(0)
                 .withKS(0.26131)  // <-- Replace with Translation kS
                 .withKV(0.12185) // <-- Replace with Translation kV
                 .withKA(0.0018321); // <-- Replace with  Translation kA
 
-            // STEER/TURN GAINS FROM SYSID
+            // BACKUPBOT STEER/TURN GAINS (from SYSID)
             steerGains = new Slot0Configs()
                 .withKP(100).withKI(0).withKD(0.5)
                 .withKS(0.33066)   // <-- Replace with Steer kS
                 .withKV(2.5268)  // <-- Replace with Steer kV
                 .withKA(0.023705); // <-- Replace with Steer kA
 
-            // ROTATION GAINS FROM SYSID
-            kSrot = 0.15; // Replace with your Rotation kS
-            kVrot = 0.12; // Replace with your Rotation kV
-            kArot = 0.01; // Replace with your Rotation kA
+            // BACKUPBOT ROTATION GAINS FROM SYSID
+            // kSrot = 0.15; // Replace with your Rotation kS
+            // kVrot = 0.12; // Replace with your Rotation kV
+            // kArot = 0.01; // Replace with your Rotation kA
         }
-
-
-
-
 
 
     }
@@ -240,22 +251,6 @@ public class TunerConstants {
     private static final boolean kBackRightEncoderInverted = true;
     private static final Distance kBackRightXPos = Inches.of(-10.25);
     private static final Distance kBackRightYPos = Inches.of(-13.75);
-
-
-    // Check if Roborio is for the Competition Robot
-    public static final String COMPETITION_ROBORIO_SERIAL_NUM = "0329F2C4"; // Replace with real Comp bot's serial number
-    public static boolean isCompetitionBot() {
-        String serialNumber = RobotController.getSerialNumber();
-        System.out.println("ROBORIO is " + serialNumber);
-        if (serialNumber.equals(COMPETITION_ROBORIO_SERIAL_NUM)) {
-            System.out.println("Competition Bot RoboRio found!");
-            return true;
-        }
-        System.out.println("Practice bot!");
-        return false; 
-    }
-
-    
 
 
 
