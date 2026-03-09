@@ -7,25 +7,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": null
+            "pathName": "StartLeft-to-Depot"
           }
         },
         {
           "type": "named",
           "data": {
             "name": "Intake"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Depot-to-Hub"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Launch"
           }
         },
         {
@@ -37,13 +25,7 @@
         {
           "type": "named",
           "data": {
-            "name": "Intake"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Neutral-to-Hub"
+            "name": "Launch"
           }
         }
       ]

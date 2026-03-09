@@ -7,7 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "StartLeft-to-Depot"
+            "pathName": "StartHub-to-Depot"
           }
         },
         {
@@ -27,11 +27,35 @@
           "data": {
             "name": "Launch"
           }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Hub-to-Neutral (LTrench)"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Intake"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Neutral-to-Hub"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Launch"
+          }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": "The 3 Routes",
+  "folder": null,
   "choreoAuto": false
 }
