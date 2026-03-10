@@ -71,7 +71,7 @@ public class TunerConstants {
             // COMPBOT PIGEON CONFIG
             pigeonConfigs = new Pigeon2Configuration()
             .withMountPose(new MountPoseConfigs()
-            .withMountPosePitch(-0.7408745288848877)
+            .withMountPosePitch(-0.7408755421638489)
             .withMountPoseRoll(-0.03825372830033302)
             .withMountPoseYaw(0.31220224499702454));
 
