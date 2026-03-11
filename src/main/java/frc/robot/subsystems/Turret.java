@@ -25,6 +25,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.units.measure.Angle;
 import frc.robot.Constants;
 import frc.robot.Ports;
 import frc.robot.subsystems.Drivetrain;
@@ -38,21 +39,25 @@ public class Turret extends SubsystemBase {
   public double turretMotorSpeed = 0;
   public double turretAngle = 0;
   public double angleAngler = 0;
-  private final double GEAR_RATIO = 100.0 / 10.0;      // gear ratio of turret (Big gear of 100: Small gear of 10)
+  private final double GEAR_RATIO = 100.0 / 10.0 * 4;      // gear ratio of turret (Big gear of 100: Small gear of 10)
   private final double EXTRA_DEGREES = 5.0;      // additional degrees beyond 360 the turret should rotate in each direction
+
+  private String side;
 
   // Define the request once as a field to save memory
   private final MotionMagicVoltage expoRequest = new MotionMagicVoltage(0);
-  
+  private final StatusSignal<Angle> positionSignal;
+
   // TURRET CONSTRUCTOR
   public Turret(String side, int motorPort) {
 
     turretMotor = new TalonFX(motorPort);
 
+    this.side = side;
     // turretEncoder = turretMotor.getAlternateEncoder();    //REV throughbore connected to Turret Sparkmax_
 
     TalonFXConfiguration config = new TalonFXConfiguration();
-
+    
     //Motion Magic PID gains (TUNE IT)
     config.Slot0.kP = 24.0;
     config.Slot0.kI = 0.0;
@@ -64,17 +69,24 @@ public class Turret extends SubsystemBase {
     config.MotionMagic.MotionMagicCruiseVelocity = 80;
     config.MotionMagic.MotionMagicAcceleration = 160;
     config.MotionMagic.MotionMagicJerk = 1600;
+    double MAX_ANGLE = 200.0;
 
     // Configure Soft Limits directly on the Kraken hardware! (motor will stop even if code crashes)       
     config.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
-    config.SoftwareLimitSwitch.ForwardSoftLimitThreshold = ((360.0 + EXTRA_DEGREES) / 360.0) * GEAR_RATIO; // In Rotations
+    config.SoftwareLimitSwitch.ForwardSoftLimitThreshold = ((MAX_ANGLE + EXTRA_DEGREES) / 360.0) * GEAR_RATIO; // In Rotations
     config.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
-    config.SoftwareLimitSwitch.ReverseSoftLimitThreshold = (0 -EXTRA_DEGREES / 360.0) * GEAR_RATIO; // In Rotations
+    config.SoftwareLimitSwitch.ReverseSoftLimitThreshold = ((-MAX_ANGLE - EXTRA_DEGREES) / 360.0) * GEAR_RATIO; // In Rotations
     config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     turretMotor.getConfigurator().apply(config);
-        
+
+    //Get angle
+    positionSignal = turretMotor.getPosition();
+    positionSignal.setUpdateFrequency(100);
     // Zero the motor on boot (Assumes turret is centered)      
     zeroTurretAngle();
+
+
+    
   }
   
     
@@ -88,7 +100,7 @@ public class Turret extends SubsystemBase {
   }
 
   public double getTurretAngle(){ 
-    return (turretMotor.getPosition().getValueAsDouble() / GEAR_RATIO) * 360;
+    return (positionSignal.refresh().getValueAsDouble() / GEAR_RATIO) * 360;
   }
 
   private double degreesToMotorRotations(double degrees){
@@ -104,7 +116,7 @@ public class Turret extends SubsystemBase {
   // TURRET COMMANDS
 
   public void aimTurret(double speed){
-    turretMotor.set(speed);
+    turretMotor.set(-speed);
   }
 
   // In-line Command to rotate the turret based on provided speed
@@ -144,7 +156,7 @@ public class Turret extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    SmartDashboard.putNumber("turretAngle", getTurretAngle());
+    SmartDashboard.putNumber(side + " turretAngle", getTurretAngle());
     
   }
   

@@ -7,7 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Start to Depot"
+            "pathName": "StartLeft-to-Depot"
           }
         },
         {
@@ -19,31 +19,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Depot to Hub"
+            "pathName": "Depot-to-Middle"
           }
         },
         {
           "type": "named",
           "data": {
             "name": "Launch"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Depot to Middle"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Intake"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Middle to Hub (Via Trench)"
           }
         }
       ]

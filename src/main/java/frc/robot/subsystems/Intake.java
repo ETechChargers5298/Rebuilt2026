@@ -40,12 +40,12 @@ public class Intake extends SubsystemBase {
   // BASIC INTAKE METHODS
 
   public void eat() {
-    eatMotor.set(1.0);
+    eatMotor.set(-1.0);
   }
   
   public void spit()
   {
-    eatMotor.set(-1.0);
+    eatMotor.set(1.0);
   }
 
   public void stopEating()

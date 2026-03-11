@@ -9,6 +9,7 @@ import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.commands.FollowPathCommand;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.path.PathPlannerPath;
 
@@ -77,34 +78,24 @@ public class RobotContainer {
     // On any computer connected to the robot, open Elastic, go to the File menu, and select Load Layout From Robot (or press Ctrl + D)
     WebServer.start(5800, Filesystem.getDeployDirectory().getPath());
 
+    // Constructs an auto chooser with a default command
+    autoChooser = AutoBuilder.buildAutoChooser("Forward 1 meter");
+    // autoChooser.setDefaultOption("default", getAutonomousCommand());
     
-    // For convenience a programmer could change this when going to competition.
-    boolean isCompetition = false;
-
-    // Build an auto chooser. This will use Commands.none() as the default option.
-    // As an example, this will only show autos that start with "comp" while at
-    // competition as defined by the programmer
-    autoChooser = AutoBuilder.buildAutoChooser("foward1mAuto");
-    // autoChooser = AutoBuilder.buildAutoChooserWithOptionsModifier(
-    //   (stream) -> isCompetition
-    //     ? stream.filter(auto -> auto.getName().startsWith("comp"))
-    //     : stream
-    // );
+    // PathPlanner Auto Options
     autoChooser.addOption("Forward 1 meter", new PathPlannerAuto("forward1mAuto"));
-
     autoChooser.addOption("H2D", new PathPlannerAuto("Hub-to-Depot"));
-
     autoChooser.addOption("Trench Right", new PathPlannerAuto("TrenchRightAuto"));
     
-    // autoChooser.setDefaultOption("default", getAutonomousCommand());
-
-
-
+    // Add Auto Chooser to Elastic
     SmartDashboard.putData("Auto Chooser", autoChooser);
 
-    configureBindings();
     // Warmup PathPlanner to avoid Java pauses
-    // FollowPathCommand.warmupCommand().schedule();
+    FollowPathCommand.warmupCommand().schedule();
+
+    // Setup joystick buttons
+    configureBindings();
+
   }
 
   /**
@@ -167,24 +158,11 @@ public class RobotContainer {
 
     // FIELD-CENTRIC HEADING RESET (DRIVER - LB)
     driverController.leftBumper().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
-  //driverController.leftBumper().onTrue(Commands.runOnce(SignalLogger:: start));
-  //driverController.rightBumper().onTrue(Commands.runOnce(SignalLogger:: stop));
+    // driverController.leftBumper().onTrue(Commands.runOnce(SignalLogger:: start));
+    // driverController.rightBumper().onTrue(Commands.runOnce(SignalLogger:: stop));
+    
     // Ensure that the telemetry is updated from our drivetrain's movements
     drivetrain.registerTelemetry(logger::telemeterize);
-
-    //OLD CTRE DRIVE COMMAND
-    //Driver - LX & LY joysticks for Translation, RX joystick for Strafing, A to reset Robot NavX Heading
-    // Drivetrain.getInstance().setDefaultCommand(
-    
-    //   new SwerveDrive(
-    //     () -> driverController.getRawAxis(1),
-    //     () -> -driverController.getRawAxis(0),
-    //     () -> -driverController.getRawAxis(4), //negative joystick values make a positive CCW turn
-    //     () -> driverController.getAButton()
-    //   )
-    
-    // );
-
 
 
     //---------- INTAKE JOYSTICK CONTROLLER BINDINGS----------//
@@ -198,7 +176,6 @@ public class RobotContainer {
     // SPIT FUEL (OPERATOR - LT)
     operatorController.leftTrigger().whileTrue(  Intake.getInstance().spitFuelCommand()   );
 
-
     // PIVOT maintains position by default
 
     // PIVOT INTAKE OUT (OPERATOR - B)
@@ -206,19 +183,7 @@ public class RobotContainer {
     
     // RETRACT INTAKE BACK (OPERATOR - X)
     operatorController.x().whileTrue(new PivotIntake(0));//retract intake temp point
-   
-
-    //---------- CONVEYOR JOYSTICK CONTROLLER BINDINGS ----------//
-
-    // STOPS CONVEYER by default
-    Conveyor.getInstance().setDefaultCommand(Conveyor.getInstance().stopConveyCommand());
-
-    // CONVEY IN (OPERATOR - A)
-    operatorController.a().whileTrue( Conveyor.getInstance().conveyInCommand());
-      
-    // CONVEY OUT (OPERATOR - Y)
-    operatorController.y().whileTrue( Conveyor.getInstance().conveyOutCommand());
-      
+     
 
     //---------- LOADER JOYSTICK CONTROLLER BINDINGS ----------//
    

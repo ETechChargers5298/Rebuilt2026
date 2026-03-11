@@ -30,7 +30,7 @@ public class Loader extends SubsystemBase {
 
   public void loadFuel()
   {
-    loaderMotor.set(-1);
+    loaderMotor.set(1);
   }
 
   public void unloadFuel()
@@ -40,7 +40,7 @@ public class Loader extends SubsystemBase {
 
   public void generalLoading(double speed)
   {
-    loaderMotor.set(speed);
+    loaderMotor.set(-speed);
   }
 
   public void stopLoading()

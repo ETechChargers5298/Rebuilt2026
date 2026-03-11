@@ -7,7 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Trench to Middle"
+            "pathName": "LeftTrench-to-Neutral"
           }
         },
         {
@@ -19,7 +19,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Middle to Hub (Via Bump)"
+            "pathName": "Neutral-to-LeftBump"
           }
         },
         {

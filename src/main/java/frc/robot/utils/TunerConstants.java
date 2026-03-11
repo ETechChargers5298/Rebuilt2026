@@ -33,33 +33,106 @@ public class TunerConstants {
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
     public static final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
     public static final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
+//
 
+    private static Slot0Configs driveGains;
+    private static Slot0Configs steerGains;
+    public static double kSrot = 0;
+    public static double kVrot = 0; 
+    public static double kArot = 0;
+    public static Pigeon2Configuration pigeonConfigs;
+        
 
-    // SYSID VALUES
-    // Tune these gains for a specific robot (backup vs final)
-
-    // DRIVE GAINS FROM SYSID
-    private static final Slot0Configs driveGains = new Slot0Configs()
-        .withKP(0.1).withKI(0).withKD(0)
-        .withKS(0.26131)  // <-- Replace with Translation kS
-        .withKV(0.12185) // <-- Replace with Translation kV
-        .withKA(0.0018321); // <-- Replace with  Translation kA
-
-    // STEER/TURN GAINS FROM SYSID
-    private static final Slot0Configs steerGains = new Slot0Configs()
-        .withKP(100).withKI(0).withKD(0.5)
-        .withKS(0.33066)   // <-- Replace with Steer kS
-        .withKV(2.5268)  // <-- Replace with Steer kV
-        .withKA(0.023705); // <-- Replace with Steer kA
-
-
-    // ROTATION GAINS FROM SYSID
-    public static class RotationConstants {
-        public static final double kS = 0.15; // Replace with your Rotation kS
-        public static final double kV = 0.12; // Replace with your Rotation kV
-        public static final double kA = 0.01; // Replace with your Rotation kA
+    // Check if Roborio is for the Competition Robot
+    public static final String COMPETITION_ROBORIO_SERIAL_NUM = "0329F2C4"; // ID for Current Roborio v2 on COMPBOT
+    public static boolean isCompetitionBot() {
+        String serialNumber = RobotController.getSerialNumber();
+        System.out.println("ROBORIO is " + serialNumber);
+        if (serialNumber.equals(COMPETITION_ROBORIO_SERIAL_NUM)) {
+            System.out.println("Competition Bot RoboRio found!");
+            return true;
+        }
+        System.out.println("Practice bot!");
+        return false; 
     }
 
+    // VARIABLES THAT CHANGE BETWEEN VERSIONS OF ROBOT
+    static {
+
+        // COMPETITION BOT
+        if (isCompetitionBot()) {
+
+            // COMPBOT ENCODER OFFSETS (from Phoenix)
+            kFrontLeftEncoderOffset = Rotations.of(-0.139404296875);
+            kFrontRightEncoderOffset = Rotations.of(-0.064208984375);
+            kBackLeftEncoderOffset = Rotations.of(0.438720703125);
+            kBackRightEncoderOffset = Rotations.of(0.353515625);
+
+            // COMPBOT PIGEON CONFIG
+            pigeonConfigs = new Pigeon2Configuration()
+            .withMountPose(new MountPoseConfigs()
+            .withMountPosePitch(-0.7408755421638489)
+            .withMountPoseRoll(-0.03825372830033302)
+            .withMountPoseYaw(0.31220224499702454));
+
+            // COMPBOT DRIVE GAINS (from SYSID)
+            driveGains = new Slot0Configs()
+                .withKP(0.1).withKI(0).withKD(0)
+                .withKS(0.26131)
+                .withKV(0.12185)
+                .withKA(0.0018321);
+
+            // COMPBOT STEER/TURN GAINS (from SYSID)
+            steerGains = new Slot0Configs()
+                .withKP(100).withKI(0).withKD(0.5)
+                .withKS(0.33066)
+                .withKV(2.5268)
+                .withKA(0.023705);
+
+            // COMPBOT ROTATION GAINS FROM SYSID
+            // kSrot = 0.15; // Replace with your Rotation kS
+            // kVrot = 0.12; // Replace with your Rotation kV
+            // kArot = 0.01; // Replace with your Rotation kA
+            }
+
+            
+         else {
+
+            // BACKUPBOT ENCODER OFFSETS (from Phoenix)
+            kFrontLeftEncoderOffset = Rotations.of(-0.139404296875);
+            kFrontRightEncoderOffset = Rotations.of(-0.064208984375);
+            kBackLeftEncoderOffset = Rotations.of(0.438720703125);
+            kBackRightEncoderOffset = Rotations.of(0.353515625);
+
+            // BACKUPBOT PIGEON CONFIG
+            pigeonConfigs = new Pigeon2Configuration()
+            .withMountPose(new MountPoseConfigs()
+            .withMountPosePitch(-0.7408745288848877)
+            .withMountPoseRoll(-0.03825372830033302)
+            .withMountPoseYaw(0.31220224499702454));
+            
+            // BACKUPBOT DRIVE GAINS (from SYSID)
+            driveGains = new Slot0Configs()
+                .withKP(0.1).withKI(0).withKD(0)
+                .withKS(0.26131)  // <-- Replace with Translation kS
+                .withKV(0.12185) // <-- Replace with Translation kV
+                .withKA(0.0018321); // <-- Replace with  Translation kA
+
+            // BACKUPBOT STEER/TURN GAINS (from SYSID)
+            steerGains = new Slot0Configs()
+                .withKP(100).withKI(0).withKD(0.5)
+                .withKS(0.33066)   // <-- Replace with Steer kS
+                .withKV(2.5268)  // <-- Replace with Steer kV
+                .withKA(0.023705); // <-- Replace with Steer kA
+
+            // BACKUPBOT ROTATION GAINS FROM SYSID
+            // kSrot = 0.15; // Replace with your Rotation kS
+            // kVrot = 0.12; // Replace with your Rotation kV
+            // kArot = 0.01; // Replace with your Rotation kA
+        }
+
+
+    }
 
 
     // The closed-loop output type to use for the steer motors;
@@ -96,13 +169,7 @@ public class TunerConstants {
     private static final CANcoderConfiguration encoderInitialConfigs = new CANcoderConfiguration();
     
     // Configs for the Pigeon 2; leave this null to skip applying Pigeon 2 configs
-    public static final Pigeon2Configuration pigeonConfigs = new Pigeon2Configuration()
-        .withMountPose(new MountPoseConfigs()
-            .withMountPosePitch(-0.7408745288848877)
-            .withMountPoseRoll(-0.03825372830033302)
-            .withMountPoseYaw(0.31220224499702454)
-        );
-        
+
 
     // CAN bus that the devices are located on;
     // All swerve devices must share the same CAN bus
@@ -122,7 +189,7 @@ public class TunerConstants {
 
     private static final boolean kInvertLeftSide = true;
     private static final boolean kInvertRightSide = false;
-
+            
 
 
     // These are only used for simulation
@@ -184,34 +251,6 @@ public class TunerConstants {
     private static final boolean kBackRightEncoderInverted = true;
     private static final Distance kBackRightXPos = Inches.of(-10.25);
     private static final Distance kBackRightYPos = Inches.of(-13.75);
-
-
-    // Check if Roborio is for the Competition Robot
-    public static final String COMPETITION_ROBORIO_SERIAL_NUM = "032398EA"; // Replace with real Comp bot's serial number
-    public static boolean isCompetitionBot() {
-        String serialNumber = RobotController.getSerialNumber();
-        if (serialNumber.equals(COMPETITION_ROBORIO_SERIAL_NUM)) {
-            return true;
-        }
-        return false; 
-    }
-
-    static {
-        
-        // COMPETITION BOT
-        if (isCompetitionBot()) {
-            kFrontLeftEncoderOffset = Rotations.of(-0.139404296875);
-            kFrontRightEncoderOffset = Rotations.of(-0.064208984375);
-            kBackLeftEncoderOffset = Rotations.of(0.438720703125);
-            kBackRightEncoderOffset = Rotations.of(0.353515625);
-            
-        } else { // BACKUP BOT
-            kFrontLeftEncoderOffset = Rotations.of(-0.139404296875);
-            kFrontRightEncoderOffset = Rotations.of(-0.064208984375);
-            kBackLeftEncoderOffset = Rotations.of(0.438720703125);
-            kBackRightEncoderOffset = Rotations.of(0.353515625);
-        }
-    }
 
 
 
