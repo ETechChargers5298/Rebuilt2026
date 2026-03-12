@@ -63,10 +63,10 @@ public class TunerConstants {
         if (isCompetitionBot()) {
 
             // COMPBOT ENCODER OFFSETS (from Phoenix)
-            kFrontLeftEncoderOffset = Rotations.of(-0.139404296875);
-            kFrontRightEncoderOffset = Rotations.of(-0.064208984375);
-            kBackLeftEncoderOffset = Rotations.of(0.438720703125);
-            kBackRightEncoderOffset = Rotations.of(0.353515625);
+            kFrontLeftEncoderOffset = Rotations.of(0.178466796875);
+            kFrontRightEncoderOffset = Rotations.of(-0.237548828125);
+            kBackLeftEncoderOffset = Rotations.of(-0.35400390625);
+            kBackRightEncoderOffset = Rotations.of(-0.279052734375);
 
             // COMPBOT PIGEON CONFIG
             pigeonConfigs = new Pigeon2Configuration()
@@ -227,7 +227,7 @@ public class TunerConstants {
     // Front Left
     private static Angle kFrontLeftEncoderOffset;
     private static final boolean kFrontLeftSteerMotorInverted = false;
-    private static final boolean kFrontLeftEncoderInverted = true;
+    private static final boolean kFrontLeftEncoderInverted = false;
     private static final Distance kFrontLeftXPos = Inches.of(10.25);
     private static final Distance kFrontLeftYPos = Inches.of(13.75);
 
