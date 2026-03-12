@@ -177,13 +177,16 @@ public class RobotContainer {
     operatorController.leftTrigger().whileTrue(  Intake.getInstance().spitFuelCommand()   );
 
     // PIVOT maintains position by default
+    //Intake.getInstance().setDefaultCommand(  Intake.getInstance().stopEatingCommand()  );
 
     // PIVOT INTAKE OUT (OPERATOR - B)
-    operatorController.b().whileTrue(new PivotIntake(45));//extend intake temp point
+    operatorController.b().whileTrue( Intake.getInstance().extendCommand()  );//extend intake temp point
     
     // RETRACT INTAKE BACK (OPERATOR - X)
-    operatorController.x().whileTrue(new PivotIntake(0));//retract intake temp point
+    operatorController.x().whileTrue( Intake.getInstance().retractCommand());//retract intake temp point
      
+
+        operatorController.a().whileTrue( Intake.getInstance().stopExtendingCommand());//retract intake temp point
 
     //---------- LOADER JOYSTICK CONTROLLER BINDINGS ----------//
    

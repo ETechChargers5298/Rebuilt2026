@@ -17,7 +17,7 @@ public class Conveyor extends SubsystemBase {
   // CONVEYOR CONSTRUCTOR
   private Conveyor() 
   {
-    conveyorMotor = new SparkMax(Ports.CONVEYOR_MOTOR_PORT, MotorType.kBrushless);
+    // conveyorMotor = new SparkMax(Ports.CONVEYOR_MOTOR_PORT, MotorType.kBrushless);
   }
 
   // CONVEYOR SINGLETON
