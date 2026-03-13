@@ -168,7 +168,7 @@ public class RobotContainer {
     //---------- INTAKE JOYSTICK CONTROLLER BINDINGS----------//
 
     // INTAKEROLLERS STOPS by default
-    IntakePivot.getInstance().setDefaultCommand(  IntakeRollers.getInstance().stopEatingCommand()  );
+    IntakeRollers.getInstance().setDefaultCommand(  IntakeRollers.getInstance().stopEatingCommand()  );
 
     // EAT FUEL (OPERATOR - LB)
     operatorController.leftBumper().whileTrue( IntakeRollers.getInstance().eatFuelCommand() );
@@ -234,6 +234,8 @@ public class RobotContainer {
     scorerLeft.turret.setDefaultCommand(
       scorerLeft.turret.moveTurretCommand( () -> MathUtil.applyDeadband(operatorController.getLeftX(), 0.1) )
     );
+    //AIM TURRET TO SETPOINT
+    operatorController.leftStick().whileTrue(scorerLeft.turret.aimTurretToSetPointCommand(45));
 
     // AIM TURRET TO HUB (OPERATOR - L3)
     // operatorController.leftStick().whileTrue(scorerLeft.turret.aimTurretToSetPointCommand( 
@@ -244,7 +246,10 @@ public class RobotContainer {
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
-   *
+   *63.
+
+
+
    * @return the command to run in autonomous
    */    
    public Command getAutonomousCommand() {
