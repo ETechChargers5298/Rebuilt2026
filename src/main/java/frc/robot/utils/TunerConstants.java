@@ -41,6 +41,7 @@ public class TunerConstants {
     public static double kVrot = 0; 
     public static double kArot = 0;
     public static Pigeon2Configuration pigeonConfigs;
+    private static boolean kFrontLeftEncoderInverted;
         
 
     // Check if Roborio is for the Competition Robot
@@ -63,10 +64,10 @@ public class TunerConstants {
         if (isCompetitionBot()) {
 
             // COMPBOT ENCODER OFFSETS (from Phoenix)
-            kFrontLeftEncoderOffset = Rotations.of(-0.139404296875);
-            kFrontRightEncoderOffset = Rotations.of(-0.064208984375);
-            kBackLeftEncoderOffset = Rotations.of(0.438720703125);
-            kBackRightEncoderOffset = Rotations.of(0.353515625);
+            kFrontLeftEncoderOffset = Rotations.of(0.178466796875);
+            kFrontRightEncoderOffset = Rotations.of(-0.237548828125);
+            kBackLeftEncoderOffset = Rotations.of(-0.35400390625);
+            kBackRightEncoderOffset = Rotations.of(-0.279052734375);
 
             // COMPBOT PIGEON CONFIG
             pigeonConfigs = new Pigeon2Configuration()
@@ -85,14 +86,18 @@ public class TunerConstants {
             // COMPBOT STEER/TURN GAINS (from SYSID)
             steerGains = new Slot0Configs()
                 .withKP(100).withKI(0).withKD(0.5)
-                .withKS(0.33066)
-                .withKV(2.5268)
-                .withKA(0.023705);
+                .withKS(0.44889)
+                .withKV(2.5504)
+                .withKA(0.039283);
 
             // COMPBOT ROTATION GAINS FROM SYSID
             // kSrot = 0.15; // Replace with your Rotation kS
             // kVrot = 0.12; // Replace with your Rotation kV
             // kArot = 0.01; // Replace with your Rotation kA
+
+            //FL motor encoder
+            kFrontLeftEncoderInverted = false;
+
             }
 
             
@@ -129,6 +134,10 @@ public class TunerConstants {
             // kSrot = 0.15; // Replace with your Rotation kS
             // kVrot = 0.12; // Replace with your Rotation kV
             // kArot = 0.01; // Replace with your Rotation kA
+
+            //FL motor encoder
+
+            kFrontLeftEncoderInverted = true;
         }
 
 
@@ -227,7 +236,6 @@ public class TunerConstants {
     // Front Left
     private static Angle kFrontLeftEncoderOffset;
     private static final boolean kFrontLeftSteerMotorInverted = false;
-    private static final boolean kFrontLeftEncoderInverted = true;
     private static final Distance kFrontLeftXPos = Inches.of(10.25);
     private static final Distance kFrontLeftYPos = Inches.of(13.75);
 

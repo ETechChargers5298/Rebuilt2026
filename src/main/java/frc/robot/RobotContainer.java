@@ -157,9 +157,9 @@ public class RobotContainer {
     driverController.start().and(driverController.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
 
     // FIELD-CENTRIC HEADING RESET (DRIVER - LB)
-    driverController.leftBumper().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
-    // driverController.leftBumper().onTrue(Commands.runOnce(SignalLogger:: start));
-    // driverController.rightBumper().onTrue(Commands.runOnce(SignalLogger:: stop));
+    //driverController.leftBumper().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
+    driverController.leftBumper().onTrue(Commands.runOnce(SignalLogger:: start));
+    driverController.rightBumper().onTrue(Commands.runOnce(SignalLogger:: stop));
     
     // Ensure that the telemetry is updated from our drivetrain's movements
     drivetrain.registerTelemetry(logger::telemeterize);
