@@ -18,15 +18,17 @@ public class Intake extends SubsystemBase {
   // INTAKE FIELDS
   private static Intake instance;
   private SparkMax eatMotor;
-  private SparkMax extendMotor; // All extendMotor related things are currntly placeholder
+  private SparkMax extendMotorRight; // All extendMotor related things are currntly placeholder
+  private SparkMax extendMotorLeft; // All extendMotor related things are currntly placeholder
   private RelativeEncoder extendEncoder;
 
 
   // INTAKE CONSTRUCTOR
   private Intake() {
     eatMotor = new SparkMax(Ports.EAT_MOTOR_PORT,MotorType.kBrushless);
-    extendMotor = new SparkMax(Ports.EXTEND_MOTOR_PORT,MotorType.kBrushless);
-    extendEncoder = extendMotor.getEncoder();
+    extendMotorRight = new SparkMax(Ports.EXTEND_MOTOR_RIGHT_PORT,MotorType.kBrushless);
+    extendMotorLeft = new SparkMax(Ports.EXTEND_MOTOR_LEFT_PORT,MotorType.kBrushless);
+    extendEncoder = extendMotorRight.getEncoder();
   }
 
   // INTAKE SINGLETON - ensures only 1 instance of Intake is constructed
@@ -55,17 +57,27 @@ public class Intake extends SubsystemBase {
 
   public void generalExtend(double speed)
   {
-    extendMotor.set(speed);
+    extendMotorRight.set(speed);
+    extendMotorLeft.set(-speed);
   }
 
   public void extend()
   {
-    extendMotor.set(1.0);
+    extendMotorRight.set(1.0);
+    extendMotorLeft.set(-1.0);
   }
 
   public void retract()
   {
-    extendMotor.set(-1.0);
+    extendMotorRight.set(-1.0);
+    extendMotorLeft.set(1.0);
+  }
+
+  public void stopExtending(){
+    
+    extendMotorRight.set(0);
+    extendMotorLeft.set(0);
+
   }
 
   public double getExtendAngle()
@@ -103,9 +115,39 @@ public class Intake extends SubsystemBase {
       () -> {
         stopEating();
       });
-}
+  }
 
+  // In-line Command to eat fuel off the ground into the hopper
+  public Command extendCommand() {
+    return run(
+        () -> {
+          extend();
+        }).finallyDo(
+          () -> {
+              stopExtending();
+          }
+        );
+  }
 
+  // In-line Command to spit fuel from the hopper back onto the ground
+  public Command retractCommand() {
+    return run(
+        () -> {
+          retract();
+        }).finallyDo(
+          () -> {
+              stopExtending();
+          }
+        );
+  }
+
+  // In-line Command to stop moving the intake rollers
+  public Command stopExtendingCommand(){
+    return run(
+      () -> {
+        stopExtending();
+      });
+  }
   @Override
   public void periodic() {
     // This method will be called once per scheduler run

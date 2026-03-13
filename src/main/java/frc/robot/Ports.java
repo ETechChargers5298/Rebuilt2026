@@ -37,8 +37,8 @@ public class Ports {
 
     //Intake related ports
     public static final int EAT_MOTOR_PORT = 21; 
-    public static final int EXTEND_MOTOR_PORT = 22; 
-    public static final int CONVEYOR_MOTOR_PORT = 24; 
+    public static final int EXTEND_MOTOR_RIGHT_PORT = 23;
+    public static final int EXTEND_MOTOR_LEFT_PORT = 24; 
     public static final int LOADER_MOTOR_PORT = 25; 
     public static final int TURRET_LEFT_MOTOR_PORT = 26; 
     public static final int ANGLER_LEFT_MOTOR_PORT = 27; 
