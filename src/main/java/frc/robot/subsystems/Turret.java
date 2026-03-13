@@ -40,7 +40,9 @@ public class Turret extends SubsystemBase {
   public double turretAngle = 0;
   public double angleAngler = 0;
   private final double GEAR_RATIO = 100.0 / 10.0 * 4;      // gear ratio of turret (Big gear of 100: Small gear of 10)
-  private final double EXTRA_DEGREES = 5.0;      // additional degrees beyond 360 the turret should rotate in each direction
+  private final double MAX_ANGLE = 90.0;
+  private final double MIN_ANGLE = -270.0;
+  private final double EXTRA_DEGREES = 10.0;      // additional degrees beyond 360 the turret should rotate in each direction
 
   private String side;
 
@@ -69,13 +71,12 @@ public class Turret extends SubsystemBase {
     config.MotionMagic.MotionMagicCruiseVelocity = 80;
     config.MotionMagic.MotionMagicAcceleration = 160;
     config.MotionMagic.MotionMagicJerk = 1600;
-    double MAX_ANGLE = 200.0;
 
     // Configure Soft Limits directly on the Kraken hardware! (motor will stop even if code crashes)       
     config.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
     config.SoftwareLimitSwitch.ForwardSoftLimitThreshold = ((MAX_ANGLE + EXTRA_DEGREES) / 360.0) * GEAR_RATIO; // In Rotations
     config.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
-    config.SoftwareLimitSwitch.ReverseSoftLimitThreshold = ((-MAX_ANGLE - EXTRA_DEGREES) / 360.0) * GEAR_RATIO; // In Rotations
+    config.SoftwareLimitSwitch.ReverseSoftLimitThreshold = ((MIN_ANGLE - EXTRA_DEGREES) / 360.0) * GEAR_RATIO; // In Rotations
     config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     turretMotor.getConfigurator().apply(config);
 

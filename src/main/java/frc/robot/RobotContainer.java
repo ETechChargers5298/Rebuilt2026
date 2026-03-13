@@ -41,7 +41,7 @@ public class RobotContainer {
   public final ScorerLeft scorerLeft = ScorerLeft.getInstance();
   public final ScorerRight scorerRight = ScorerRight.getInstance();
   public final Loader loader = Loader.getInstance();
-  public final Intake intake = Intake.getInstance();
+  public final IntakePivot intake = IntakePivot.getInstance();
   private final Vision vision = Vision.getInstance();    //VISION! (Comment IN to use vision)
 
 
@@ -167,27 +167,26 @@ public class RobotContainer {
 
     //---------- INTAKE JOYSTICK CONTROLLER BINDINGS----------//
 
-    // INTAKE STOPS by default
-    Intake.getInstance().setDefaultCommand(  Intake.getInstance().stopEatingCommand()  );
+    // INTAKEROLLERS STOPS by default
+    IntakePivot.getInstance().setDefaultCommand(  IntakeRollers.getInstance().stopEatingCommand()  );
 
     // EAT FUEL (OPERATOR - LB)
-    operatorController.leftBumper().whileTrue( Intake.getInstance().eatFuelCommand() );
+    operatorController.leftBumper().whileTrue( IntakeRollers.getInstance().eatFuelCommand() );
 
     // SPIT FUEL (OPERATOR - LT)
-    operatorController.leftTrigger().whileTrue(  Intake.getInstance().spitFuelCommand()   );
+    operatorController.leftTrigger().whileTrue(  IntakeRollers.getInstance().spitFuelCommand()   );
 
-    // PIVOT maintains position by default
-    //Intake.getInstance().setDefaultCommand(  Intake.getInstance().stopEatingCommand()  );
 
-    // PIVOT INTAKE OUT (OPERATOR - B)
-    operatorController.b().whileTrue( Intake.getInstance().extendCommand()  );//extend intake temp point
+    // INTAKE PIVOT maintains position by default
+    IntakePivot.getInstance().setDefaultCommand(  IntakePivot.getInstance().stopExtendingCommand()  );
+
+    // INTAKE PIVOT EXTEND OUT (OPERATOR - B)
+    operatorController.b().whileTrue( IntakePivot.getInstance().extendCommand()  );//extend intake temp point
     
-    // RETRACT INTAKE BACK (OPERATOR - X)
-    operatorController.x().whileTrue( Intake.getInstance().retractCommand());//retract intake temp point
+    // INTAKE PIVOT RETRACT UP (OPERATOR - X)
+    operatorController.x().whileTrue( IntakePivot.getInstance().retractCommand());//retract intake temp point
      
-
-        operatorController.a().whileTrue( Intake.getInstance().stopExtendingCommand());//retract intake temp point
-
+    
     //---------- LOADER JOYSTICK CONTROLLER BINDINGS ----------//
    
     // STOPS LOADER by default
