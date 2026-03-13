@@ -85,9 +85,9 @@ public class TunerConstants {
             // COMPBOT STEER/TURN GAINS (from SYSID)
             steerGains = new Slot0Configs()
                 .withKP(100).withKI(0).withKD(0.5)
-                .withKS(0.33066)
-                .withKV(2.5268)
-                .withKA(0.023705);
+                .withKS(0.44889)
+                .withKV(2.5504)
+                .withKA(0.039283);
 
             // COMPBOT ROTATION GAINS FROM SYSID
             // kSrot = 0.15; // Replace with your Rotation kS
