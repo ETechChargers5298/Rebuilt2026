@@ -74,9 +74,9 @@ public class Turret extends SubsystemBase {
 
     // Configure Soft Limits directly on the Kraken hardware! (motor will stop even if code crashes)       
     config.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
-    config.SoftwareLimitSwitch.ForwardSoftLimitThreshold = ((MAX_ANGLE + EXTRA_DEGREES) / 360.0) * GEAR_RATIO; // In Rotations
+    config.SoftwareLimitSwitch.ForwardSoftLimitThreshold = 0.25; //((MAX_ANGLE + EXTRA_DEGREES) / 360.0) * GEAR_RATIO; // In Rotations
     config.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
-    config.SoftwareLimitSwitch.ReverseSoftLimitThreshold = ((MIN_ANGLE - EXTRA_DEGREES) / 360.0) * GEAR_RATIO; // In Rotations
+    config.SoftwareLimitSwitch.ReverseSoftLimitThreshold = -0.75; //((MIN_ANGLE - EXTRA_DEGREES) / 360.0) * GEAR_RATIO; // In Rotations
     config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     turretMotor.getConfigurator().apply(config);
 
@@ -102,6 +102,10 @@ public class Turret extends SubsystemBase {
 
   public double getTurretAngle(){ 
     return (positionSignal.refresh().getValueAsDouble() / GEAR_RATIO) * 360;
+  }
+
+    public double getTurretRotation(){ 
+    return (positionSignal.refresh().getValueAsDouble());
   }
 
   private double degreesToMotorRotations(double degrees){
@@ -158,6 +162,8 @@ public class Turret extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     SmartDashboard.putNumber(side + " turretAngle", getTurretAngle());
+    SmartDashboard.putNumber(side + " turretRotations:", getTurretAngle());
+    
     
   }
   
