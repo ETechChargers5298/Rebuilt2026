@@ -235,12 +235,12 @@ public class RobotContainer {
       scorerLeft.turret.moveTurretCommand( () -> MathUtil.applyDeadband(operatorController.getLeftX(), 0.1) )
     );
     //AIM TURRET TO SETPOINT
-    operatorController.leftStick().whileTrue(scorerLeft.turret.aimTurretToSetPointCommand(45));
+    // operatorController.leftStick().whileTrue(scorerLeft.turret.aimTurretToSetPointCommand(45));
 
     // AIM TURRET TO HUB (OPERATOR - L3)
-    // operatorController.leftStick().whileTrue(scorerLeft.turret.aimTurretToSetPointCommand( 
-    //   () -> scorerLeft.getAngleToHubFromTurretPerspective()  
-    // ));
+    operatorController.leftStick().whileTrue(scorerLeft.turret.aimTurretToSetPointCommand( 
+      () -> scorerLeft.getAngleToHubFromTurretPerspective()  
+    ));
 
   }
 
