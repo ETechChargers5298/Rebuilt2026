@@ -17,7 +17,7 @@ public class Vision extends SubsystemBase {
     private static Vision instance;
     public AprilCam cam1;
     public AprilCam cam2;
-    public boolean doubleCam = false;
+    public boolean doubleCam = true;
     Drivetrain drivetrain = Drivetrain.getInstance();
     AprilTagFieldLayout fieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2026RebuiltWelded);
 

@@ -33,7 +33,9 @@ public class Angler extends SubsystemBase {
   public double anglerAngle = 0;
   private DigitalInput limitSwitch;
   private final SparkClosedLoopController pidController;
-
+  private String side;
+  private final double MAX_ANGLE = -2400;
+  private final double MIN_ANGLE = 0;
 
   // ANGLER CONSTRUCTOR
   public Angler(String side, int motorPort, int limitPort) {
@@ -41,7 +43,7 @@ public class Angler extends SubsystemBase {
     anglerEncoder = angleMotor.getEncoder();
     limitSwitch = new DigitalInput(limitPort);    //REV throughbore connected to Angler Sparkmax
     pidController = angleMotor.getClosedLoopController();
-
+    this.side = side;
     // PID gains for Angler
     SparkMaxConfig config = new SparkMaxConfig();
 
@@ -52,6 +54,12 @@ public class Angler extends SubsystemBase {
     config.encoder
       .positionConversionFactor(25)
       .velocityConversionFactor(1);
+
+    config.softLimit
+    .forwardSoftLimitEnabled(true)
+    .forwardSoftLimit(MIN_ANGLE)
+    .reverseSoftLimitEnabled(true)
+    .reverseSoftLimit(MAX_ANGLE);
 /* 
     config.closedLoop
       .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
@@ -122,7 +130,7 @@ public class Angler extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    SmartDashboard.putNumber("anglerAngle", getAngle());
+    SmartDashboard.putNumber(side + " anglerAngle", getAngle());
     if(!limitSwitch.get()){
       anglerEncoder.setPosition(0);
     }
