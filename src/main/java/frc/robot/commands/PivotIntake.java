@@ -4,7 +4,7 @@
 
 package frc.robot.commands;
 
-import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.IntakePivot;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -12,7 +12,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 /** An example command that uses an example subsystem. */
 public class PivotIntake extends Command {
   @SuppressWarnings("PMD.UnusedPrivateField")
-  private final Intake intake;
+  private final IntakePivot intake;
 
   private double kP = 1;
   private double kI = 0;
@@ -30,7 +30,7 @@ public class PivotIntake extends Command {
    */
   public PivotIntake(double point) {
     
-    intake = Intake.getInstance();
+    intake = IntakePivot.getInstance();
     pid = new PIDController(kP, kI, kD);
     setPoint = point;
     // Use addRequirements() here to declare subsystem dependencies.

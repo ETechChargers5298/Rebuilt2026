@@ -41,7 +41,7 @@ public class RobotContainer {
   public final ScorerLeft scorerLeft = ScorerLeft.getInstance();
   public final ScorerRight scorerRight = ScorerRight.getInstance();
   public final Loader loader = Loader.getInstance();
-  public final Intake intake = Intake.getInstance();
+  public final IntakePivot intake = IntakePivot.getInstance();
   private final Vision vision = Vision.getInstance();    //VISION! (Comment IN to use vision)
 
 
@@ -157,9 +157,9 @@ public class RobotContainer {
     driverController.start().and(driverController.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
 
     // FIELD-CENTRIC HEADING RESET (DRIVER - LB)
-    driverController.leftBumper().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
-    // driverController.leftBumper().onTrue(Commands.runOnce(SignalLogger:: start));
-    // driverController.rightBumper().onTrue(Commands.runOnce(SignalLogger:: stop));
+    //driverController.leftBumper().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
+    driverController.leftBumper().onTrue(Commands.runOnce(SignalLogger:: start));
+    driverController.rightBumper().onTrue(Commands.runOnce(SignalLogger:: stop));
     
     // Ensure that the telemetry is updated from our drivetrain's movements
     drivetrain.registerTelemetry(logger::telemeterize);
@@ -167,24 +167,26 @@ public class RobotContainer {
 
     //---------- INTAKE JOYSTICK CONTROLLER BINDINGS----------//
 
-    // INTAKE STOPS by default
-    Intake.getInstance().setDefaultCommand(  Intake.getInstance().stopEatingCommand()  );
+    // INTAKEROLLERS STOPS by default
+    IntakeRollers.getInstance().setDefaultCommand(  IntakeRollers.getInstance().stopEatingCommand()  );
 
     // EAT FUEL (OPERATOR - LB)
-    operatorController.leftBumper().whileTrue( Intake.getInstance().eatFuelCommand() );
+    operatorController.leftBumper().whileTrue( IntakeRollers.getInstance().eatFuelCommand() );
 
     // SPIT FUEL (OPERATOR - LT)
-    operatorController.leftTrigger().whileTrue(  Intake.getInstance().spitFuelCommand()   );
+    operatorController.leftTrigger().whileTrue(  IntakeRollers.getInstance().spitFuelCommand()   );
 
-    // PIVOT maintains position by default
 
-    // PIVOT INTAKE OUT (OPERATOR - B)
-    operatorController.b().whileTrue(new PivotIntake(45));//extend intake temp point
+    // INTAKE PIVOT maintains position by default
+    IntakePivot.getInstance().setDefaultCommand(  IntakePivot.getInstance().stopExtendingCommand()  );
+
+    // INTAKE PIVOT EXTEND OUT (OPERATOR - B)
+    operatorController.b().whileTrue( IntakePivot.getInstance().extendCommand()  );//extend intake temp point
     
-    // RETRACT INTAKE BACK (OPERATOR - X)
-    operatorController.x().whileTrue(new PivotIntake(0));//retract intake temp point
+    // INTAKE PIVOT RETRACT UP (OPERATOR - X)
+    operatorController.x().whileTrue( IntakePivot.getInstance().retractCommand());//retract intake temp point
      
-
+    
     //---------- LOADER JOYSTICK CONTROLLER BINDINGS ----------//
    
     // STOPS LOADER by default
@@ -225,6 +227,10 @@ public class RobotContainer {
       scorerLeft.angler.aimAnglerCommand( () -> MathUtil.applyDeadband(operatorController.getRightY(), 0.1) )
     );
 
+    //AIM ANGLER TO SETPOINT
+    operatorController.rightStick().whileTrue(scorerLeft.angler.aimAnglerToSetPointCommand(1100));
+
+
 
     //---------- TURRET JOYSTICK CONTROLLER BINDINGS ----------//
 
@@ -232,17 +238,22 @@ public class RobotContainer {
     scorerLeft.turret.setDefaultCommand(
       scorerLeft.turret.moveTurretCommand( () -> MathUtil.applyDeadband(operatorController.getLeftX(), 0.1) )
     );
+    //AIM TURRET TO SETPOINT
+    // operatorController.leftStick().whileTrue(scorerLeft.turret.aimTurretToSetPointCommand(45));
 
     // AIM TURRET TO HUB (OPERATOR - L3)
-    // operatorController.leftStick().whileTrue(scorerLeft.turret.aimTurretToSetPointCommand( 
-    //   () -> scorerLeft.getAngleToHubFromTurretPerspective()  
-    // ));
+    operatorController.leftStick().whileTrue(scorerLeft.turret.aimTurretToSetPointCommand( 
+      () -> scorerLeft.getAngleToHubFromTurretPerspective()  
+    ));
 
   }
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
-   *
+   *63.
+
+
+
    * @return the command to run in autonomous
    */    
    public Command getAutonomousCommand() {

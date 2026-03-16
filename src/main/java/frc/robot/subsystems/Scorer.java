@@ -88,7 +88,7 @@ public class Scorer {
     // Angle from HubCenter - ScorerCenter - Turret X-axis
     // if you are at the turret's center (facing backward/starting angle), to which angle is the hub?
     public double getAngleToHubFromTurretPerspective(){
-        return 180.0 - getAngleToHubFromRobotPerspective();
+        return (180.0 - getAngleToHubFromRobotPerspective()) - 360;
     }
 
 
@@ -105,7 +105,7 @@ public class Scorer {
         boolean flywheelReady = Math.abs(flywheel.getFlywheelRpm() - params.rpm) < FLYWHEEL_TOLERANCE_RPM;
         
         // Check if Angler is to desired angle for launch
-        boolean anglerReady = Math.abs(angler.getAngle() - params.angle) < ANGLER_TOLERANCE_DEG;
+        boolean anglerReady = Math.abs(angler.getPosition() - params.angle) < ANGLER_TOLERANCE_DEG;
 
         if(turretReady && flywheelReady && anglerReady){
             return true;
@@ -192,10 +192,9 @@ public class Scorer {
         robotX = Drivetrain.getInstance().getRobotX();
         robotY = Drivetrain.getInstance().getRobotY();
         robotAngle = Drivetrain.getInstance().getRobotAngleDegrees();
-
-        SmartDashboard.putNumber(side + " Scorer: Distance To Hub", getDistanceToHub());
-        SmartDashboard.putNumber(side + " Scorer: Angle To Hub", getAngleToHubFromTurretPerspective());
-        SmartDashboard.putBoolean(side + " Scorer: READY TO FIRE", isReadyToScore());
+        SmartDashboard.putNumber(side.substring(0,1) + " Scorer: Distance To Hub", getDistanceToHub());
+        SmartDashboard.putNumber(side.substring(0,1) + " Scorer: Angle To Hub", getAngleToHubFromTurretPerspective());
+        SmartDashboard.putBoolean(side.substring(0,1) + " Scorer: READY TO FIRE", isReadyToScore());
     }
 
 
