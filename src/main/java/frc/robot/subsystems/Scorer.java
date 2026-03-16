@@ -93,7 +93,7 @@ public class Scorer {
         boolean flywheelReady = Math.abs(flywheel.getFlywheelRpm() - params.rpm) < FLYWHEEL_TOLERANCE_RPM;
         
         // Check if Angler is to desired angle for launch
-        boolean anglerReady = Math.abs(angler.getAngle() - params.angle) < ANGLER_TOLERANCE_DEG;
+        boolean anglerReady = Math.abs(angler.getPosition() - params.angle) < ANGLER_TOLERANCE_DEG;
 
         if(turretReady && flywheelReady && anglerReady){
             return true;

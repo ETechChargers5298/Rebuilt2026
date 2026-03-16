@@ -30,12 +30,12 @@ public class Angler extends SubsystemBase {
 
   private SparkMax angleMotor;
   private RelativeEncoder anglerEncoder; // Angle sensor UP/DOWN () == Relative position 
-  public double anglerAngle = 0;
+  public double anglerPosition = 0;
   private DigitalInput limitSwitch;
   private final SparkClosedLoopController pidController;
   private String side;
-  private final double MAX_ANGLE = -2400;
-  private final double MIN_ANGLE = 0;
+  private final double MAX_POSITION = -2400;
+  private final double MIN_POSITION = 0;
 
   // ANGLER CONSTRUCTOR
   public Angler(String side, int motorPort, int limitPort) {
@@ -57,9 +57,9 @@ public class Angler extends SubsystemBase {
 
     config.softLimit
     .forwardSoftLimitEnabled(true)
-    .forwardSoftLimit(MIN_ANGLE)
+    .forwardSoftLimit(MIN_POSITION)
     .reverseSoftLimitEnabled(true)
-    .reverseSoftLimit(MAX_ANGLE);
+    .reverseSoftLimit(MAX_POSITION);
 /* 
     config.closedLoop
       .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
@@ -95,7 +95,7 @@ public class Angler extends SubsystemBase {
     angleMotor.set(-direction);
   }
 
-  public double getAngle(){  // get the angle of the angler
+  public double getPosition(){  // get the angle of the angler
         return anglerEncoder.getPosition(); 
     }
 
@@ -119,18 +119,25 @@ public class Angler extends SubsystemBase {
   }
 
   // In-line Command to angle the angler up to a specific angle - in degrees
-  public Command aimAnglerToSetPointCommand( Supplier<Double> anglerAngle) {
-
+  public Command aimAnglerToSetPointCommand( DoubleSupplier anglerPosition) {
     return run(() -> {
-      pidController.setSetpoint(anglerAngle.get(), SparkMax.ControlType.kPosition);
+      pidController.setSetpoint(anglerPosition.getAsDouble(), SparkMax.ControlType.kPosition);
     });
   }
+
+    // In-line Command to angle the angler up to a specific angle - in degrees
+  public Command aimAnglerToSetPointCommand( double anglerPosition) {
+    return run(() -> {
+      pidController.setSetpoint(anglerPosition, SparkMax.ControlType.kPosition);
+    });
+  }
+
 
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    SmartDashboard.putNumber(side + " anglerAngle", getAngle());
+    SmartDashboard.putNumber(side + " anglerAngle", getPosition());
     if(!limitSwitch.get()){
       anglerEncoder.setPosition(0);
     }

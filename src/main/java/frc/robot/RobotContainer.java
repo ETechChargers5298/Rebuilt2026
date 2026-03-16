@@ -227,6 +227,10 @@ public class RobotContainer {
       scorerLeft.angler.aimAnglerCommand( () -> MathUtil.applyDeadband(operatorController.getRightY(), 0.1) )
     );
 
+    //AIM ANGLER TO SETPOINT
+    operatorController.rightStick().whileTrue(scorerLeft.angler.aimAnglerToSetPointCommand(1100));
+
+
 
     //---------- TURRET JOYSTICK CONTROLLER BINDINGS ----------//
 
