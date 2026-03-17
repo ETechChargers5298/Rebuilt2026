@@ -151,7 +151,7 @@ public class Turret extends SubsystemBase {
   // In-line Command to rotate the turret to a specific angle - in degrees
   public Command aimTurretToSetPointCommand( Supplier<Double> turretAngleSupplier) {
     return run(() -> {
-      this.setTurretAngle(turretAngleSupplier.get());
+      this.setTurretAngle(-turretAngleSupplier.get());
     });
   }
 
