@@ -173,14 +173,14 @@ public class Scorer {
     // Angle from HubCenter - ScorerCenter - Turret X-axis
     // if you are at the turret's center (facing backward/starting angle), to which angle is the hub?
     public double getAngleToTargetFromTurretPerspective(){
-        return (180.0 - getAngleToTargetFromRobotPerspective()) - 360;
+        return (180.0 - getAngleToTargetFromRobotPerspective() - 360);
     }
 
 
     //  [DEPRECATED] Angle from HubCenter - ScorerCenter - Turret X-axis
     // if you are at the turret's center (facing backward/starting angle), to which angle is the hub?
     public double getAngleToHubFromTurretPerspective(){
-        return (180.0 - getAngleToHubFromRobotPerspective()) - 360;
+        return 180.0 - getAngleToHubFromRobotPerspective() - 360;
     }
 
 
