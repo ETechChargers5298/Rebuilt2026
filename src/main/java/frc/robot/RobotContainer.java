@@ -243,16 +243,19 @@ public class RobotContainer {
     // operatorController.leftStick().whileTrue(scorerLeft.turret.aimTurretToSetPointCommand(45));
 
     // AIM TURRET TO HUB (OPERATOR - L3)
-    operatorController.leftStick().whileTrue(scorerLeft.AimToHub());
+    // operatorController.leftStick().whileTrue(scorerLeft.AimToHub());
+    operatorController.leftStick().whileTrue(scorerLeft.AimToTarget());
+
+
+    // CHANGE THE AIMING TARGET
+    operatorController.povUp().onTrue(new InstantCommand( () -> scorerLeft.setTargetToHub()));
+    operatorController.povLeft().onTrue(new InstantCommand( () -> scorerLeft.setTargetToHerdDepot()));
+    operatorController.povRight().onTrue(new InstantCommand( () -> scorerLeft.setTargetToHerdOutpost()));
 
   }
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
-   *63.
-
-
-
    * @return the command to run in autonomous
    */    
    public Command getAutonomousCommand() {

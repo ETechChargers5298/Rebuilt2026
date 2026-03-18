@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import java.lang.reflect.Field;
 import java.util.Optional;
 
 import com.revrobotics.RelativeEncoder;
@@ -25,7 +26,18 @@ public class Scorer {
     private double xOffset;
     private double yOffset;
     private double hubX = 0;
-    private double hubY = FieldConstants.FIELD_CENTER_Y; //meters
+    private double hubY = 0;
+    private double depotHerdX = 0;
+    private double depotHerdY = 0;
+    private double outpostHerdX = 0;
+    private double outpostHerdY = 0;
+
+    private double targetX = 0;
+    private double targetY = 0;
+    private String targetString = "";
+    
+
+
     double robotX = Drivetrain.getInstance().getRobotX();
     double robotY = Drivetrain.getInstance().getRobotY();
     double robotAngle = Drivetrain.getInstance().getRobotAngleDegrees();
@@ -65,15 +77,51 @@ public class Scorer {
 
         if(alliance == DriverStation.Alliance.Blue){
             hubX = FieldConstants.BLUE_HUB_CENTER_X;
+            hubY = FieldConstants.FIELD_CENTER_Y;
+            depotHerdX = FieldConstants.BLUE_DEPOT_HERD_X;
+            depotHerdY = FieldConstants.BLUE_DEPOT_HERD_Y;
+            outpostHerdX = FieldConstants.BLUE_OUTPOST_HERD_X;
+            outpostHerdY = FieldConstants.BLUE_OUTPOST_HERD_Y;
+
         } else {
             hubX = FieldConstants.RED_HUB_CENTER_X;
+            hubY = FieldConstants.FIELD_CENTER_Y;
+            depotHerdX = FieldConstants.RED_DEPOT_HERD_X;
+            depotHerdY = FieldConstants.RED_DEPOT_HERD_Y;
+            outpostHerdX = FieldConstants.RED_OUTPOST_HERD_X;
+            outpostHerdY = FieldConstants.RED_OUTPOST_HERD_Y;
+
         }
+
+        targetX = hubX;
+        targetY = hubY;
+        targetString = "Hub";
 
     }
 
 
 
     // SCORER METHODS
+
+    public void setTarget(double targetX, double targetY){
+        this.targetX = targetX;
+        this.targetY = targetY;
+    }
+
+    // Methods to change the target
+    public void setTargetToHub(){
+        setTarget(hubX, hubY);
+        targetString = "Hub";
+    }
+    public void setTargetToHerdDepot(){
+        setTarget(depotHerdX, depotHerdY);
+        targetString = "Depot";
+    }
+        public void setTargetToHerdOutpost(){
+        setTarget(outpostHerdX, outpostHerdY);
+        targetString = "Outpost";
+    }
+
 
     // Get the turret's X position in field coordinates (rotated by robot heading)
     private double getTurretX(){
@@ -87,38 +135,64 @@ public class Scorer {
         return robotY + xOffset * Math.sin(angleRad) + yOffset * Math.cos(angleRad);
     }
 
-    // Distance from TurretCenter -->  Alliance Hub Center
+    // Distance from TurretCenter -->  A Target
+    public double getDistanceToTarget(){
+        double turretX = getTurretX();
+        double turretY = getTurretY();
+        return Math.sqrt(Math.pow(targetX - turretX, 2) + Math.pow(targetY - turretY, 2));
+    }
+
+
+    // [DEPRECCATED] Distance from TurretCenter -->  Alliance Hub Center
     public double getDistanceToHub(){
         double tx = getTurretX();
         double ty = getTurretY();
         return Math.sqrt(Math.pow(hubX - tx, 2) + Math.pow(hubY - ty, 2));
     }
 
-    // Angle from HubCenter --> TurretCenter --> Field X-axis 0
+    // Angle from HubCenter --> TargetCenter --> Field X-axis 0
+    public double getAngleToTargetFromFieldPerspective(){
+        return Math.toDegrees(Math.atan2(targetY - getTurretY(), targetX - getTurretX()));
+    }
+
+    //  [DEPRECATED] Angle from HubCenter --> TurretCenter --> Field X-axis 0
     public double getAngleToHubFromFieldPerspective(){
         return Math.toDegrees(Math.atan2(hubY - getTurretY(), hubX - getTurretX()));
     }
+
+    //  Angle from HubCenter --> TargetCenter --> RobotFront X-axis (front/intake)
+    public double getAngleToTargetFromRobotPerspective(){
+        return getAngleToTargetFromFieldPerspective() - robotAngle;
+    }
  
-    // Angle from HubCenter --> TurretCenter --> RobotFront X-axis (front/intake)
+    //  [DEPRECATED] Angle from HubCenter --> TurretCenter --> RobotFront X-axis (front/intake)
     public double getAngleToHubFromRobotPerspective(){
         return getAngleToHubFromFieldPerspective() - robotAngle;
     }
 
     // Angle from HubCenter - ScorerCenter - Turret X-axis
     // if you are at the turret's center (facing backward/starting angle), to which angle is the hub?
+    public double getAngleToTargetFromTurretPerspective(){
+        return (180.0 - getAngleToTargetFromRobotPerspective()) - 360;
+    }
+
+
+    //  [DEPRECATED] Angle from HubCenter - ScorerCenter - Turret X-axis
+    // if you are at the turret's center (facing backward/starting angle), to which angle is the hub?
     public double getAngleToHubFromTurretPerspective(){
         return (180.0 - getAngleToHubFromRobotPerspective()) - 360;
     }
 
 
+
     // check if the Scorer mechs are ready for a launch
     public boolean isReadyToScore() {
         
-        double dist = getDistanceToHub();
+        double dist = getDistanceToTarget();
         var params = getIdealShot(dist);
         
         // Check if Turret is aimed towards Hub
-        boolean turretReady = Math.abs(turret.getTurretAngle() - getAngleToHubFromTurretPerspective()) < TURRET_TOLERANCE_DEG;
+        boolean turretReady = Math.abs(turret.getTurretAngle() - getAngleToTargetFromTurretPerspective()) < TURRET_TOLERANCE_DEG;
         
         // Check if Flywheel has revved to the desired speed
         boolean flywheelReady = Math.abs(flywheel.getFlywheelRpm() - params.rpm) < FLYWHEEL_TOLERANCE_RPM;
@@ -195,6 +269,14 @@ public class Scorer {
     // SCORER COMMANDS
 
     // Aim method that asks each subsystem to move based on a setpoint, passes a lambda () -> to keep it live
+    public Command AimToTarget(){
+        return turret.aimTurretToSetPointCommand(() -> getAngleToTargetFromTurretPerspective())
+            .alongWith( flywheel.spinFlywheelToSetPointCommand( ()-> getIdealShot(getDistanceToTarget()).rpm))
+            .alongWith(angler.aimAnglerToSetPointCommand(()-> getIdealShot(getDistanceToTarget()).angle))
+            .withName("Scorer:AimToTarget");
+    }
+
+    // [DEPRECATED] Aim method that asks each subsystem to move based on a setpoint, passes a lambda () -> to keep it live
     public Command AimToHub(){
         return turret.aimTurretToSetPointCommand(() -> getAngleToHubFromTurretPerspective())
             .alongWith( flywheel.spinFlywheelToSetPointCommand( ()-> getIdealShot(getDistanceToHub()).rpm))
@@ -214,6 +296,9 @@ public class Scorer {
         SmartDashboard.putNumber(side.substring(0,1) + " Scorer: Distance To Hub", getDistanceToHub());
         SmartDashboard.putNumber(side.substring(0,1) + " Scorer: Angle To Hub", getAngleToHubFromTurretPerspective());
         SmartDashboard.putBoolean(side.substring(0,1) + " Scorer: READY TO FIRE", isReadyToScore());
+        SmartDashboard.putString(side.substring(0,1)  + " Current Target", targetString);
+        SmartDashboard.putNumber(side.substring(0,1)  + " TargetX", targetX);
+        SmartDashboard.putNumber(side.substring(0,1)  + " TargetY", targetY);
     }
 
 
