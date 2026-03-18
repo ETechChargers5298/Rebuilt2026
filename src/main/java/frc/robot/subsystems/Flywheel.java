@@ -75,14 +75,6 @@ public class Flywheel extends SubsystemBase {
 
 
   // BASIC FLYWHEEL METHODS
-  public void revFlywheel(){
-    setSpeed = -1.0;
-    flywheelMotor.set(setSpeed);
-  }
-
-  public void stopFlywheel(){
-    flywheelMotor.set(0.0);
-  }
 
   public double getFlywheelRpm(){
     //  StatusSignal<AngularVelocity> velocitySignal = launcherMotor.getVelocity();
@@ -90,8 +82,15 @@ public class Flywheel extends SubsystemBase {
     return flywheelEncoder.getVelocity();
   }
 
-  public void speedUp(double speed){
-    flywheelMotor.set(speed);
+  public double getSetSpeed() {
+    return setSpeed;
+  }
+
+  public void setSetSpeed(double speed){
+    setSpeed = speed;
+    setSpeed = Math.min(setSpeed, 0);
+    setSpeed = Math.max(setSpeed, -1);
+    flywheelMotor.set(setSpeed);
   }
 
 
@@ -100,21 +99,21 @@ public class Flywheel extends SubsystemBase {
   public Command revFlywheelCommand() {
     return run(
       () -> {
-        revFlywheel();
+        setSetSpeed(-1);
       });
   }
 
   public Command stopFlywheelCommand() {
     return run(
       () -> {
-        stopFlywheel();
+        setSetSpeed(0);
       });
     }
   
   public Command flyWheelCommand(DoubleSupplier speed){
     return run(
       () -> {
-        speedUp(speed.getAsDouble());
+        setSetSpeed(speed.getAsDouble());
       });
   }
 

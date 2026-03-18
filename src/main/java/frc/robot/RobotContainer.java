@@ -210,14 +210,12 @@ public class RobotContainer {
     // operatorController.rightBumper().whileTrue(scorerLeft.flywheel.revFlywheelCommand());
     
     operatorController.rightBumper().onTrue(new InstantCommand(() -> {
-      scorerLeft.flywheel.setSpeed += 0.01;
-      scorerLeft.flywheel.setSpeed = Math.min(scorerLeft.flywheel.setSpeed, 0);
-      scorerLeft.flywheel.speedUp(scorerLeft.flywheel.setSpeed);
+      double setSpeed = scorerLeft.flywheel.getSetSpeed();
+      scorerLeft.flywheel.setSetSpeed(setSpeed + 0.01);
     }));
     operatorController.leftBumper().onTrue(new InstantCommand(() -> {
-      scorerLeft.flywheel.setSpeed -= 0.01;
-      scorerLeft.flywheel.setSpeed = Math.max(scorerLeft.flywheel.setSpeed, -1);
-      scorerLeft.flywheel.speedUp(scorerLeft.flywheel.setSpeed);
+      double setSpeed = scorerLeft.flywheel.getSetSpeed();
+      scorerLeft.flywheel.setSetSpeed(setSpeed - 0.01);
     }));
     // scorerLeft.flywheel.setDefaultCommand(
     //   scorerLeft.flywheel.flyWheelCommand( () -> MathUtil.applyDeadband(operatorController.getLeftX(), 0.1) )
