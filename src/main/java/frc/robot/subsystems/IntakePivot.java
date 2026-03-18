@@ -44,14 +44,14 @@ public class IntakePivot extends SubsystemBase {
 
   public void extend()
   {
-    extendMotorRight.set(1.0);
-    extendMotorLeft.set(-1.0);
+    extendMotorRight.set(0.1);
+    extendMotorLeft.set(-0.1);
   }
 
   public void retract()
   {
-    extendMotorRight.set(-1.0);
-    extendMotorLeft.set(1.0);
+    extendMotorRight.set(-0.1);
+    extendMotorLeft.set(0.1);
   }
 
   public void stopExtending(){

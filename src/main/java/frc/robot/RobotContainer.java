@@ -61,6 +61,7 @@ public class RobotContainer {
   // ROBOTCONTAINER FIELDS
   private final CommandXboxController driverController = new CommandXboxController(Ports.DRIVER_CONTROLLER);
   private final CommandXboxController operatorController = new CommandXboxController(Ports.OPERATOR_CONTROLLER);
+  private final CommandXboxController testingController = new CommandXboxController(Ports.TESTING_CONTROLLER);
   private final Drivetrain drivetrain = Drivetrain.getInstance();
   private final Telemetry logger = new Telemetry(MaxSpeed);
 
@@ -204,19 +205,21 @@ public class RobotContainer {
     //---------- FLYWHEEL JOYSTICK CONTROLLER  BINDINGS----------//
 
     // STOP FLYWHEEL by default
-    // scorerLeft.flywheel.setDefaultCommand(scorerLeft.flywheel.stopFlywheelCommand()  );
+    scorerLeft.flywheel.setDefaultCommand(scorerLeft.flywheel.stopFlywheelCommand()  ); //comment out for FlyWheel testing
 
     // REV FLYWHEEL (OPERATOR - RB)
-    // operatorController.rightBumper().whileTrue(scorerLeft.flywheel.revFlywheelCommand());
+    operatorController.rightBumper().whileTrue(scorerLeft.flywheel.revFlywheelCommand());
     
-    operatorController.rightBumper().onTrue(new InstantCommand(() -> {
+    testingController.rightBumper().onTrue(new InstantCommand(() -> {
       double setSpeed = scorerLeft.flywheel.getSetSpeed();
       scorerLeft.flywheel.setSetSpeed(setSpeed + 0.01);
     }));
-    operatorController.leftBumper().onTrue(new InstantCommand(() -> {
+    testingController.leftBumper().onTrue(new InstantCommand(() -> {
       double setSpeed = scorerLeft.flywheel.getSetSpeed();
       scorerLeft.flywheel.setSetSpeed(setSpeed - 0.01);
     }));
+
+    
     // scorerLeft.flywheel.setDefaultCommand(
     //   scorerLeft.flywheel.flyWheelCommand( () -> MathUtil.applyDeadband(operatorController.getLeftX(), 0.1) )
     // );
@@ -251,6 +254,10 @@ public class RobotContainer {
     operatorController.povUp().onTrue(new InstantCommand( () -> scorerLeft.setTargetToHub()));
     operatorController.povLeft().onTrue(new InstantCommand( () -> scorerLeft.setTargetToHerdDepot()));
     operatorController.povRight().onTrue(new InstantCommand( () -> scorerLeft.setTargetToHerdOutpost()));
+
+
+    //Test Controller Commands
+    testingController.leftStick();
 
   }
 
