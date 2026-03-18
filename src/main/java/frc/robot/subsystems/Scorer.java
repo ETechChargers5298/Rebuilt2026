@@ -1,8 +1,12 @@
 package frc.robot.subsystems;
 
+import java.util.Optional;
+
 import com.revrobotics.RelativeEncoder;
 
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
@@ -20,17 +24,19 @@ public class Scorer {
     public double angleToHub = 0;
     private double xOffset;
     private double yOffset;
-    private double hubX = FieldConstants.BLUE_HUB_CENTER_X; 
+    private double hubX = 0;
     private double hubY = FieldConstants.FIELD_CENTER_Y; //meters
     double robotX = Drivetrain.getInstance().getRobotX();
     double robotY = Drivetrain.getInstance().getRobotY();
     double robotAngle = Drivetrain.getInstance().getRobotAngleDegrees();
-   
+    Optional<Alliance> allianceOptional = DriverStation.getAlliance();
+    static Alliance alliance = null;
+
     // Tolerances for the Scorer
     private final double TURRET_TOLERANCE_DEG = 1.5;
     private final double FLYWHEEL_TOLERANCE_RPM = 100.0;
     private final double ANGLER_TOLERANCE_DEG = 0.5;
-
+    
     
 
     // SCORER CONSTRUCTOR
@@ -51,7 +57,20 @@ public class Scorer {
             System.out.println("Error constructing Scorer");
         }
 
+
+         if (allianceOptional.isPresent()) {
+            alliance = allianceOptional.get();
+        }  
+
+
+        if(alliance == DriverStation.Alliance.Blue){
+            hubX = FieldConstants.BLUE_HUB_CENTER_X;
+        } else {
+            hubX = FieldConstants.RED_HUB_CENTER_X;
+        }
+
     }
+
 
 
     // SCORER METHODS

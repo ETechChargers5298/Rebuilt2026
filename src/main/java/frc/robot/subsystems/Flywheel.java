@@ -28,7 +28,7 @@ public class Flywheel extends SubsystemBase {
   private final SparkClosedLoopController pidController;
   private RelativeEncoder flywheelEncoder; // Flywheel speed sensor (in sparkmax)
   public double setSpeed;
-
+  private String side = "";
 
   // FLYWHEEL CONSTRUCTOR
   public Flywheel(String side, int motorPort) {
@@ -36,6 +36,7 @@ public class Flywheel extends SubsystemBase {
     flywheelMotor = new SparkMax(motorPort, MotorType.kBrushless);
     pidController = flywheelMotor.getClosedLoopController();
     flywheelEncoder = flywheelMotor.getEncoder();  //Built in encoder
+    this.side = side;
 
     
     // PID gains for Flywheel
@@ -130,8 +131,8 @@ public class Flywheel extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    SmartDashboard.putNumber("flyWheelSpeed", getFlywheelRpm());
-    SmartDashboard.putNumber("Flywheel setSpeed", setSpeed);
+    SmartDashboard.putNumber(side + "flyWheelSpeed", getFlywheelRpm());
+    SmartDashboard.putNumber(side + "Flywheel setSpeed", setSpeed);
     
   }
 }

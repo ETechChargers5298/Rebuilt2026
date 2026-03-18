@@ -34,7 +34,7 @@ public class Angler extends SubsystemBase {
   private DigitalInput limitSwitch;
   private final SparkClosedLoopController pidController;
   private String side;
-  private final double MAX_POSITION = -2400;
+  private final double MAX_POSITION = -18.9392;
   private final double MIN_POSITION = 0;
 
   // ANGLER CONSTRUCTOR
@@ -52,7 +52,7 @@ public class Angler extends SubsystemBase {
       .idleMode(IdleMode.kBrake);
 
     config.encoder
-      .positionConversionFactor(25)
+      .positionConversionFactor( ((0.9/15.6)*360)/100) //0.9 and 15.6 from onshape
       .velocityConversionFactor(1);
 
     config.softLimit

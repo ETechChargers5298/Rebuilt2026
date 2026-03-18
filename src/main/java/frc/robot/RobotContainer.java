@@ -21,6 +21,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -157,9 +158,9 @@ public class RobotContainer {
     driverController.start().and(driverController.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
 
     // FIELD-CENTRIC HEADING RESET (DRIVER - LB)
-    //driverController.leftBumper().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
-    driverController.leftBumper().onTrue(Commands.runOnce(SignalLogger:: start));
-    driverController.rightBumper().onTrue(Commands.runOnce(SignalLogger:: stop));
+    driverController.leftBumper().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
+    // driverController.leftBumper().onTrue(Commands.runOnce(SignalLogger:: start));
+    // driverController.rightBumper().onTrue(Commands.runOnce(SignalLogger:: stop));
     
     // Ensure that the telemetry is updated from our drivetrain's movements
     drivetrain.registerTelemetry(logger::telemeterize);
@@ -171,10 +172,10 @@ public class RobotContainer {
     IntakeRollers.getInstance().setDefaultCommand(  IntakeRollers.getInstance().stopEatingCommand()  );
 
     // EAT FUEL (OPERATOR - LB)
-    operatorController.leftBumper().whileTrue( IntakeRollers.getInstance().eatFuelCommand() );
+    driverController.rightTrigger().whileTrue( IntakeRollers.getInstance().eatFuelCommand() );
 
     // SPIT FUEL (OPERATOR - LT)
-    operatorController.leftTrigger().whileTrue(  IntakeRollers.getInstance().spitFuelCommand()   );
+    driverController.leftTrigger().whileTrue(  IntakeRollers.getInstance().spitFuelCommand()   );
 
 
     // INTAKE PIVOT maintains position by default
@@ -203,19 +204,21 @@ public class RobotContainer {
     //---------- FLYWHEEL JOYSTICK CONTROLLER  BINDINGS----------//
 
     // STOP FLYWHEEL by default
-    scorerLeft.flywheel.setDefaultCommand(scorerLeft.flywheel.stopFlywheelCommand()  );
+    // scorerLeft.flywheel.setDefaultCommand(scorerLeft.flywheel.stopFlywheelCommand()  );
 
     // REV FLYWHEEL (OPERATOR - RB)
-    operatorController.rightBumper().whileTrue(scorerLeft.flywheel.revFlywheelCommand());
+    // operatorController.rightBumper().whileTrue(scorerLeft.flywheel.revFlywheelCommand());
     
-    // operatorController.rightBumper().onTrue(new InstantCommand(() -> {
-    //   scorerLeft.flywheel.setSpeed += 0.01;
-    //   scorerLeft.flywheel.setSpeed = Math.min(scorerLeft.flywheel.setSpeed, 0);
-    // }));
-    // operatorController.leftBumper().onTrue(new InstantCommand(() -> {
-    //   scorerLeft.flywheel.setSpeed -= 0.01;
-    //   scorerLeft.flywheel.setSpeed = Math.max(scorerLeft.flywheel.setSpeed, -1);
-    // }));
+    operatorController.rightBumper().onTrue(new InstantCommand(() -> {
+      scorerLeft.flywheel.setSpeed += 0.01;
+      scorerLeft.flywheel.setSpeed = Math.min(scorerLeft.flywheel.setSpeed, 0);
+      scorerLeft.flywheel.speedUp(scorerLeft.flywheel.setSpeed);
+    }));
+    operatorController.leftBumper().onTrue(new InstantCommand(() -> {
+      scorerLeft.flywheel.setSpeed -= 0.01;
+      scorerLeft.flywheel.setSpeed = Math.max(scorerLeft.flywheel.setSpeed, -1);
+      scorerLeft.flywheel.speedUp(scorerLeft.flywheel.setSpeed);
+    }));
     // scorerLeft.flywheel.setDefaultCommand(
     //   scorerLeft.flywheel.flyWheelCommand( () -> MathUtil.applyDeadband(operatorController.getLeftX(), 0.1) )
     // );
