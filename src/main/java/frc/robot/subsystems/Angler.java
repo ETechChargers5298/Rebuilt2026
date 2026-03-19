@@ -54,12 +54,13 @@ public class Angler extends SubsystemBase {
     .forwardSoftLimit(AnglerConstants.MIN_POSITION)
     .reverseSoftLimitEnabled(true)
     .reverseSoftLimit(AnglerConstants.MAX_POSITION);
-/* 
+
     config.closedLoop
       .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
       .p(0.05)
       .i(0)
       .d(0.0005);
+/* 
 
     // FeedForward for Angler
     config.closedLoop.feedForward
@@ -124,6 +125,10 @@ public class Angler extends SubsystemBase {
     return run(() -> {
       pidController.setSetpoint(anglerPosition, SparkMax.ControlType.kPosition);
     });
+  }
+
+  public void setSetpoint(double setpoint) {
+    pidController.setSetpoint(setpoint, SparkMax.ControlType.kPosition);
   }
 
 

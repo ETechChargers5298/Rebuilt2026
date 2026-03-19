@@ -232,16 +232,17 @@ public class RobotContainer {
     );
 
     //AIM ANGLER TO SETPOINT 0 (OPERATOR - L3)
-    operatorController.leftStick().whileTrue(scorerLeft.angler.aimAnglerToSetPointCommand(0));
+    operatorController.leftStick().whileTrue(scorerLeft.angler.aimAnglerCommand(() -> 0));
+    testingController.leftStick().whileTrue(scorerLeft.angler.aimAnglerCommand(() -> 0));
 
     // INCREMENT/DECREMENT ANGLER ANGLES (TESTING - POV UP/DOWN)
     testingController.povUp().onTrue(new InstantCommand(() -> {
       double setAngle = scorerLeft.angler.getPosition();
-      scorerLeft.angler.aimAnglerToSetPointCommand(setAngle + 0.01);
+      scorerLeft.angler.setSetpoint(setAngle + 0.01);
     }));
     testingController.povDown().onTrue(new InstantCommand(() -> {
       double setAngle = scorerLeft.angler.getPosition();
-      scorerLeft.angler.aimAnglerToSetPointCommand(setAngle - 0.01);
+      scorerLeft.angler.setSetpoint(setAngle - 0.01);
     }));
 
 
