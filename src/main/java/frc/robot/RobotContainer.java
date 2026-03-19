@@ -228,7 +228,7 @@ public class RobotContainer {
 
     // AIM ANGLER (OPERATOR - RY AXIS)
     scorerLeft.angler.setDefaultCommand(
-      scorerLeft.angler.aimAnglerCommand( () -> MathUtil.applyDeadband(operatorController.getRightY(), 0.1) )
+      scorerLeft.angler.aimAnglerCommand( () -> MathUtil.applyDeadband(operatorController.getLeftY(), 0.1) )
     );
 
     //AIM ANGLER TO SETPOINT
@@ -240,7 +240,7 @@ public class RobotContainer {
 
     // AIM TURRET (OPERATOR - LX AXIS)
     scorerLeft.turret.setDefaultCommand(
-      scorerLeft.turret.moveTurretCommand( () -> MathUtil.applyDeadband(operatorController.getLeftX(), 0.1) )
+      scorerLeft.turret.moveTurretCommand( () -> MathUtil.applyDeadband(operatorController.getRightX(), 0.1) )
     );
     //AIM TURRET TO SETPOINT
     // operatorController.leftStick().whileTrue(scorerLeft.turret.aimTurretToSetPointCommand(45));

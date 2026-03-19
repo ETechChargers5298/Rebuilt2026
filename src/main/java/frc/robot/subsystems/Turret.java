@@ -73,9 +73,9 @@ public class Turret extends SubsystemBase {
     config.MotionMagic.MotionMagicJerk = 1600;
 
     // Configure Soft Limits directly on the Kraken hardware! (motor will stop even if code crashes)       
-    config.SoftwareLimitSwitch.ForwardSoftLimitEnable = false;
+    config.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
     config.SoftwareLimitSwitch.ForwardSoftLimitThreshold = ((MAX_ANGLE + EXTRA_DEGREES) / 360.0) * GEAR_RATIO; // In Rotations
-    config.SoftwareLimitSwitch.ReverseSoftLimitEnable = false;
+    config.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
     config.SoftwareLimitSwitch.ReverseSoftLimitThreshold = ((MIN_ANGLE - EXTRA_DEGREES) / 360.0) * GEAR_RATIO; // In Rotations
     config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     turretMotor.getConfigurator().apply(config);
