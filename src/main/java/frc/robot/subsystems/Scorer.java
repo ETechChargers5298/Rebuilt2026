@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import frc.robot.FieldConstants;
+import frc.robot.Constants.*;
 
 
 public class Scorer {
@@ -43,18 +44,13 @@ public class Scorer {
     double robotAngle = Drivetrain.getInstance().getRobotAngleDegrees();
     Optional<Alliance> allianceOptional = DriverStation.getAlliance();
     static Alliance alliance = null;
-
-    // Tolerances for the Scorer
-    private final double TURRET_TOLERANCE_DEG = 1.5;
-    private final double FLYWHEEL_TOLERANCE_RPM = 100.0;
-    private final double ANGLER_TOLERANCE_DEG = 0.5;
-    
     
 
     // SCORER CONSTRUCTOR
     public Scorer(String side, double xOffset, double yOffset){
-        this.side = side;
         
+        // Define subsystems for left & right scorers
+        this.side = side;
         if(side.equals("LEFT")){
             this.turret = TurretLeft.getInstance();
             this.angler = AnglerLeft.getInstance();
@@ -70,10 +66,10 @@ public class Scorer {
         }
 
 
-         if (allianceOptional.isPresent()) {
+        // Define field coordinates depending on Alliance color
+        if (allianceOptional.isPresent()) {
             alliance = allianceOptional.get();
-        }  
-
+        }
 
         if(alliance == DriverStation.Alliance.Blue){
             hubX = FieldConstants.BLUE_HUB_CENTER_X;
@@ -90,13 +86,12 @@ public class Scorer {
             depotHerdY = FieldConstants.RED_DEPOT_HERD_Y;
             outpostHerdX = FieldConstants.RED_OUTPOST_HERD_X;
             outpostHerdY = FieldConstants.RED_OUTPOST_HERD_Y;
-
         }
 
+        // Set the hub as the default target
         targetX = hubX;
         targetY = hubY;
         targetString = "Hub";
-
     }
 
 
@@ -192,13 +187,13 @@ public class Scorer {
         var params = getIdealShot(dist);
         
         // Check if Turret is aimed towards Hub
-        boolean turretReady = Math.abs(turret.getTurretAngle() - getAngleToTargetFromTurretPerspective()) < TURRET_TOLERANCE_DEG;
+        boolean turretReady = Math.abs(turret.getTurretAngle() - getAngleToTargetFromTurretPerspective()) < ScorerConstants.TURRET_TOLERANCE_DEG;
         
         // Check if Flywheel has revved to the desired speed
-        boolean flywheelReady = Math.abs(flywheel.getFlywheelRpm() - params.rpm) < FLYWHEEL_TOLERANCE_RPM;
+        boolean flywheelReady = Math.abs(flywheel.getFlywheelRpm() - params.rpm) < ScorerConstants.FLYWHEEL_TOLERANCE_RPM;
         
         // Check if Angler is to desired angle for launch
-        boolean anglerReady = Math.abs(angler.getPosition() - params.angle) < ANGLER_TOLERANCE_DEG;
+        boolean anglerReady = Math.abs(angler.getPosition() - params.angle) < ScorerConstants.ANGLER_TOLERANCE_DEG;
 
         if(turretReady && flywheelReady && anglerReady){
             return true;

@@ -5,25 +5,74 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Ports;
+import frc.robot.Constants.AnglerConstants;
+import frc.robot.Constants.IntakeConstants;
+
+import java.util.function.DoubleSupplier;
+
+import com.revrobotics.PersistMode;
+import com.revrobotics.ResetMode;
 import com.revrobotics.RelativeEncoder;
-import com.revrobotics.spark.*;
+import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.SparkBase.ControlType;
+import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+import com.revrobotics.spark.config.SparkMaxConfig;
 
 
 public class IntakePivot extends SubsystemBase {
 
   // INTAKE FIELDS
   private static IntakePivot instance;
-  private SparkMax extendMotorRight; // All extendMotor related things are currntly placeholder
-  private SparkMax extendMotorLeft; // All extendMotor related things are currntly placeholder
-  private RelativeEncoder extendEncoder;
+  private SparkMax pivotMotorRight; // All extendMotor related things are currntly placeholder
+  private SparkMax pivotMotorLeft; // All extendMotor related things are currntly placeholder
+  private RelativeEncoder pivotEncoder;
+  private final SparkClosedLoopController pidController;
 
 
-  // INTAKE CONSTRUCTOR
+  // INTAKE PIVOT CONSTRUCTOR
   private IntakePivot() {
-    extendMotorRight = new SparkMax(Ports.EXTEND_MOTOR_RIGHT_PORT,MotorType.kBrushless);
-    extendMotorLeft = new SparkMax(Ports.EXTEND_MOTOR_LEFT_PORT,MotorType.kBrushless);
-    extendEncoder = extendMotorRight.getEncoder();
+    pivotMotorRight = new SparkMax(Ports.EXTEND_MOTOR_RIGHT_PORT,MotorType.kBrushless);
+    pivotMotorLeft = new SparkMax(Ports.EXTEND_MOTOR_LEFT_PORT,MotorType.kBrushless);
+    pivotEncoder = pivotMotorLeft.getEncoder();
+    pidController = pivotMotorLeft.getClosedLoopController();
+    
+
+    // Motor Configs
+    SparkMaxConfig config = new SparkMaxConfig();
+    SparkMaxConfig followerConfig = new SparkMaxConfig();
+
+    config
+      .inverted(false)
+      .idleMode(IdleMode.kBrake)
+      .smartCurrentLimit(40);
+    
+    config.encoder
+      .positionConversionFactor(IntakeConstants.GEAR_RATIO)
+      .velocityConversionFactor(1);
+    
+    config.softLimit
+      .forwardSoftLimitEnabled(true)
+      .forwardSoftLimit(IntakeConstants.UP_ANGLE)
+      .reverseSoftLimitEnabled(true)
+      .reverseSoftLimit(IntakeConstants.DOWN_ANGLE);
+
+    config.closedLoop
+        .pid(0.1, 0, 0.01)
+        .outputRange(-0.5, 0.5); //can throttle the voltage if necessary
+
+
+    // Have Right motor follow the Left motor to be in sync
+    followerConfig
+      .follow(pivotMotorLeft, true)
+      .idleMode(IdleMode.kBrake)
+      .smartCurrentLimit(40);
+
+    // Apply configs to motors
+    pivotMotorLeft.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    pivotMotorRight.configure(followerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+
   }
 
   // INTAKE SINGLETON - ensures only 1 instance of Intake is constructed
@@ -38,32 +87,31 @@ public class IntakePivot extends SubsystemBase {
 
   public void generalExtend(double speed)
   {
-    extendMotorRight.set(speed);
-    extendMotorLeft.set(-speed);
+    // pivotMotorRight.set(speed);
+    pivotMotorLeft.set(-speed);
   }
 
   public void extend()
   {
-    extendMotorRight.set(0.1);
-    extendMotorLeft.set(-0.1);
+    // pivotMotorRight.set(IntakeConstants.EXTEND_SPEED);
+    pivotMotorLeft.set(-IntakeConstants.EXTEND_SPEED);
   }
 
   public void retract()
   {
-    extendMotorRight.set(-0.1);
-    extendMotorLeft.set(0.1);
+    // pivotMotorRight.set(-IntakeConstants.RETRACT_SPEED);
+    pivotMotorLeft.set(IntakeConstants.RETRACT_SPEED);
   }
 
   public void stopExtending(){
     
-    extendMotorRight.set(0);
-    extendMotorLeft.set(0);
-
+    // pivotMotorRight.set(0);
+    pivotMotorLeft.set(0);
   }
 
-  public double getExtendAngle()
+  public double getPivotAngle()
   {
-    return extendEncoder.getPosition();
+    return pivotEncoder.getPosition();
   }
 
   // Check if the fuel is jammed
@@ -99,16 +147,27 @@ public class IntakePivot extends SubsystemBase {
   }
 
   // In-line Command to stop moving the intake rollers
-  public Command stopExtendingCommand(){
+  public Command stopPivotingCommand(){
     return run(
       () -> {
         stopExtending();
       });
   }
+
+
+  // In-line Command to pivot Intake to a specific angle - in degrees
+  public Command pivotToSetPointCommand(DoubleSupplier targetAngle) {
+    return run(() -> {
+      pidController.setSetpoint(targetAngle.getAsDouble(), ControlType.kPosition);
+    });
+  }
+
+
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    SmartDashboard.putNumber("Intake Extend Angle", getExtendAngle());
+    SmartDashboard.putNumber("Intake Pivot Angle", getPivotAngle());
     
   }
 

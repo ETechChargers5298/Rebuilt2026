@@ -49,7 +49,7 @@ public class PivotIntake extends Command {
   @Override
   public void execute() {
 
-    intake.generalExtend(pid.calculate(intake.getExtendAngle()));
+    intake.generalExtend(pid.calculate(intake.getPivotAngle()));
 
   }
 

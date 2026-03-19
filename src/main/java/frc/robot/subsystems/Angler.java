@@ -1,16 +1,9 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
-
 package frc.robot.subsystems;
-import java.util.function.DoubleSupplier;
-import java.util.function.Supplier;
 
-import com.ctre.phoenix6.StatusSignal;
+import java.util.function.DoubleSupplier;
 import com.revrobotics.PersistMode;
-// import com.ctre.phoenix6.hardware.TalonFX;
-import com.revrobotics.RelativeEncoder;
 import com.revrobotics.ResetMode;
+import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
@@ -22,7 +15,7 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Ports;
+import frc.robot.Constants.*;
 
 public class Angler extends SubsystemBase {
 
@@ -34,22 +27,23 @@ public class Angler extends SubsystemBase {
   private DigitalInput limitSwitch;
   private final SparkClosedLoopController pidController;
   private String side;
-  private final double MAX_POSITION = -18.9392;
-  private final double MIN_POSITION = 0;
+
 
   // ANGLER CONSTRUCTOR
   public Angler(String side, int motorPort, int limitPort) {
+    this.side = side;
     angleMotor = new SparkMax(motorPort, MotorType.kBrushless);
     anglerEncoder = angleMotor.getEncoder();
     limitSwitch = new DigitalInput(limitPort);    //REV throughbore connected to Angler Sparkmax
     pidController = angleMotor.getClosedLoopController();
-    this.side = side;
+
     // PID gains for Angler
     SparkMaxConfig config = new SparkMaxConfig();
 
     config
       .inverted(false)
-      .idleMode(IdleMode.kBrake);
+      .idleMode(IdleMode.kBrake)
+      .smartCurrentLimit(30);
 
     config.encoder
       .positionConversionFactor( ((0.9/15.6)*360)/100) //0.9 and 15.6 from onshape
@@ -57,9 +51,9 @@ public class Angler extends SubsystemBase {
 
     config.softLimit
     .forwardSoftLimitEnabled(true)
-    .forwardSoftLimit(MIN_POSITION)
+    .forwardSoftLimit(AnglerConstants.MIN_POSITION)
     .reverseSoftLimitEnabled(true)
-    .reverseSoftLimit(MAX_POSITION);
+    .reverseSoftLimit(AnglerConstants.MAX_POSITION);
 /* 
     config.closedLoop
       .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
@@ -125,7 +119,7 @@ public class Angler extends SubsystemBase {
     });
   }
 
-    // In-line Command to angle the angler up to a specific angle - in degrees
+  // In-line Command to angle the angler up to a specific angle - in degrees
   public Command aimAnglerToSetPointCommand( double anglerPosition) {
     return run(() -> {
       pidController.setSetpoint(anglerPosition, SparkMax.ControlType.kPosition);

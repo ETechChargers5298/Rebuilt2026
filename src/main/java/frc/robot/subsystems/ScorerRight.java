@@ -1,6 +1,6 @@
 package frc.robot.subsystems;
 
-import frc.robot.Constants.MechConstants;
+import frc.robot.Constants.*;
 
 
 public class ScorerRight extends Scorer{
@@ -11,8 +11,8 @@ public class ScorerRight extends Scorer{
     // SCORERLEFT CONSTRUCTOR
     private ScorerRight(){
         super("RIGHT",
-            MechConstants.RIGHT_SCORER_X_OFFSET, 
-            MechConstants.RIGHT_SCORER_Y_OFFSET    
+            ScorerConstants.RIGHT_SCORER_X_OFFSET, 
+            ScorerConstants.RIGHT_SCORER_Y_OFFSET    
         );
     }
 

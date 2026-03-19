@@ -1,33 +1,16 @@
 package frc.robot;
 
-
-
-// import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
-
-// import com.pathplanner.lib.util.*;
-// import com.pathplanner.lib.config.PIDConstants;
-// import com.pathplanner.lib.controllers.PPHolonomicDriveController;
-// import com.pathplanner.lib.util.*;
-// import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
-import edu.wpi.first.apriltag.AprilTagFieldLayout;
-import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
-import edu.wpi.first.math.controller.HolonomicDriveController;
 import edu.wpi.first.math.geometry.Rotation3d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
-import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Mass;
 import edu.wpi.first.units.measure.MomentOfInertia;
 import static edu.wpi.first.units.Units.Kilograms;
 import static edu.wpi.first.units.Units.KilogramSquareMeters;
-// import frc.robot.utils.ModuleConfig;
-import frc.robot.Ports;
 
 
 /**
@@ -40,52 +23,70 @@ import frc.robot.Ports;
  */
 public final class Constants {
 
-  public static class SwerveConstantsOld {
- // Distance between front and back wheels on robot
-    public static final SwerveDriveKinematics DRIVE_KINEMATICS = new SwerveDriveKinematics(
-        new Translation2d(RobotConstants.WHEEL_BASE / 2, RobotConstants.TRACK_WIDTH / 2),
-        new Translation2d(RobotConstants.WHEEL_BASE / 2, -RobotConstants.TRACK_WIDTH / 2),
-        new Translation2d(-RobotConstants.WHEEL_BASE / 2, RobotConstants.TRACK_WIDTH / 2),
-        new Translation2d(-RobotConstants.WHEEL_BASE / 2, -RobotConstants.TRACK_WIDTH / 2)
-    );
+  public static class IntakeConstants{
 
-    // Is NavX rotation values backwards?
-    public static final boolean TURN_INVERSION = false;
+    public static final double STARTING_ANGLE = 0;
+    public static final double UP_ANGLE = -10;
+    public static final double DOWN_ANGLE = -80;
+    public static final double GEAR_RATIO = 9.0 * 5.0;
 
-    // Driving Parameters - max speeds allowed, not capable
-    public static final double TOP_SPEED = 4.0; //9.6
-    public static final double TOP_ANGULAR_SPEED = 2 * Math.PI;
+    public static final double EAT_SPEED = 1.0;
+    public static final double RETRACT_SPEED = 0.25;
+    public static final double EXTEND_SPEED = 0.1;    
+  }
 
+  public static class LoaderConstants{
+    
+  }
 
+  public static class TurretConstants{
+
+    // Turret Angles
+    public static final double GEAR_RATIO = 100.0 / 10.0 * 4;      // gear ratio of turret (Big gear of 100: Small gear of 10)
+    public static final double MAX_ANGLE = 90.0;
+    public static final double MIN_ANGLE = -90;
+    public static final double EXTRA_DEGREES = 5.0;      // additional degrees beyond 360 the turret should rotate in each direction
+
+    // Turret Speeds
+    public static final double AIM_SPEED = 1.0;
+
+    // Turret PID Values
+    public static final double KP = 24.0;
+    public static final double KI = 0.0;
+    public static final double KD = 0.1;
+    public static final double KV = 0.12;
+    public static final double KS = 0.25;
+
+    // MotionMagic Constants
+    public static final int CRUISE_VELOCITY = 80;
+    public static final int ACCELERATION = 160;
+    public static final int JERK = 1600;
+  }
+
+  public static class AnglerConstants{
+
+    public static final double MAX_POSITION = -18.9392;
+    public static final double MIN_POSITION = 0;
+  }
+
+  public static class FlywheelConstants{
+    
   }
   
-  
-  public static class MechConstants{
+  public static class ScorerConstants{
 
-    
-    public static final int ENCODER_TICKS = 8192; //Counts per Revolution
-
-    // Mech Motor Speeds for Buttons
-    public static double CORAL_INTAKE_SPEED = 0.25;
-    public static double CORAL_RETRACT_SPEED = 0.3;
-    public static double CORAL_SCORE_SPEED = 0.4;
-    public static double ALGAE_INTAKE_SPEED = 1.0;
-
-    // Jaw Angles
-    public static final double JAW_STARTING_ANGLE = 0;//260;
-    public static final double JAW_INTAKE_ANGLE = -34;
-    public static final double JAW_UP_ANGLE = -75;//25;
-    public static final double JAW_MAX_ANGLE = -80;//25;
-    // public static final double JAW_AUTO_ANGLE = 80;
-
-
-    // scorer offsets
+    // Scorer Offsets
     public static final double LEFT_SCORER_X_OFFSET = Units.inchesToMeters(-6.0);
     public static final double LEFT_SCORER_Y_OFFSET = Units.inchesToMeters(-6.0);
     public static final double RIGHT_SCORER_X_OFFSET = Units.inchesToMeters(-6.0);
     public static final double RIGHT_SCORER_Y_OFFSET = Units.inchesToMeters(6.0);
 
+    // Tolerances for the Scorer
+    public static final double TURRET_TOLERANCE_DEG = 1.5;
+    public static final double FLYWHEEL_TOLERANCE_RPM = 100.0;
+    public static final double ANGLER_TOLERANCE_DEG = 0.5;
   }
+
 
   public static class RobotConstants{
    

@@ -4,6 +4,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Ports;
+import frc.robot.Constants.IntakeConstants;
+
 import com.revrobotics.spark.*;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
@@ -30,12 +32,12 @@ public class IntakeRollers extends SubsystemBase {
   // BASIC INTAKE METHODS
 
   public void eat() {
-    eatMotor.set(-1.0);
+    eatMotor.set(-IntakeConstants.EAT_SPEED);
   }
   
   public void spit()
   {
-    eatMotor.set(1.0);
+    eatMotor.set(IntakeConstants.EAT_SPEED);
   }
 
   public void stopEating()
