@@ -94,13 +94,13 @@ public class IntakePivot extends SubsystemBase {
   public void extend()
   {
     // pivotMotorRight.set(IntakeConstants.EXTEND_SPEED);
-    pivotMotorLeft.set(-IntakeConstants.EXTEND_SPEED);
+    pivotMotorLeft.set(IntakeConstants.EXTEND_SPEED);
   }
 
   public void retract()
   {
     // pivotMotorRight.set(-IntakeConstants.RETRACT_SPEED);
-    pivotMotorLeft.set(IntakeConstants.RETRACT_SPEED);
+    pivotMotorLeft.set(-IntakeConstants.RETRACT_SPEED);
   }
 
   public void stopExtending(){

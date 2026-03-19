@@ -199,7 +199,7 @@ public class RobotContainer {
 
     // LOAD IN (OPERATOR - RT)
     operatorController.rightTrigger().whileTrue( Loader.getInstance().loadInCommand());
-      
+    testingController.rightTrigger().whileTrue( Loader.getInstance().loadInCommand());
     // LOAD OUT (OPERATOR - ???)
     //operatorController.???().whileTrue(loader.unloadCommand());
 
@@ -208,7 +208,7 @@ public class RobotContainer {
     //---------- FLYWHEEL JOYSTICK CONTROLLER  BINDINGS----------//
 
     // STOP FLYWHEEL by default
-    scorerLeft.flywheel.setDefaultCommand(scorerLeft.flywheel.stopFlywheelCommand()  ); //comment out for FlyWheel testing
+    // scorerLeft.flywheel.setDefaultCommand(scorerLeft.flywheel.stopFlywheelCommand()  ); //comment out for FlyWheel testing
 
     // REV FLYWHEEL MANUALLY (OPERATOR - RB)
     operatorController.rightBumper().whileTrue(scorerLeft.flywheel.revFlywheelCommand());

@@ -69,6 +69,9 @@ public class Flywheel extends SubsystemBase {
 
     // Apply the configuration to the motor
     flywheelMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+
+    
+    SmartDashboard.putData(side + " FlywheelSetPointCommand", spinFlywheelToSetDashboard());
   
 
   }
@@ -125,13 +128,17 @@ public class Flywheel extends SubsystemBase {
   public Command spinFlywheelToSetPointCommand( DoubleSupplier rpmSupplier) {
     return run(() -> this.setReferenceRPM(rpmSupplier.getAsDouble()));
   }
+  public Command spinFlywheelToSetDashboard() {
+    return run(() -> this.setReferenceRPM(setSpeed*-3000));
+  }
 
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    SmartDashboard.putNumber(side + "flyWheelSpeed", getFlywheelRpm());
-    SmartDashboard.putNumber(side + "Flywheel setSpeed", setSpeed);
+    SmartDashboard.putNumber(side + " flyWheelSpeed", getFlywheelRpm());
+    SmartDashboard.putNumber(side + " Flywheel setSpeed", setSpeed);
+  
     
   }
 }
