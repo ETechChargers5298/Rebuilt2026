@@ -150,18 +150,19 @@ public class RobotContainer {
         forwardStraight.withVelocityX(-0.5).withVelocityY(0))
     );
 
-
-    // SWERVE SysId ROUTINES (DRIVER - BACK/START + X/Y)
+    // SWERVE SysId ROUTINES (TESTING - BACK/START + X/Y)
     // Note: Each routine should be run exactly once in a single log.
-    driverController.back().and(driverController.y()).whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
-    driverController.back().and(driverController.x()).whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
-    driverController.start().and(driverController.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
-    driverController.start().and(driverController.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
+    testingController.back().and(testingController.y()).whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
+    testingController.back().and(testingController.x()).whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
+    testingController.start().and(testingController.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
+    testingController.start().and(testingController.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
 
-    // FIELD-CENTRIC HEADING RESET (DRIVER - LB)
-    driverController.leftBumper().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
-    // driverController.leftBumper().onTrue(Commands.runOnce(SignalLogger:: start));
-    // driverController.rightBumper().onTrue(Commands.runOnce(SignalLogger:: stop));
+    // TRIGGER SIGNAL LOGGING ( TESTING - LB/RB)
+    testingController.leftBumper().onTrue(Commands.runOnce(SignalLogger:: start));
+    testingController.rightBumper().onTrue(Commands.runOnce(SignalLogger:: stop));
+
+    // FIELD-CENTRIC HEADING RESET (DRIVER - X)
+    driverController.x().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
     
     // Ensure that the telemetry is updated from our drivetrain's movements
     drivetrain.registerTelemetry(logger::telemeterize);
@@ -212,12 +213,12 @@ public class RobotContainer {
     // REV FLYWHEEL MANUALLY (OPERATOR - RB)
     operatorController.rightBumper().whileTrue(scorerLeft.flywheel.revFlywheelCommand());
     
-    // INCREMENT/DECREMENT FLYWHEEL SPEEDS (TESTING - RB/LB)
-    testingController.rightBumper().onTrue(new InstantCommand(() -> {
+    // INCREMENT/DECREMENT FLYWHEEL SPEEDS (TESTING - POV LEFT/RIGHT)
+    testingController.povRight().onTrue(new InstantCommand(() -> {
       double setSpeed = scorerLeft.flywheel.getSetSpeed();
       scorerLeft.flywheel.setSetSpeed(setSpeed + 0.01);
     }));
-    testingController.leftBumper().onTrue(new InstantCommand(() -> {
+    testingController.povLeft().onTrue(new InstantCommand(() -> {
       double setSpeed = scorerLeft.flywheel.getSetSpeed();
       scorerLeft.flywheel.setSetSpeed(setSpeed - 0.01);
     }));
@@ -233,6 +234,15 @@ public class RobotContainer {
     //AIM ANGLER TO SETPOINT 0 (OPERATOR - L3)
     operatorController.leftStick().whileTrue(scorerLeft.angler.aimAnglerToSetPointCommand(0));
 
+    // INCREMENT/DECREMENT ANGLER ANGLES (TESTING - POV UP/DOWN)
+    testingController.povUp().onTrue(new InstantCommand(() -> {
+      double setAngle = scorerLeft.angler.getPosition();
+      scorerLeft.angler.aimAnglerToSetPointCommand(setAngle + 0.01);
+    }));
+    testingController.povDown().onTrue(new InstantCommand(() -> {
+      double setAngle = scorerLeft.angler.getPosition();
+      scorerLeft.angler.aimAnglerToSetPointCommand(setAngle - 0.01);
+    }));
 
 
     //---------- TURRET JOYSTICK CONTROLLER BINDINGS ----------//
