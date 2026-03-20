@@ -5,11 +5,14 @@
 package frc.robot.commands.autos;
 
 import com.pathplanner.lib.commands.PathPlannerAuto;
+import com.pathplanner.lib.path.PathPlannerPath;
+import com.pathplanner.lib.util.PathPlannerLogging;
 
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import frc.robot.subsystems.Flywheel;
 import frc.robot.subsystems.IntakePivot;
 import frc.robot.subsystems.IntakeRollers;
 
@@ -28,9 +31,9 @@ public class StraightToDepotAuto extends SequentialCommandGroup {
     new WaitCommand(1).deadlineFor(IntakePivot.getInstance().extendCommand()),
     
     // 2. Start intake
-    new PathPlannerAuto("StraightToDepotAuto").deadlineFor(IntakeRollers.getInstance().eatFuelCommand())
+    new WaitCommand(4).deadlineFor(IntakeRollers.getInstance().eatFuelCommand())
     
-    // 3. Trip to middle
+    // 3. Start flywheel & loader
 
     //
 
