@@ -9,6 +9,7 @@ import com.pathplanner.lib.commands.PathPlannerAuto;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import frc.robot.subsystems.AnglerLeft;
 import frc.robot.subsystems.FlywheelLeft;
 import frc.robot.subsystems.IntakePivot;
 import frc.robot.subsystems.IntakeRollers;
@@ -35,8 +36,12 @@ public class StraightToDepotAuto extends SequentialCommandGroup {
       // 3. wait 2 seconds
       new WaitCommand(2),
 
-      // 4. Aim turret to Hub
-      new WaitCommand(2).deadlineFor(ScorerLeft.getInstance().AimToTarget()),
+      // 4. Aim turret and angler to Hub
+      new ParallelDeadlineGroup(
+        new WaitCommand(1),
+        ScorerLeft.getInstance().AimToTarget(),
+        AnglerLeft.getInstance().aimAnglerCommand(() -> -12)
+      ),
         
       // 5. Begin revving flywheel
       new WaitCommand(1).deadlineFor(FlywheelLeft.getInstance().revFlywheelCommand()),
