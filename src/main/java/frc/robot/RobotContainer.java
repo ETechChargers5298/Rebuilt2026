@@ -1,6 +1,6 @@
 package frc.robot;
 
-import frc.robot.commands.PivotIntake;
+// import frc.robot.commands.PivotIntake;
 import frc.robot.subsystems.*;
 import frc.robot.utils.TunerConstants;
 import frc.robot.utils.Telemetry;
@@ -208,7 +208,7 @@ public class RobotContainer {
     //---------- FLYWHEEL JOYSTICK CONTROLLER  BINDINGS----------//
 
     // STOP FLYWHEEL by default
-    // scorerLeft.flywheel.setDefaultCommand(scorerLeft.flywheel.stopFlywheelCommand()  ); //comment out for FlyWheel testing
+    scorerLeft.flywheel.setDefaultCommand(scorerLeft.flywheel.stopFlywheelCommand()  ); //comment out for FlyWheel testing
 
     // REV FLYWHEEL MANUALLY (OPERATOR - RB)
     operatorController.rightBumper().whileTrue(scorerLeft.flywheel.revFlywheelCommand());

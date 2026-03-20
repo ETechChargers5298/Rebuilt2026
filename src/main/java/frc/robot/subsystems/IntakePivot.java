@@ -28,7 +28,7 @@ public class IntakePivot extends SubsystemBase {
   private SparkMax pivotMotorRight; // All extendMotor related things are currntly placeholder
   private SparkMax pivotMotorLeft; // All extendMotor related things are currntly placeholder
   private RelativeEncoder pivotEncoder;
-  private final SparkClosedLoopController pidController;
+  // private final SparkClosedLoopController pidController;
 
 
   // INTAKE PIVOT CONSTRUCTOR
@@ -36,7 +36,7 @@ public class IntakePivot extends SubsystemBase {
     pivotMotorRight = new SparkMax(Ports.EXTEND_MOTOR_RIGHT_PORT,MotorType.kBrushless);
     pivotMotorLeft = new SparkMax(Ports.EXTEND_MOTOR_LEFT_PORT,MotorType.kBrushless);
     pivotEncoder = pivotMotorLeft.getEncoder();
-    pidController = pivotMotorLeft.getClosedLoopController();
+    // pidController = pivotMotorLeft.getClosedLoopController();
     
 
     // Motor Configs
@@ -48,19 +48,19 @@ public class IntakePivot extends SubsystemBase {
       .idleMode(IdleMode.kBrake)
       .smartCurrentLimit(40);
     
-    config.encoder
-      .positionConversionFactor(IntakeConstants.GEAR_RATIO)
-      .velocityConversionFactor(1);
+    // // config.encoder
+    //   .positionConversionFactor(IntakeConstants.GEAR_RATIO)
+    //   .velocityConversionFactor(1);
     
-    config.softLimit
-      .forwardSoftLimitEnabled(true)
-      .forwardSoftLimit(IntakeConstants.UP_ANGLE)
-      .reverseSoftLimitEnabled(true)
-      .reverseSoftLimit(IntakeConstants.DOWN_ANGLE);
+    // config.softLimit
+    //   .forwardSoftLimitEnabled(true)
+    //   .forwardSoftLimit(IntakeConstants.UP_ANGLE)
+    //   .reverseSoftLimitEnabled(true)
+    //   .reverseSoftLimit(IntakeConstants.DOWN_ANGLE);
 
-    config.closedLoop
-        .pid(0.1, 0, 0.01)
-        .outputRange(-0.5, 0.5); //can throttle the voltage if necessary
+    // config.closedLoop
+    //     .pid(0.1, 0, 0.01)
+    //     .outputRange(-0.5, 0.5); //can throttle the voltage if necessary
 
 
     // Have Right motor follow the Left motor to be in sync
@@ -70,8 +70,8 @@ public class IntakePivot extends SubsystemBase {
       .smartCurrentLimit(40);
 
     // Apply configs to motors
-    pivotMotorLeft.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-    pivotMotorRight.configure(followerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    // pivotMotorLeft.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    // pivotMotorRight.configure(followerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
   }
 
@@ -87,25 +87,25 @@ public class IntakePivot extends SubsystemBase {
 
   public void generalExtend(double speed)
   {
-    // pivotMotorRight.set(speed);
+    pivotMotorRight.set(speed);
     pivotMotorLeft.set(-speed);
   }
 
   public void extend()
   {
-    // pivotMotorRight.set(IntakeConstants.EXTEND_SPEED);
+    pivotMotorRight.set(IntakeConstants.EXTEND_SPEED);
     pivotMotorLeft.set(IntakeConstants.EXTEND_SPEED);
   }
 
   public void retract()
   {
-    // pivotMotorRight.set(-IntakeConstants.RETRACT_SPEED);
+    pivotMotorRight.set(-IntakeConstants.RETRACT_SPEED);
     pivotMotorLeft.set(-IntakeConstants.RETRACT_SPEED);
   }
 
   public void stopExtending(){
     
-    // pivotMotorRight.set(0);
+    pivotMotorRight.set(0);
     pivotMotorLeft.set(0);
   }
 
@@ -156,11 +156,11 @@ public class IntakePivot extends SubsystemBase {
 
 
   // In-line Command to pivot Intake to a specific angle - in degrees
-  public Command pivotToSetPointCommand(DoubleSupplier targetAngle) {
-    return run(() -> {
-      pidController.setSetpoint(targetAngle.getAsDouble(), ControlType.kPosition);
-    });
-  }
+  // public Command pivotToSetPointCommand(DoubleSupplier targetAngle) {
+  //   return run(() -> {
+  //     pidController.setSetpoint(targetAngle.getAsDouble(), ControlType.kPosition);
+  //   });
+  // }
 
 
 
