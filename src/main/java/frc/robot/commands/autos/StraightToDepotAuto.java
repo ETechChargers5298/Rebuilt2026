@@ -5,16 +5,15 @@
 package frc.robot.commands.autos;
 
 import com.pathplanner.lib.commands.PathPlannerAuto;
-import com.pathplanner.lib.path.PathPlannerPath;
-import com.pathplanner.lib.util.PathPlannerLogging;
 
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
-import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
-import frc.robot.subsystems.Flywheel;
+import frc.robot.subsystems.FlywheelLeft;
 import frc.robot.subsystems.IntakePivot;
 import frc.robot.subsystems.IntakeRollers;
+import frc.robot.subsystems.Loader;
+import frc.robot.subsystems.ScorerLeft;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
@@ -27,17 +26,28 @@ public class StraightToDepotAuto extends SequentialCommandGroup {
     addCommands(
 
 
-    // 1. Bring intake down
-    new WaitCommand(1).deadlineFor(IntakePivot.getInstance().extendCommand()),
-    
-    // 2. Start intake
-    new WaitCommand(4).deadlineFor(IntakeRollers.getInstance().eatFuelCommand())
-    
-    // 3. Start flywheel & loader
+      // 1. Bring intake down
+      new WaitCommand(1).deadlineFor(IntakePivot.getInstance().extendCommand()),
+      
+      // 2. Start intake
+      new PathPlannerAuto("StraightToDepotAuto").deadlineFor(IntakeRollers.getInstance().eatFuelCommand()),
+      
+      // 3. wait 2 seconds
+      new WaitCommand(2),
 
-    //
+      // 4. Aim turret to Hub
+      new WaitCommand(2).deadlineFor(ScorerLeft.getInstance().AimToTarget()),
+        
+      // 5. Begin revving flywheel
+      new WaitCommand(1).deadlineFor(FlywheelLeft.getInstance().revFlywheelCommand()),
+      
+      // 6. Load while flywheel keeps revving for 10 seconds
+      new ParallelDeadlineGroup(
+        new WaitCommand(10), 
+        Loader.getInstance().loadInCommand(),
+        FlywheelLeft.getInstance().revFlywheelCommand()
+      )
 
-
-    );
+    );  // end addcommands
   }
 }
