@@ -89,7 +89,7 @@ public class RobotContainer {
     
     autoChooser.addOption("AUTO: Trench Left Auto", new TrenchLeftAuto());
     autoChooser.addOption("AUTO: Trench Right Auto", new TrenchRightAuto());
-    autoChooser.addOption("AUTO: Straight to Depot (StartLeftTrench)", new StraightToDepot());
+    // autoChooser.addOption("AUTO: Straight to Depot (StartLeftTrench)", new StraightToDepotAuto());
 
 
     // autoChooser.addOption("Forward 1 meter center", new PathPlannerAuto("forward1mAuto"));
