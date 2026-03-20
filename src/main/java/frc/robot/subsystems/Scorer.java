@@ -51,6 +51,8 @@ public class Scorer {
         
         // Define subsystems for left & right scorers
         this.side = side;
+        this.xOffset = xOffset;
+        this.yOffset = yOffset;
         if(side.equals("LEFT")){
             this.turret = TurretLeft.getInstance();
             this.angler = AnglerLeft.getInstance();
