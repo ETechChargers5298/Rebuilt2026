@@ -8,6 +8,7 @@ import frc.robot.Constants.IntakeConstants;
 
 import com.revrobotics.spark.*;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.config.SparkMaxConfig;
 
 
 public class IntakeRollers extends SubsystemBase {
@@ -15,10 +16,13 @@ public class IntakeRollers extends SubsystemBase {
   // INTAKE FIELDS
   private static IntakeRollers instance;
   private SparkMax eatMotor;
+  private double setSpeed;
 
   // INTAKE CONSTRUCTOR
   private IntakeRollers() {
     eatMotor = new SparkMax(Ports.EAT_MOTOR_PORT,MotorType.kBrushless);
+    // new SparkMaxConfig().smartCurrentLimit(60);
+    // eatMotor.configure( new SparkMaxConfig().smartCurrentLimit(60));
   }
 
   // INTAKE SINGLETON - ensures only 1 instance of Intake is constructed
@@ -32,17 +36,20 @@ public class IntakeRollers extends SubsystemBase {
   // BASIC INTAKE METHODS
 
   public void eat() {
-    eatMotor.set(-IntakeConstants.EAT_SPEED);
+    setSpeed = -IntakeConstants.EAT_SPEED;
+    eatMotor.set(setSpeed);
   }
   
   public void spit()
   {
-    eatMotor.set(IntakeConstants.EAT_SPEED);
+    setSpeed = IntakeConstants.EAT_SPEED;
+    eatMotor.set(setSpeed);
   }
 
   public void stopEating()
   {
-    eatMotor.set(0);
+    setSpeed = 0;
+    eatMotor.set(setSpeed);
   }
 
 
@@ -78,7 +85,7 @@ public class IntakeRollers extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
 
-    
+    SmartDashboard.putNumber("Intake Roller Speed", setSpeed);
   }
 
   @Override

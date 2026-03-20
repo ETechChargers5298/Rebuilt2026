@@ -30,7 +30,7 @@ public final class Constants {
     public static final double DOWN_ANGLE = -80;
     public static final double GEAR_RATIO = 9.0 * 5.0;
 
-    public static final double EAT_SPEED = 1.0;
+    public static final double EAT_SPEED = 0.5;
     public static final double RETRACT_SPEED = 0.25;
     public static final double EXTEND_SPEED = 0.1;    
   }
