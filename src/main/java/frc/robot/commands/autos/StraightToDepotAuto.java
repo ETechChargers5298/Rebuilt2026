@@ -16,9 +16,9 @@ import frc.robot.subsystems.IntakeRollers;
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class StraightToDepot extends SequentialCommandGroup {
+public class StraightToDepotAuto extends SequentialCommandGroup {
   /** Creates a new StraightToDepot. */
-  public StraightToDepot() {
+  public StraightToDepotAuto() {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
@@ -28,7 +28,7 @@ public class StraightToDepot extends SequentialCommandGroup {
     new WaitCommand(1).deadlineFor(IntakePivot.getInstance().extendCommand()),
     
     // 2. Start intake
-    new PathPlannerAuto("StraightToDepot").deadlineFor(IntakeRollers.getInstance().eatFuelCommand())
+    new PathPlannerAuto("StraightToDepotAuto").deadlineFor(IntakeRollers.getInstance().eatFuelCommand())
     
     // 3. Trip to middle
 
