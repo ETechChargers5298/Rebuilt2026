@@ -65,7 +65,7 @@ public final class Constants {
 
   public static class AnglerConstants{
 
-    public static final double MAX_POSITION = -18.9392;
+    public static final double MAX_POSITION = -15;
     public static final double MIN_POSITION = 0;
   }
 
