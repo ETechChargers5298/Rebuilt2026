@@ -273,8 +273,8 @@ public class Scorer {
         robotX = Drivetrain.getInstance().getRobotX();
         robotY = Drivetrain.getInstance().getRobotY();
         robotAngle = Drivetrain.getInstance().getRobotAngleDegrees();
-        SmartDashboard.putNumber(side.substring(0,1) + " Scorer: Distance To Hub", getDistanceToHub());
-        SmartDashboard.putNumber(side.substring(0,1) + " Scorer: Angle To Hub", getAngleToHubFromTurretPerspective());
+        SmartDashboard.putNumber(side.substring(0,1) + " Scorer: Distance To Target", getDistanceToTarget());
+        SmartDashboard.putNumber(side.substring(0,1) + " Scorer: Angle To Target", getAngleToTargetFromTurretPerspective());
         SmartDashboard.putBoolean(side.substring(0,1) + " Scorer: READY TO FIRE", isReadyToScore());
         SmartDashboard.putString(side.substring(0,1)  + " Current Target", targetString);
         SmartDashboard.putNumber(side.substring(0,1)  + " TargetX", targetX);
