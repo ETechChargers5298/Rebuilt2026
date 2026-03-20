@@ -1,5 +1,6 @@
 package frc.robot;
 
+import frc.robot.commands.autos.*;
 // import frc.robot.commands.PivotIntake;
 import frc.robot.subsystems.*;
 import frc.robot.utils.TunerConstants;
@@ -85,9 +86,15 @@ public class RobotContainer {
     // autoChooser.setDefaultOption("default", getAutonomousCommand());
     
     // PathPlanner Auto Options
-    autoChooser.addOption("Forward 1 meter", new PathPlannerAuto("forward1mAuto"));
-    autoChooser.addOption("H2D", new PathPlannerAuto("Hub-to-Depot"));
-    autoChooser.addOption("Trench Right", new PathPlannerAuto("TrenchRightAuto"));
+    
+    autoChooser.addOption("Trench Left Auto", new TrenchLeftAuto());
+    autoChooser.addOption("Trench Right Auto", new TrenchRightAuto());
+    autoChooser.addOption("Straight to Depot (StartLeftTrench)", new StraightToDepot());
+
+
+    // autoChooser.addOption("Forward 1 meter center", new PathPlannerAuto("forward1mAuto"));
+    // autoChooser.addOption("H2D", new PathPlannerAuto("Hub-to-Depot"));
+    // autoChooser.addOption("PP Trench Right", new PathPlannerAuto("TrenchRightAuto"));
     
     // Add Auto Chooser to Elastic
     SmartDashboard.putData("Auto Chooser", autoChooser);
