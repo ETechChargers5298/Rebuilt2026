@@ -190,7 +190,8 @@ public class Scorer {
         boolean turretReady = Math.abs(turret.getTurretAngle() - getAngleToTargetFromTurretPerspective()) < ScorerConstants.TURRET_TOLERANCE_DEG;
         
         // Check if Flywheel has revved to the desired speed
-        boolean flywheelReady = Math.abs(flywheel.getFlywheelRpm() - params.rpm) < ScorerConstants.FLYWHEEL_TOLERANCE_RPM;
+        // TODO: Get max flywheel RPM and divide so that we can compare to setSpeed
+        boolean flywheelReady = true; // Math.abs(flywheel.getFlywheelRpm() - params.setSpeed) < ScorerConstants.FLYWHEEL_TOLERANCE_RPM;
         
         // Check if Angler is to desired angle for launch
         boolean anglerReady = Math.abs(angler.getPosition() - params.angle) < ScorerConstants.ANGLER_TOLERANCE_DEG;
@@ -209,33 +210,31 @@ public class Scorer {
     public class ShotParameter {
 
         public final double distance;
-        public final double rpm;
+        public final double setSpeed;
         public final double angle;
 
-        public ShotParameter(double distance, double rpm, double angle) {
+        public ShotParameter(double distance, double setSpeed, double angle) {
             this.distance = distance;
-            this.rpm = rpm;
+            this.setSpeed = setSpeed;
             this.angle = angle;
         }
     }
 
     // List of experimental data points sorted by distance
     private final ShotParameter[] dataPoints = {
-        new ShotParameter(84.0, 4900, 45),
-        new ShotParameter(60.0, 4450, 40),
-        new ShotParameter(35.0, 4200, 35),
-        new ShotParameter(31.5, 4200, 30) 
+        new ShotParameter(1.0, 0.8, 0),
+        new ShotParameter(5.0, 1, -10),
     };
 
     public ShotParameter getIdealShot(double targetDistance) {
 
-        // 1. Target is futher away than tested range
+        // 1. Target is closer than tested range
         if (targetDistance <= dataPoints[0].distance){
             return dataPoints[0];
         }
 
-        // 2. Target is closer than tested range
-        if (targetDistance <= dataPoints[dataPoints.length - 1].distance) {
+        // 2. Target is further than tested range
+        if (targetDistance >= dataPoints[dataPoints.length - 1].distance) {
             return dataPoints[dataPoints.length - 1];
         }
             
@@ -244,46 +243,32 @@ public class Scorer {
             ShotParameter p1 = dataPoints[i];
             ShotParameter p2 = dataPoints[i + 1];
 
-            if (targetDistance >= p1.distance && targetDistance <= p2.distance) {
+            if (p1.distance <= targetDistance && targetDistance <= p2.distance) {
 
                 // Calculate interpolation factor (0.0 to 1.0)
                 double t = (targetDistance - p1.distance) / (p2.distance - p1.distance);
                 
-                // Interpolate RPM and Angle
-                double interpolatedRpm = p1.rpm + t * (p2.rpm - p1.rpm);
+                // Interpolate setspeed and Angle
+                double interpolatedSetSpeed = p1.setSpeed + t * (p2.setSpeed - p1.setSpeed);
                 double interpolatedAngle = p1.angle + t * (p2.angle - p1.angle);
 
-                return new ShotParameter(targetDistance, interpolatedRpm, interpolatedAngle);
+                return new ShotParameter(targetDistance, interpolatedSetSpeed, interpolatedAngle);
             }
         }
         return dataPoints[0]; 
     }
-
-
 
     // SCORER COMMANDS
 
     // Aim method that asks each subsystem to move based on a setpoint, passes a lambda () -> to keep it live
     public Command AimToTarget(){
         return turret.aimTurretToSetPointCommand(() -> getAngleToTargetFromTurretPerspective())
-            .alongWith( flywheel.spinFlywheelToSetPointCommand( ()-> getIdealShot(getDistanceToTarget()).rpm))
+            .alongWith( flywheel.flyWheelCommand( ()-> getIdealShot(getDistanceToTarget()).setSpeed))
             .alongWith(angler.aimAnglerToSetPointCommand(()-> getIdealShot(getDistanceToTarget()).angle))
             .withName("Scorer:AimToTarget");
     }
-
-    // [DEPRECATED] Aim method that asks each subsystem to move based on a setpoint, passes a lambda () -> to keep it live
-    public Command AimToHub(){
-        return turret.aimTurretToSetPointCommand(() -> getAngleToHubFromTurretPerspective())
-            .alongWith( flywheel.spinFlywheelToSetPointCommand( ()-> getIdealShot(getDistanceToHub()).rpm))
-            .alongWith(angler.aimAnglerToSetPointCommand(()-> getIdealShot(getDistanceToHub()).angle))
-            .withName("Scorer:AimToHub");
-    }
-
-
-
      
     public void update() {
-
         // update robot's pose each cycle, called in Robot.java's periodic() method
         robotX = Drivetrain.getInstance().getRobotX();
         robotY = Drivetrain.getInstance().getRobotY();
@@ -295,8 +280,4 @@ public class Scorer {
         SmartDashboard.putNumber(side.substring(0,1)  + " TargetX", targetX);
         SmartDashboard.putNumber(side.substring(0,1)  + " TargetY", targetY);
     }
-
-
-
-
 }
