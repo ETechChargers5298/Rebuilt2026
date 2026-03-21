@@ -119,6 +119,7 @@ public class Flywheel extends SubsystemBase {
         setSetSpeed(speed.getAsDouble());
       });
   }
+  
 
   public void setReferenceRPM(double targetRPM) {
       pidController.setSetpoint(targetRPM, SparkMax.ControlType.kVelocity);

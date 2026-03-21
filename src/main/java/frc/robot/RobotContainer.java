@@ -219,7 +219,7 @@ public class RobotContainer {
 
     // REV FLYWHEEL MANUALLY (OPERATOR - RB)
     operatorController.rightBumper().whileTrue(scorerLeft.flywheel.revFlywheelCommand());
-    
+    // operatorController.rightBumper().whileTrue(scorerLeft.flywheel.flyWheelCommand(() -> 0.5));
     // INCREMENT/DECREMENT FLYWHEEL SPEEDS (TESTING - POV LEFT/RIGHT)
     testingController.povRight().onTrue(new InstantCommand(() -> {
       double setSpeed = scorerLeft.flywheel.getSetSpeed();

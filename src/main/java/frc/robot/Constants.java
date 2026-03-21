@@ -65,7 +65,7 @@ public final class Constants {
 
   public static class AnglerConstants{
 
-    public static final double MAX_POSITION = -15;
+    public static final double MAX_POSITION = -12;
     public static final double MIN_POSITION = 0;
   }
 
@@ -77,9 +77,9 @@ public final class Constants {
 
     // Scorer Offsets
     public static final double LEFT_SCORER_X_OFFSET = Units.inchesToMeters(-6.0);
-    public static final double LEFT_SCORER_Y_OFFSET = Units.inchesToMeters(-6.0);
+    public static final double LEFT_SCORER_Y_OFFSET = Units.inchesToMeters(6.0);
     public static final double RIGHT_SCORER_X_OFFSET = Units.inchesToMeters(-6.0);
-    public static final double RIGHT_SCORER_Y_OFFSET = Units.inchesToMeters(6.0);
+    public static final double RIGHT_SCORER_Y_OFFSET = Units.inchesToMeters(-6.0);
 
     // Tolerances for the Scorer
     public static final double TURRET_TOLERANCE_DEG = 1.5;

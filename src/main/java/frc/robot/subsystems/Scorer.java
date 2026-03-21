@@ -224,8 +224,9 @@ public class Scorer {
 
     // List of experimental data points sorted by distance
     private final ShotParameter[] dataPoints = {
-        new ShotParameter(1.0, 0.8, 0),
-        new ShotParameter(5.0, 1, -10),
+        new ShotParameter(1.81, -0.75, 0),
+        new ShotParameter(2.86, -0.95, 0),
+        new ShotParameter(3.35, -1, -2.5)
     };
 
     public ShotParameter getIdealShot(double targetDistance) {
@@ -265,7 +266,7 @@ public class Scorer {
     // Aim method that asks each subsystem to move based on a setpoint, passes a lambda () -> to keep it live
     public Command AimToTarget(){
         return turret.aimTurretToSetPointCommand(() -> getAngleToTargetFromTurretPerspective())
-            .alongWith( flywheel.flyWheelCommand( ()-> getIdealShot(getDistanceToTarget()).setSpeed))
+            .alongWith( flywheel.flyWheelCommand(() -> getIdealShot(getDistanceToTarget()).setSpeed))
             .alongWith(angler.aimAnglerToSetPointCommand(()-> getIdealShot(getDistanceToTarget()).angle))
             .withName("Scorer:AimToTarget");
     }
@@ -275,11 +276,14 @@ public class Scorer {
         robotX = Drivetrain.getInstance().getRobotX();
         robotY = Drivetrain.getInstance().getRobotY();
         robotAngle = Drivetrain.getInstance().getRobotAngleDegrees();
+        ShotParameter shots = getIdealShot(getDistanceToTarget());
         SmartDashboard.putNumber(side.substring(0,1) + " Scorer: Distance To Target", getDistanceToTarget());
         SmartDashboard.putNumber(side.substring(0,1) + " Scorer: Angle To Target", getAngleToTargetFromTurretPerspective());
         SmartDashboard.putBoolean(side.substring(0,1) + " Scorer: READY TO FIRE", isReadyToScore());
         SmartDashboard.putString(side.substring(0,1)  + " Current Target", targetString);
         SmartDashboard.putNumber(side.substring(0,1)  + " TargetX", targetX);
         SmartDashboard.putNumber(side.substring(0,1)  + " TargetY", targetY);
+        SmartDashboard.putNumber(side.substring(0, 1) + " Ideal Shot Setspeed", shots.setSpeed);
+        SmartDashboard.putNumber(side.substring(0, 1) + " Ideal Shot Angle (Degrees)", shots.angle);
     }
 }
