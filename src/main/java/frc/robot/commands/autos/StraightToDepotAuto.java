@@ -40,7 +40,6 @@ public class StraightToDepotAuto extends SequentialCommandGroup {
       new ParallelDeadlineGroup(
         new WaitCommand(2),
         ScorerLeft.getInstance().AimToTarget()
-        // AnglerLeft.getInstance().aimAnglerCommand(() -> -12)
       ),
         
       // 5. Begin revving flywheel
@@ -50,8 +49,8 @@ public class StraightToDepotAuto extends SequentialCommandGroup {
       new ParallelDeadlineGroup(
         new WaitCommand(9), 
         Loader.getInstance().loadInCommand(),
-        FlywheelLeft.getInstance().revFlywheelCommand()
-        // ScorerLeft.getInstance().AimToTarget()
+        // FlywheelLeft.getInstance().revFlywheelCommand()
+        ScorerLeft.getInstance().AimToTarget()
       )
 
     );  // end addcommands

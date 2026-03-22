@@ -27,10 +27,10 @@ public class TrenchLeftAuto extends SequentialCommandGroup {
     // 1. Bring intake down
     new WaitCommand(1).deadlineFor(IntakePivot.getInstance().extendCommand()),
     
-    // 2. Start intake
+    // 2. Start intake & Trip to middle
     new PathPlannerAuto("TrenchLeftAuto").deadlineFor(IntakeRollers.getInstance().eatFuelCommand())
     
-    // 3. Trip to middle
+    // 3. 
 
     //
 

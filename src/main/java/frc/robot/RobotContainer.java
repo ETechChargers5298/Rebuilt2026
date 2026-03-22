@@ -81,20 +81,17 @@ public class RobotContainer {
     // On any computer connected to the robot, open Elastic, go to the File menu, and select Load Layout From Robot (or press Ctrl + D)
     WebServer.start(5800, Filesystem.getDeployDirectory().getPath());
 
-    // Constructs an auto chooser with a default command
-    autoChooser = AutoBuilder.buildAutoChooser("Forward 1 meter");
-    // autoChooser.setDefaultOption("default", getAutonomousCommand());
+    // Constructs autoChooser WITHOUT automatically populating from PathPlanner
+    autoChooser = new SendableChooser<>();
+    autoChooser.setDefaultOption("NULL", null);
+
+    // Constructs an auto chooser that populates all commands from PathPlanner, and includesa default command
+    // autoChooser = AutoBuilder.buildAutoChooser("Forward 1 meter");
     
-    // PathPlanner Auto Options
-    
+    // Auto Options
     autoChooser.addOption("AUTO: Trench Left Auto", new TrenchLeftAuto());
     autoChooser.addOption("AUTO: Trench Right Auto", new TrenchRightAuto());
-    autoChooser.addOption("AUTO: Straight to Depot (StartLeftTrench)", new StraightToDepotAuto());
-
-
-    // autoChooser.addOption("Forward 1 meter center", new PathPlannerAuto("forward1mAuto"));
-    // autoChooser.addOption("H2D", new PathPlannerAuto("Hub-to-Depot"));
-    // autoChooser.addOption("PP Trench Right", new PathPlannerAuto("TrenchRightAuto"));
+    autoChooser.addOption("AUTO: Straight to Depot (StartLeftBump)", new StraightToDepotAuto());
     
     // Add Auto Chooser to Elastic
     SmartDashboard.putData("Auto Chooser", autoChooser);
