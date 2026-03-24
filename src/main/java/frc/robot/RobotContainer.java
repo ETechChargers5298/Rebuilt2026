@@ -265,8 +265,15 @@ public class RobotContainer {
     operatorController.povLeft().onTrue(new InstantCommand( () -> scorerLeft.setTargetToHerdDepot()));
     operatorController.povRight().onTrue(new InstantCommand( () -> scorerLeft.setTargetToHerdOutpost()));
 
+
+    //---------- SCORER CONTROLLER BINDINGS ----------//
+
     // AIM SCORER TO TARGET (OPERATOR - LT)
     operatorController.leftTrigger().whileTrue(scorerLeft.AimToTarget());
+
+    // BONUS BUMPS (OPERATOR - A & Y)
+    operatorController.y().whileTrue( ScorerLeft.getInstance().bonusUpCommand()  );
+    operatorController.a().whileTrue( ScorerLeft.getInstance().bonusDownCommand()  );
 
 
     // Test Controller Commands

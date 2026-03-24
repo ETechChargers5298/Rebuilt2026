@@ -11,11 +11,12 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.FieldConstants;
 import frc.robot.Constants.*;
 
 
-public class Scorer {
+public class Scorer extends SubsystemBase {
 
     // SCORER FIELDS
     public String side;
@@ -32,6 +33,8 @@ public class Scorer {
     private double depotHerdY = 0;
     private double outpostHerdX = 0;
     private double outpostHerdY = 0;
+    private double bonusMeasure = 0;
+    private double bumpDistance = 0.2;
 
     private double targetX = 0;
     private double targetY = 0;
@@ -117,6 +120,15 @@ public class Scorer {
         public void setTargetToHerdOutpost(){
         setTarget(outpostHerdX, outpostHerdY);
         targetString = "Outpost";
+    }
+
+
+    public void bonusUp(double increase) {
+        bonusMeasure += increase;
+    }
+
+    public void bonusDown(double increase) {
+        bonusMeasure -= increase;
     }
 
 
@@ -262,12 +274,24 @@ public class Scorer {
     }
 
     // SCORER COMMANDS
+    public Command bonusUpCommand(){
+    return run(
+      () -> {
+        bonusUp(bonusMeasure);
+      });
+  }
+    public Command bonusDownCommand(){
+    return run(
+      () -> {
+        bonusUp(bonusMeasure);
+  });
+  }
 
     // Aim method that asks each subsystem to move based on a setpoint, passes a lambda () -> to keep it live
     public Command AimToTarget(){
         return turret.aimTurretToSetPointCommand(() -> getAngleToTargetFromTurretPerspective())
-            .alongWith( flywheel.flyWheelCommand(() -> getIdealShot(getDistanceToTarget()).setSpeed))
-            .alongWith(angler.aimAnglerToSetPointCommand(()-> getIdealShot(getDistanceToTarget()).angle))
+            .alongWith( flywheel.flyWheelCommand(() -> getIdealShot(getDistanceToTarget() + bonusMeasure ).setSpeed))
+            .alongWith(angler.aimAnglerToSetPointCommand(()-> getIdealShot(getDistanceToTarget() + bonusMeasure).angle))
             .withName("Scorer:AimToTarget");
     }
      
