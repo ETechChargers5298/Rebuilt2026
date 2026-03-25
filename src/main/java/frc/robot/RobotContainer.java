@@ -46,7 +46,6 @@ public class RobotContainer {
   public final IntakePivot intake = IntakePivot.getInstance();
   private final Vision vision = Vision.getInstance();    //VISION! (Comment IN to use vision)
 
-
   // CTRE SWERVE FIELDS
   private double MaxSpeed = 1.0 * TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
   private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
@@ -58,7 +57,6 @@ public class RobotContainer {
   private final SwerveRequest.RobotCentric forwardStraight = new SwerveRequest.RobotCentric()
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
 
-
   // ROBOTCONTAINER FIELDS
   private final CommandXboxController driverController = new CommandXboxController(Ports.DRIVER_CONTROLLER);
   private final CommandXboxController operatorController = new CommandXboxController(Ports.OPERATOR_CONTROLLER);
@@ -68,12 +66,9 @@ public class RobotContainer {
 
   //PATHPLANNER FIELDS
   private final SendableChooser<Command> autoChooser;
-
   // Command c1 = AutoBuilder.followPath(PathPlannerPath.fromPathFile("forward1m.json"));
 
   
-
-
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
 
@@ -89,9 +84,10 @@ public class RobotContainer {
     // autoChooser = AutoBuilder.buildAutoChooser("Forward 1 meter");
     
     // Auto Options
+    autoChooser.addOption("AUTO: Straight to Depot (StartLeftBump)", new StraightToDepotAuto());
     autoChooser.addOption("AUTO: Trench Left Auto", new TrenchLeftAuto());
     autoChooser.addOption("AUTO: Trench Right Auto", new TrenchRightAuto());
-    autoChooser.addOption("AUTO: Straight to Depot (StartLeftBump)", new StraightToDepotAuto());
+
     
     // Add Auto Chooser to Elastic
     SmartDashboard.putData("Auto Chooser", autoChooser);

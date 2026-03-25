@@ -34,7 +34,7 @@ public class Scorer extends SubsystemBase {
     private double outpostHerdX = 0;
     private double outpostHerdY = 0;
     private double bonusMeasure = 0;
-    private double bumpDistance = 0.2;
+    private double bonusDistance = 0.2;
 
     private double targetX = 0;
     private double targetY = 0;
@@ -123,10 +123,10 @@ public class Scorer extends SubsystemBase {
     }
 
 
+    // Methods to change the perceived distance needed for a fuel launch
     public void bonusUp(double increase) {
         bonusMeasure += increase;
     }
-
     public void bonusDown(double increase) {
         bonusMeasure -= increase;
     }
@@ -274,18 +274,22 @@ public class Scorer extends SubsystemBase {
     }
 
     // SCORER COMMANDS
+
+    // Increases power of launcher incrementally
     public Command bonusUpCommand(){
-    return run(
-      () -> {
-        bonusUp(bonusMeasure);
-      });
-  }
+        return run(
+            () -> {
+            bonusUp(bonusDistance);
+        });
+    }
+
+    // Decreases power of launcher incrementally
     public Command bonusDownCommand(){
-    return run(
-      () -> {
-        bonusUp(bonusMeasure);
-  });
-  }
+        return run(
+            () -> {
+            bonusDown(bonusDistance);
+        });
+    }
 
     // Aim method that asks each subsystem to move based on a setpoint, passes a lambda () -> to keep it live
     public Command AimToTarget(){
@@ -309,5 +313,6 @@ public class Scorer extends SubsystemBase {
         SmartDashboard.putNumber(side.substring(0,1)  + " TargetY", targetY);
         SmartDashboard.putNumber(side.substring(0, 1) + " Ideal Shot Setspeed", shots.setSpeed);
         SmartDashboard.putNumber(side.substring(0, 1) + " Ideal Shot Angle (Degrees)", shots.angle);
+        SmartDashboard.putNumber(side.substring(0,1) + " Scorer: Bonus Distance", this.bonusDistance );
     }
 }
