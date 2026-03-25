@@ -28,6 +28,12 @@ public class Loader extends SubsystemBase {
 
   // BASIC LOADER METHODS
 
+  public boolean isLoaderActive() {
+    // Return true if the loader motor is running or if a sensor is triggered
+    return loaderMotor.get() != 0; 
+}
+
+
   public void loadFuel()
   {
     loaderMotor.set(1);
