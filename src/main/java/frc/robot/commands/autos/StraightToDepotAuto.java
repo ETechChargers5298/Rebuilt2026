@@ -34,7 +34,7 @@ public class StraightToDepotAuto extends SequentialCommandGroup {
       new PathPlannerAuto("StraightToDepotAuto").deadlineFor(IntakeRollers.getInstance().eatFuelCommand()),
       
       // 3. wait 2 seconds
-      new WaitCommand(2),
+      // new WaitCommand(2),
 
       // 4. Aim turret and angler to Hub
       new ParallelDeadlineGroup(
@@ -43,9 +43,9 @@ public class StraightToDepotAuto extends SequentialCommandGroup {
       ),
         
       // 5. Begin revving flywheel
-      new WaitCommand(3).deadlineFor(FlywheelLeft.getInstance().revFlywheelCommand()),
+      // new WaitCommand(3).deadlineFor(FlywheelLeft.getInstance().revFlywheelCommand()),
       
-      // 6. Load while flywheel keeps revving for 10 seconds
+      // 6. Load while flywheel keeps revving for 9 seconds
       new ParallelDeadlineGroup(
         new WaitCommand(9), 
         Loader.getInstance().loadInCommand(),
