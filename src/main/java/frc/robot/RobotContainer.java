@@ -275,7 +275,7 @@ public class RobotContainer {
 
     // Test Controller Commands
     // testingController.leftStick();
-
+    driverController.leftStick().and(driverController.rightStick()).whileTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
   }
 
   /**
