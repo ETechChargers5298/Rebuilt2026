@@ -74,7 +74,7 @@ public class IntakePivot extends SubsystemBase {
     // pivotMotorLeft.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     // pivotMotorRight.configure(followerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
-    SmartDashboard.putData(resetPivotEncoderCommand());
+    SmartDashboard.putData("Reset Pivot Encoder", resetPivotEncoderCommand());
 
   }
 
