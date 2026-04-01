@@ -13,6 +13,7 @@ import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.units.measure.Angle;
 import frc.robot.Constants.*;
@@ -65,7 +66,7 @@ public class Turret extends SubsystemBase {
 
     // Zero the motor on boot (Assumes turret is centered)      
     zeroTurretAngle();
-
+    SmartDashboard.putData(side + " Zero Turret", zeroTurretAngleCommand());
   }
   
     
@@ -93,8 +94,11 @@ public class Turret extends SubsystemBase {
   // Zero the angle of the turret (should be facing towards back of robot)
   public void zeroTurretAngle(){
     turretMotor.setPosition(0);
-  }      
+  }
 
+  public Command zeroTurretAngleCommand() {
+    return new InstantCommand(() -> zeroTurretAngle());
+  }
 
   // TURRET COMMANDS
 

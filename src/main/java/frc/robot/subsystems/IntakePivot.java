@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Ports;
 import frc.robot.Constants.AnglerConstants;
@@ -73,6 +74,8 @@ public class IntakePivot extends SubsystemBase {
     // pivotMotorLeft.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     // pivotMotorRight.configure(followerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
+    SmartDashboard.putData(resetPivotEncoderCommand());
+
   }
 
   // INTAKE SINGLETON - ensures only 1 instance of Intake is constructed
@@ -111,6 +114,10 @@ public class IntakePivot extends SubsystemBase {
   // Check if the fuel is jammed
   public boolean isFuelJam(){
     return false;
+  }
+
+  public Command resetPivotEncoderCommand() {
+    return new InstantCommand(() -> pivotEncoder.setPosition(0));
   }
 
 
