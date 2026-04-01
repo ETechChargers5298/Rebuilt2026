@@ -108,7 +108,7 @@ public class IntakePivot extends SubsystemBase {
 
   public double getPivotAngle()
   {
-    return pivotEncoder.getPosition();
+    return pivotEncoder.getPosition() * 360/45;
   }
 
   // Check if the fuel is jammed
@@ -117,7 +117,8 @@ public class IntakePivot extends SubsystemBase {
   }
 
   public Command resetPivotEncoderCommand() {
-    return new InstantCommand(() -> pivotEncoder.setPosition(0));
+    Command reset = new InstantCommand(() -> pivotEncoder.setPosition(0));
+    return reset.ignoringDisable(true);
   }
 
 
@@ -146,7 +147,7 @@ public class IntakePivot extends SubsystemBase {
           // and remove the || true (it's in there so that this code doesn't break retract because I have no
           // idea what the number needs to be). The intent of this code is to let the driveteam retract without
           // worrying about retracting too far.
-        }).onlyWhile(() -> (getPivotAngle() < 15 || true)).finallyDo(
+        }).onlyWhile(() -> (getPivotAngle() > 65 )).finallyDo(
           () -> {
               stopExtending();
           }

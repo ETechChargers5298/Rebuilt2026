@@ -97,7 +97,7 @@ public class Turret extends SubsystemBase {
   }
 
   public Command zeroTurretAngleCommand() {
-    return new InstantCommand(() -> zeroTurretAngle());
+    return new InstantCommand(() -> zeroTurretAngle()).ignoringDisable(true);
   }
 
   // TURRET COMMANDS
