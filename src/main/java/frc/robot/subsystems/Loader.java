@@ -31,8 +31,7 @@ public class Loader extends SubsystemBase {
   public boolean isLoaderActive() {
     // Return true if the loader motor is running or if a sensor is triggered
     return loaderMotor.get() != 0; 
-}
-
+  }
 
   public void loadFuel()
   {
@@ -44,16 +43,10 @@ public class Loader extends SubsystemBase {
     loaderMotor.set(-1);
   }
 
-  public void generalLoading(double speed)
-  {
-    loaderMotor.set(-speed);
-  }
-
   public void stopLoading()
   {
     loaderMotor.set(0);
   }
-
 
   // BASIC LOADER COMMANDS
 

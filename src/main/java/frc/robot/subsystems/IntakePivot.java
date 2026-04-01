@@ -85,12 +85,6 @@ public class IntakePivot extends SubsystemBase {
 
   // BASIC INTAKE METHODS
 
-  public void generalExtend(double speed)
-  {
-    pivotMotorRight.set(speed);
-    pivotMotorLeft.set(-speed);
-  }
-
   public void extend()
   {
     pivotMotorRight.set(IntakeConstants.EXTEND_SPEED);
