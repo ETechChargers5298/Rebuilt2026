@@ -39,6 +39,7 @@ public class Scorer extends SubsystemBase {
     private double targetX = 0;
     private double targetY = 0;
     private String targetString = "";
+    private boolean movingFlag = false;
     
 
 
@@ -110,8 +111,22 @@ public class Scorer extends SubsystemBase {
 
     // Methods to change the target
     public void setTargetToHub(){
-        setTarget(hubX, hubY);
-        targetString = "Hub";
+
+        if(!movingFlag){
+            setTarget(hubX, hubY);
+            targetString = "Hub";
+        }
+        else{
+
+            // https://docs.google.com/spreadsheets/d/1GuRmCdJDzk8IGj2cKh8zotB-9alPd8FhiDb3VZPBC_4/edit?usp=sharing
+            double distance = getDistanceToHub();
+            double timeOfFlight = 0.0539 * distance + 0.854;
+            double sorcererX = hubX + Drivetrain.getInstance().getRobotVelocityToFieldX() * timeOfFlight;
+            double sorcererY = hubY + Drivetrain.getInstance().getRobotVelocityToFieldY() * timeOfFlight;
+
+            setTarget(sorcererX, sorcererY);
+            targetString = "HubMoving";
+        }
     }
     public void setTargetToHerdDepot(){
         setTarget(depotHerdX, depotHerdY);
@@ -314,5 +329,6 @@ public class Scorer extends SubsystemBase {
         SmartDashboard.putNumber(side.substring(0, 1) + " Ideal Shot Setspeed", shots.setSpeed);
         SmartDashboard.putNumber(side.substring(0, 1) + " Ideal Shot Angle (Degrees)", shots.angle);
         SmartDashboard.putNumber(side.substring(0,1) + " Scorer: Bonus Distance", this.bonusDistance );
+        
     }
 }
