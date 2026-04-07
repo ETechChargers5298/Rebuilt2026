@@ -210,10 +210,14 @@ public class RobotContainer {
 
     // STOP FLYWHEEL by default
     scorerLeft.flywheel.setDefaultCommand(scorerLeft.flywheel.stopFlywheelCommand()  ); //comment out for FlyWheel testing
+    scorerRight.flywheel.setDefaultCommand(scorerRight.flywheel.stopFlywheelCommand()  ); //comment out for FlyWheel testing
 
     // REV FLYWHEEL MANUALLY (OPERATOR - RB)
     operatorController.rightBumper().whileTrue(scorerLeft.flywheel.revFlywheelCommand());
+    operatorController.rightBumper().whileTrue(scorerRight.flywheel.revFlywheelCommand());
+
     // operatorController.rightBumper().whileTrue(scorerLeft.flywheel.flyWheelCommand(() -> 0.5));
+    // operatorController.rightBumper().whileTrue(scorerRight.flywheel.flyWheelCommand(() -> 0.5));
     // INCREMENT/DECREMENT FLYWHEEL SPEEDS (TESTING - POV LEFT/RIGHT)
     testingController.povRight().onTrue(new InstantCommand(() -> {
       double setSpeed = scorerLeft.flywheel.getSetSpeed();
@@ -223,7 +227,16 @@ public class RobotContainer {
       double setSpeed = scorerLeft.flywheel.getSetSpeed();
       scorerLeft.flywheel.setSetSpeed(setSpeed - 0.01);
     }));
-
+    
+    
+    testingController.povRight().onTrue(new InstantCommand(() -> {
+      double setSpeed = scorerRight.flywheel.getSetSpeed();
+      scorerRight.flywheel.setSetSpeed(setSpeed + 0.01);
+    }));
+    testingController.povLeft().onTrue(new InstantCommand(() -> {
+      double setSpeed = scorerRight.flywheel.getSetSpeed();
+      scorerRight.flywheel.setSetSpeed(setSpeed - 0.01);
+    }));
 
     //---------- ANGLER JOYSTICK CONTROLLER BINDINGS ----------//
 
@@ -232,9 +245,16 @@ public class RobotContainer {
       scorerLeft.angler.aimAnglerCommand( () -> MathUtil.applyDeadband(operatorController.getLeftY(), 0.1) )
     );
 
+    scorerRight.angler.setDefaultCommand(
+      scorerRight.angler.aimAnglerCommand( () -> MathUtil.applyDeadband(operatorController.getLeftY(), 0.1) )
+    );
+
     //AIM ANGLER TO SETPOINT 0 (OPERATOR - L3)
     operatorController.leftStick().whileTrue(scorerLeft.angler.aimAnglerCommand(() -> 0));
     testingController.leftStick().whileTrue(scorerLeft.angler.aimAnglerCommand(() -> 0));
+
+    operatorController.leftStick().whileTrue(scorerRight.angler.aimAnglerCommand(() -> 0));
+    testingController.leftStick().whileTrue(scorerRight.angler.aimAnglerCommand(() -> 0));
 
     // INCREMENT/DECREMENT ANGLER ANGLES (TESTING - POV UP/DOWN)
     testingController.povUp().onTrue(new InstantCommand(() -> {
@@ -246,6 +266,14 @@ public class RobotContainer {
       scorerLeft.angler.setSetpoint(setAngle - 0.01);
     }));
 
+    testingController.povUp().onTrue(new InstantCommand(() -> {
+      double setAngle = scorerRight.angler.getPosition();
+      scorerRight.angler.setSetpoint(setAngle + 0.01);
+    }));
+    testingController.povDown().onTrue(new InstantCommand(() -> {
+      double setAngle = scorerRight.angler.getPosition();
+      scorerRight.angler.setSetpoint(setAngle - 0.01);
+    }));
 
     //---------- TURRET JOYSTICK CONTROLLER BINDINGS ----------//
 
@@ -254,24 +282,35 @@ public class RobotContainer {
       scorerLeft.turret.moveTurretCommand( () -> MathUtil.applyDeadband(operatorController.getRightX(), 0.1) )
     );
 
+    scorerRight.turret.setDefaultCommand(
+      scorerRight.turret.moveTurretCommand( () -> MathUtil.applyDeadband(operatorController.getRightX(), 0.1) )
+    );
+
     // AIM TURRET TO SETPOINT 0 (OPERATOR - R3)
     operatorController.rightStick().whileTrue(scorerLeft.turret.aimTurretToSetPointCommand(0));
+    operatorController.rightStick().whileTrue(scorerRight.turret.aimTurretToSetPointCommand(0));
 
     // CHANGE THE AIMING TARGET (OPERATOR - POV UP/LEFT/RIGHT)
     operatorController.povUp().onTrue(new InstantCommand( () -> scorerLeft.setTargetToHub()));
     operatorController.povLeft().onTrue(new InstantCommand( () -> scorerLeft.setTargetToHerdDepot()));
     operatorController.povRight().onTrue(new InstantCommand( () -> scorerLeft.setTargetToHerdOutpost()));
 
+    operatorController.povUp().onTrue(new InstantCommand( () -> scorerRight.setTargetToHub()));
+    operatorController.povLeft().onTrue(new InstantCommand( () -> scorerRight.setTargetToHerdDepot()));
+    operatorController.povRight().onTrue(new InstantCommand( () -> scorerRight.setTargetToHerdOutpost()));
 
     //---------- SCORER CONTROLLER BINDINGS ----------//
 
     // AIM SCORER TO TARGET (OPERATOR - LT)
     operatorController.leftTrigger().whileTrue(scorerLeft.AimToTarget());
+    operatorController.leftTrigger().whileTrue(scorerRight.AimToTarget());
 
     // BONUS BUMPS (OPERATOR - A & Y)
     operatorController.y().whileTrue( ScorerLeft.getInstance().bonusUpCommand()  );
     operatorController.a().whileTrue( ScorerLeft.getInstance().bonusDownCommand()  );
 
+    operatorController.y().whileTrue( ScorerRight.getInstance().bonusUpCommand()  );
+    operatorController.a().whileTrue( ScorerRight.getInstance().bonusDownCommand()  );
 
     // Test Controller Commands
     // testingController.leftStick();
