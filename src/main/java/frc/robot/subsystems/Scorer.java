@@ -342,5 +342,6 @@ public class Scorer extends SubsystemBase {
         SmartDashboard.putNumber(side.substring(0, 1) + " Ideal Shot Setspeed", shots.setSpeed);
         SmartDashboard.putNumber(side.substring(0, 1) + " Ideal Shot Angle (Degrees)", shots.angle);
         SmartDashboard.putNumber(side.substring(0,1) + " Scorer: Bonus Distance", this.bonusMeasure );
-    }
+        SmartDashboard.putBoolean(side.substring(0,1)+ "Moving While Shooting", movingFlag);
+    }   
 }
