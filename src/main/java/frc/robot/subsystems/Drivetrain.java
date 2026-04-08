@@ -11,6 +11,7 @@ import com.ctre.phoenix6.signals.*;
 import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.swerve.SwerveRequest;
+import com.ctre.phoenix6.swerve.SwerveRequest.RobotCentricFacingAngle;
 // import com.ctre.phoenix6.swerve.Constants.*;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.PIDConstants;
@@ -491,6 +492,43 @@ private final SwerveRequest.ApplyRobotSpeeds m_pathApplyRobotSpeeds = new Swerve
   public void zeroRobotHeading() {
     seedFieldCentric();
   }
+  private Pose2d m_lastPose = new Pose2d();
+  private double m_lastTimestamp = 0;
+  
+  
+  public ChassisSpeeds getFieldsSpeeds(){
+    ChassisSpeeds robotSpeeds = getState().Speeds;
+    Rotation2d robotAngle = getState().Pose.getRotation();
+    return ChassisSpeeds.fromRobotRelativeSpeeds(robotSpeeds, robotAngle);
+  }
+
+  public double getRobotVelocityToFieldX(){
+    return getFieldsSpeeds().vxMetersPerSecond;
+  }
+
+  public double getRobotVelocityToFieldY(){
+    return getFieldsSpeeds().vyMetersPerSecond;
+  }
+  
+  public double getCalculatedVelocity() {
+    var currentState = getState();
+    double currentTimestamp = currentState.Timestamp;
+    Pose2d currentPose = currentState.Pose;
+
+    double dt = currentTimestamp - m_lastTimestamp;
+    double velocity = 0;
+
+    // Ensure we don't divide by zero and that we have a valid previous reading
+    if (dt > 0 && m_lastTimestamp != 0) {
+        double distance = currentPose.getTranslation().getDistance(m_lastPose.getTranslation());
+        velocity = distance / dt;
+    }
+
+    m_lastPose = currentPose;
+    m_lastTimestamp = currentTimestamp;
+
+    return velocity;
+}
 
   /**
    * Resets the poseEstimator to the specified pose.
@@ -700,15 +738,17 @@ private final SwerveRequest.ApplyRobotSpeeds m_pathApplyRobotSpeeds = new Swerve
 
     // move(this.xSpeed, this.ySpeed, this.rotSpeed, this.fieldCentric, this.allianceCentric);
 
+
     SmartDashboard.putNumber("Robot X", getRobotX());
     SmartDashboard.putNumber("Robot Y", getRobotY());
     SmartDashboard.putNumber("Robot Angle (Degrees)", getRobotAngleDegrees());
     SmartDashboard.putNumber("Robot Angle (Radians)", getRobotAngleRadians());
 
+    //SmartDashboard.putNumber("Drive/Calculated Velocity", getCalculatedVelocity());
 
-    SmartDashboard.putNumber("xspeed", xSpeed);
-    SmartDashboard.putNumber("yspeed", ySpeed);
-    SmartDashboard.putNumber("rotspeed", rotSpeed);
+    SmartDashboard.putNumber("xspeed", getRobotVelocityToFieldX());
+    SmartDashboard.putNumber("yspeed", getRobotVelocityToFieldY());
+    // SmartDashboard.putNumber("rotspeed", rotSpeed);
 
     // SmartDashboard.putData("PoseEstimator Field", field);
     // SmartDashboard.putBoolean("fieldCentric", fieldCentric);
