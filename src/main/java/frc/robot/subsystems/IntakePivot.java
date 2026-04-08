@@ -42,17 +42,17 @@ public class IntakePivot extends SubsystemBase {
     
 
     // Motor Configs
-    // SparkMaxConfig config = new SparkMaxConfig();
-    // SparkMaxConfig followerConfig = new SparkMaxConfig();
+    SparkMaxConfig config = new SparkMaxConfig();
+    SparkMaxConfig followerConfig = new SparkMaxConfig();
 
-    // config
-    //   .inverted(false)
-    //   .idleMode(IdleMode.kBrake)
-    //   .smartCurrentLimit(40);
+    config
+      .inverted(false)
+      .idleMode(IdleMode.kBrake)
+      .smartCurrentLimit(40);
     
-    // // config.encoder
-    //   .positionConversionFactor(IntakeConstants.GEAR_RATIO)
-    //   .velocityConversionFactor(1);
+    config.encoder
+      .positionConversionFactor(360/IntakeConstants.GEAR_RATIO)
+      .velocityConversionFactor(1);
     
     // config.softLimit
     //   .forwardSoftLimitEnabled(true)
@@ -66,16 +66,17 @@ public class IntakePivot extends SubsystemBase {
 
 
     // Have Right motor follow the Left motor to be in sync
-    // followerConfig
-    //   .follow(pivotMotorLeft, true)
-    //   .idleMode(IdleMode.kBrake)
-    //   .smartCurrentLimit(40);
+    followerConfig
+      .follow(pivotMotorLeft, true)
+      .idleMode(IdleMode.kBrake)
+      .smartCurrentLimit(40);
 
     // Apply configs to motors
-    // pivotMotorLeft.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-    // pivotMotorRight.configure(followerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    System.out.println(pivotMotorLeft.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters) + " I'm working (on fire)");
+    pivotMotorRight.configure(followerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
     SmartDashboard.putData("Reset Pivot Encoder", resetPivotEncoderCommand());
+    SmartDashboard.putData("Toggle Pivot Limits", togglePivotLimits());
 
   }
 
@@ -91,25 +92,27 @@ public class IntakePivot extends SubsystemBase {
 
   public void extend()
   {
+        pivotMotorLeft.set(IntakeConstants.EXTEND_SPEED);
     // pivotMotorRight.set(IntakeConstants.EXTEND_SPEED);
-    pivotMotorLeft.set(IntakeConstants.EXTEND_SPEED);
+
   }
 
   public void retract()
   {
-    // pivotMotorRight.set(-IntakeConstants.RETRACT_SPEED);
     pivotMotorLeft.set(-IntakeConstants.RETRACT_SPEED);
+    // pivotMotorRight.set(-IntakeConstants.RETRACT_SPEED);
+
   }
 
   public void stopExtending(){
-    
-    pivotMotorRight.set(0);
-    pivotMotorLeft.set(0);
+    pivotMotorLeft.set(0);    
+    // pivotMotorRight.set(0);
+
   }
 
   public double getPivotAngle()
   {
-    return pivotEncoder.getPosition() * 360/45;
+    return pivotEncoder.getPosition();
   }
 
   // Check if the fuel is jammed
@@ -122,6 +125,10 @@ public class IntakePivot extends SubsystemBase {
     return reset.ignoringDisable(true);
   }
 
+  public Command togglePivotLimits(){
+    Command toggleLimits = new InstantCommand(() -> limitOn = !limitOn);
+    return toggleLimits.ignoringDisable(true);
+  }
 
   // BASIC INTAKE COMMANDS
 
@@ -148,9 +155,9 @@ public class IntakePivot extends SubsystemBase {
           // and remove the || true (it's in there so that this code doesn't break retract because I have no
           // idea what the number needs to be). The intent of this code is to let the driveteam retract without
           // worrying about retracting too far.
-        // }).onlyWhile(() -> (getPivotAngle() > 12 )).finallyDo(
-        //   () -> {
-        //       stopExtending();
+        }).onlyWhile(() -> (!limitOn || getPivotAngle() > 85 )).finallyDo(
+          () -> {
+              stopExtending();
 
         });
   }
@@ -177,6 +184,7 @@ public class IntakePivot extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     SmartDashboard.putNumber("Intake Pivot Angle", getPivotAngle());
+    SmartDashboard.putBoolean("Pivot Limit Enabled", limitOn);
     
   }
 

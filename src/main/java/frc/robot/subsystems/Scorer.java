@@ -253,7 +253,8 @@ public class Scorer extends SubsystemBase {
     private final ShotParameter[] dataPoints = {
         new ShotParameter(1.81, -0.75, 0),
         new ShotParameter(2.86, -0.95, 0),
-        new ShotParameter(3.35, -1, -2.5)
+        new ShotParameter(3.35, -1, -2.5),
+        new ShotParameter(5.04, -1, -27)
     };
 
     public ShotParameter getIdealShot(double targetDistance) {
