@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.FieldConstants;
@@ -98,6 +99,8 @@ public class Scorer extends SubsystemBase {
         targetX = hubX;
         targetY = hubY;
         targetString = "Hub";
+
+        SmartDashboard.putData("toggleMovingFlag", flagToggleCommand());
     }
 
 
@@ -108,6 +111,8 @@ public class Scorer extends SubsystemBase {
         this.targetX = targetX;
         this.targetY = targetY;
     }
+
+
 
     // Methods to change the target
     public void setTargetToHub(){
@@ -207,7 +212,10 @@ public class Scorer extends SubsystemBase {
         return 180.0 - getAngleToHubFromRobotPerspective() - 360;
     }
 
-
+    //will toggle movingFlag
+    public void toggleFlag (){
+        movingFlag = !movingFlag;
+    }
 
     // check if the Scorer mechs are ready for a launch
     public boolean isReadyToScore() {
@@ -307,6 +315,11 @@ public class Scorer extends SubsystemBase {
         });
     }
 
+    //command for toggleFlag
+    public Command flagToggleCommand(){
+            Command toggleFlag = new InstantCommand(()-> toggleFlag());
+        return toggleFlag.ignoringDisable(true);
+    }
     // Aim method that asks each subsystem to move based on a setpoint, passes a lambda () -> to keep it live
     public Command AimToTarget(){
         return turret.aimTurretToSetPointCommand(() -> getAngleToTargetFromTurretPerspective())
@@ -330,5 +343,6 @@ public class Scorer extends SubsystemBase {
         SmartDashboard.putNumber(side.substring(0, 1) + " Ideal Shot Setspeed", shots.setSpeed);
         SmartDashboard.putNumber(side.substring(0, 1) + " Ideal Shot Angle (Degrees)", shots.angle);
         SmartDashboard.putNumber(side.substring(0,1) + " Scorer: Bonus Distance", this.bonusMeasure );
-    }
+        SmartDashboard.putBoolean(side.substring(0,1)+ "Moving While Shooting", movingFlag);
+    }   
 }
