@@ -322,6 +322,7 @@ public class Scorer extends SubsystemBase {
     }
     // Aim method that asks each subsystem to move based on a setpoint, passes a lambda () -> to keep it live
     public Command AimToTarget(){
+        // System.out.print("aiming");
         return turret.aimTurretToSetPointCommand(() -> getAngleToTargetFromTurretPerspective())
             .alongWith( flywheel.flyWheelCommand(() -> getIdealShot(getDistanceToTarget() + bonusMeasure ).setSpeed))
             .alongWith(angler.aimAnglerToSetPointCommand(()-> getIdealShot(getDistanceToTarget() + bonusMeasure).angle))

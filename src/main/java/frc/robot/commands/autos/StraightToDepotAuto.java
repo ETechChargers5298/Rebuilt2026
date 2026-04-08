@@ -46,8 +46,10 @@ public class StraightToDepotAuto extends SequentialCommandGroup {
       // new WaitCommand(3).deadlineFor(FlywheelLeft.getInstance().revFlywheelCommand()),
       
       // 6. Load while flywheel keeps revving for 9 seconds
+      
       new ParallelDeadlineGroup(
-        new WaitCommand(9), 
+        
+        new WaitCommand(12), 
         Loader.getInstance().loadInCommand(),
         // FlywheelLeft.getInstance().revFlywheelCommand()
         ScorerLeft.getInstance().AimToTarget()

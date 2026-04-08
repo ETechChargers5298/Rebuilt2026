@@ -54,6 +54,7 @@ public class Loader extends SubsystemBase {
   public Command loadInCommand() {
   return run(
       () -> {
+        System.out.println("loadl");
         loadFuel();
       });
   }
