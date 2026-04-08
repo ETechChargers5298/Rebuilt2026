@@ -277,7 +277,7 @@ public class Scorer extends SubsystemBase {
 
     // Increases power of launcher incrementally
     public Command bonusUpCommand(){
-        return run(
+        return runOnce(
             () -> {
             bonusUp(bonusDistance);
         });
@@ -285,7 +285,7 @@ public class Scorer extends SubsystemBase {
 
     // Decreases power of launcher incrementally
     public Command bonusDownCommand(){
-        return run(
+        return runOnce(
             () -> {
             bonusDown(bonusDistance);
         });
@@ -313,6 +313,6 @@ public class Scorer extends SubsystemBase {
         SmartDashboard.putNumber(side.substring(0,1)  + " TargetY", targetY);
         SmartDashboard.putNumber(side.substring(0, 1) + " Ideal Shot Setspeed", shots.setSpeed);
         SmartDashboard.putNumber(side.substring(0, 1) + " Ideal Shot Angle (Degrees)", shots.angle);
-        SmartDashboard.putNumber(side.substring(0,1) + " Scorer: Bonus Distance", this.bonusDistance );
+        SmartDashboard.putNumber(side.substring(0,1) + " Scorer: Bonus Distance", this.bonusMeasure );
     }
 }

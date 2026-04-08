@@ -29,6 +29,7 @@ public class IntakePivot extends SubsystemBase {
   private SparkMax pivotMotorRight; // All extendMotor related things are currntly placeholder
   private SparkMax pivotMotorLeft; // All extendMotor related things are currntly placeholder
   private RelativeEncoder pivotEncoder;
+  private boolean limitOn = true;
   // private final SparkClosedLoopController pidController;
 
 
@@ -41,13 +42,13 @@ public class IntakePivot extends SubsystemBase {
     
 
     // Motor Configs
-    SparkMaxConfig config = new SparkMaxConfig();
-    SparkMaxConfig followerConfig = new SparkMaxConfig();
+    // SparkMaxConfig config = new SparkMaxConfig();
+    // SparkMaxConfig followerConfig = new SparkMaxConfig();
 
-    config
-      .inverted(false)
-      .idleMode(IdleMode.kBrake)
-      .smartCurrentLimit(40);
+    // config
+    //   .inverted(false)
+    //   .idleMode(IdleMode.kBrake)
+    //   .smartCurrentLimit(40);
     
     // // config.encoder
     //   .positionConversionFactor(IntakeConstants.GEAR_RATIO)
@@ -65,10 +66,10 @@ public class IntakePivot extends SubsystemBase {
 
 
     // Have Right motor follow the Left motor to be in sync
-    followerConfig
-      .follow(pivotMotorLeft, true)
-      .idleMode(IdleMode.kBrake)
-      .smartCurrentLimit(40);
+    // followerConfig
+    //   .follow(pivotMotorLeft, true)
+    //   .idleMode(IdleMode.kBrake)
+    //   .smartCurrentLimit(40);
 
     // Apply configs to motors
     // pivotMotorLeft.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
@@ -90,13 +91,13 @@ public class IntakePivot extends SubsystemBase {
 
   public void extend()
   {
-    pivotMotorRight.set(IntakeConstants.EXTEND_SPEED);
+    // pivotMotorRight.set(IntakeConstants.EXTEND_SPEED);
     pivotMotorLeft.set(IntakeConstants.EXTEND_SPEED);
   }
 
   public void retract()
   {
-    pivotMotorRight.set(-IntakeConstants.RETRACT_SPEED);
+    // pivotMotorRight.set(-IntakeConstants.RETRACT_SPEED);
     pivotMotorLeft.set(-IntakeConstants.RETRACT_SPEED);
   }
 
@@ -147,11 +148,11 @@ public class IntakePivot extends SubsystemBase {
           // and remove the || true (it's in there so that this code doesn't break retract because I have no
           // idea what the number needs to be). The intent of this code is to let the driveteam retract without
           // worrying about retracting too far.
-        }).onlyWhile(() -> (getPivotAngle() > 65 )).finallyDo(
-          () -> {
-              stopExtending();
-          }
-        );
+        // }).onlyWhile(() -> (getPivotAngle() > 12 )).finallyDo(
+        //   () -> {
+        //       stopExtending();
+
+        });
   }
 
   // In-line Command to stop moving the intake rollers

@@ -269,8 +269,8 @@ public class RobotContainer {
     operatorController.leftTrigger().whileTrue(scorerLeft.AimToTarget());
 
     // BONUS BUMPS (OPERATOR - A & Y)
-    operatorController.y().whileTrue( ScorerLeft.getInstance().bonusUpCommand()  );
-    operatorController.a().whileTrue( ScorerLeft.getInstance().bonusDownCommand()  );
+    operatorController.y().onTrue( ScorerLeft.getInstance().bonusUpCommand()  );
+    operatorController.a().onTrue( ScorerLeft.getInstance().bonusDownCommand()  );
 
 
     // Test Controller Commands
