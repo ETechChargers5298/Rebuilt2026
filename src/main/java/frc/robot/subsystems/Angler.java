@@ -78,7 +78,7 @@ public class Angler extends SubsystemBase {
     // Apply the configuration to the motor
     angleMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     
-    SmartDashboard.putData(side + "Reset Angler angle", new InstantCommand(() -> anglerEncoder.setPosition(0)).ignoringDisable(true));
+    SmartDashboard.putData(side + "Reset Angler angle", new InstantCommand(() -> anglerEncoder.setPosition(AnglerConstants.MIN_POSITION)).ignoringDisable(true));
     SmartDashboard.putData(side + "Set Angler to max", new InstantCommand(() -> anglerEncoder.setPosition(AnglerConstants.MAX_POSITION)).ignoringDisable(true));
   }
 
