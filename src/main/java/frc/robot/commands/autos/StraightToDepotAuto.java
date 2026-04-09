@@ -28,10 +28,10 @@ public class StraightToDepotAuto extends SequentialCommandGroup {
 
 
       // 1. Bring intake down
-      new WaitCommand(1).deadlineFor(IntakePivot.getInstance().extendCommand()),
+      new WaitCommand(1.2).deadlineFor(IntakePivot.getInstance().extendCommand()),
       
       // 2. Start intake
-      new PathPlannerAuto("StraightToDepotAuto").deadlineFor(IntakeRollers.getInstance().eatFuelCommand()),
+      new PathPlannerAuto("StraightToDepot Auto 1").deadlineFor(IntakeRollers.getInstance().eatFuelCommand()),
       
       // 3. wait 2 seconds
       // new WaitCommand(2),
@@ -49,8 +49,26 @@ public class StraightToDepotAuto extends SequentialCommandGroup {
       
       new ParallelDeadlineGroup(
         
-        new WaitCommand(12), 
+        new WaitCommand(4), 
         Loader.getInstance().loadInCommand(),
+        IntakePivot.getInstance().retractCommand(),
+        // FlywheelLeft.getInstance().revFlywheelCommand()
+        ScorerLeft.getInstance().AimToTarget()
+      ),
+
+      new PathPlannerAuto("StraightToDepot Auto 2").deadlineFor(
+        IntakeRollers.getInstance().eatFuelCommand(),
+        IntakePivot.getInstance().retractCommand(),
+        ScorerLeft.getInstance().AimToTarget(),
+        Loader.getInstance().loadInCommand()
+      ),
+
+
+      new ParallelDeadlineGroup(
+        
+        new WaitCommand(6), 
+        Loader.getInstance().loadInCommand(),
+        IntakePivot.getInstance().retractCommand(),
         // FlywheelLeft.getInstance().revFlywheelCommand()
         ScorerLeft.getInstance().AimToTarget()
       )

@@ -134,7 +134,7 @@ public class RobotContainer {
 
     // SWERVE BRAKE (DRIVER - A)
     driverController.a().whileTrue(drivetrain.applyRequest(() -> brake));
-    new Trigger(loader::isLoaderActive).whileTrue(drivetrain.applyRequest(() -> brake));
+    // new Trigger(loader::isLoaderActive).whileTrue(drivetrain.applyRequest(() -> brake));
 
     // SWERVE TURN TO DIRECTION OF STRAFE (DRIVER - B button)
     driverController.b().whileTrue(drivetrain.applyRequest(() ->

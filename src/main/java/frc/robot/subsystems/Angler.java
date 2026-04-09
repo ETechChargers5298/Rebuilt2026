@@ -14,6 +14,7 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.*;
 
@@ -27,6 +28,7 @@ public class Angler extends SubsystemBase {
   private DigitalInput limitSwitch;
   private final SparkClosedLoopController pidController;
   private String side;
+  private boolean anglerLimit = true;
 
 
   // ANGLER CONSTRUCTOR
@@ -36,6 +38,7 @@ public class Angler extends SubsystemBase {
     anglerEncoder = angleMotor.getEncoder();
     limitSwitch = new DigitalInput(limitPort);    //REV throughbore connected to Angler Sparkmax
     pidController = angleMotor.getClosedLoopController();
+    
 
     // PID gains for Angler
     SparkMaxConfig config = new SparkMaxConfig();
@@ -74,7 +77,9 @@ public class Angler extends SubsystemBase {
  */
     // Apply the configuration to the motor
     angleMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-  
+    
+    SmartDashboard.putData(side + "Reset Angler angle", new InstantCommand(() -> anglerEncoder.setPosition(0)).ignoringDisable(true));
+    SmartDashboard.putData(side + "Set Angler to max", new InstantCommand(() -> anglerEncoder.setPosition(AnglerConstants.MAX_POSITION)).ignoringDisable(true));
   }
 
 

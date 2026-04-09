@@ -100,7 +100,7 @@ public class Scorer extends SubsystemBase {
         targetY = hubY;
         targetString = "Hub";
 
-        SmartDashboard.putData("toggleMovingFlag", flagToggleCommand());
+        SmartDashboard.putData("toggleMovingFlag", flagToggleCommand().ignoringDisable(true));
     }
 
 
@@ -262,7 +262,7 @@ public class Scorer extends SubsystemBase {
         new ShotParameter(1.81, -0.75, 0),
         new ShotParameter(2.86, -0.95, 0),
         new ShotParameter(3.35, -1, -2.5),
-        new ShotParameter(5.04, -1, -27)
+        new ShotParameter(4.2, -1, -12)
     };
 
     public ShotParameter getIdealShot(double targetDistance) {

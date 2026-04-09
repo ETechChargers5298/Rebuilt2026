@@ -139,7 +139,5 @@ public class Flywheel extends SubsystemBase {
     // This method will be called once per scheduler run
     SmartDashboard.putNumber(side + " flyWheelSpeed", getFlywheelRpm());
     SmartDashboard.putNumber(side + " Flywheel setSpeed", setSpeed);
-  
-    
   }
 }

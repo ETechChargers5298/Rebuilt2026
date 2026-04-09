@@ -1,7 +1,11 @@
 package frc.robot.subsystems;
 
+import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Ports;
@@ -11,11 +15,13 @@ public class Loader extends SubsystemBase {
 
   // LOADER FIELDS
   private static Loader instance;
+  private RelativeEncoder loaderEncoder;
   private SparkMax loaderMotor;
 
   // LOADER CONSTRUCTOR
   private Loader() {
     loaderMotor = new SparkMax(Ports.LOADER_MOTOR_PORT, MotorType.kBrushless);
+    loaderEncoder = loaderMotor.getEncoder();
   }
 
   // LOADER SINGLETON
@@ -48,13 +54,15 @@ public class Loader extends SubsystemBase {
     loaderMotor.set(0);
   }
 
+  public double getLoaderRPM(){
+    return loaderEncoder.getVelocity();
+  }
   // BASIC LOADER COMMANDS
 
   // In-line Command to load the ball into the launcher to shoot
   public Command loadInCommand() {
   return run(
       () -> {
-        System.out.println("loadl");
         loadFuel();
       });
   }
@@ -80,6 +88,8 @@ public class Loader extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    SmartDashboard.putBoolean("Loader Active", isLoaderActive());
+    SmartDashboard.putNumber("LoaderRPM", getLoaderRPM());
   }
 
   @Override
