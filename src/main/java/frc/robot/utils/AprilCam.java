@@ -20,6 +20,7 @@ import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
 import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
@@ -96,6 +97,26 @@ public class AprilCam {
         for (int i = 0; getTargets() != null && i < getTargets().size(); i++) {
           SmartDashboard.putString("Id" + i, getTargets().get(i).toString());
         }
+
+        
+    }
+
+    public Pair<Pose2d, Double> getFieldToCamera(){
+        Transform3d fieldToCamera = null;
+        double timestamp_s = 0;
+        for(var result : results){
+            var multiTagResult = result.getMultiTagResult();
+            
+
+            if (multiTagResult.isPresent()){
+                fieldToCamera = multiTagResult.get().estimatedPose.best;
+                timestamp_s = result.metadata.captureTimestampMicros / 1e6;
+            }
+        }
+        if (fieldToCamera != null){
+            return new Pair<Pose2d, Double>(new Pose3d(fieldToCamera.toMatrix()).toPose2d(), timestamp_s);
+        }
+        return new Pair<Pose2d, Double>(null, timestamp_s);
     }
    
     // The latest estimated robot pose on the field from vision data. This may be empty.

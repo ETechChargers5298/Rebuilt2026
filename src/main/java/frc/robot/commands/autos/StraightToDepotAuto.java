@@ -9,6 +9,8 @@ import com.pathplanner.lib.commands.PathPlannerAuto;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import frc.robot.subsystems.AnglerLeft;
+import frc.robot.subsystems.FlywheelLeft;
 import frc.robot.subsystems.IntakePivot;
 import frc.robot.subsystems.IntakeRollers;
 import frc.robot.subsystems.Loader;
@@ -28,25 +30,32 @@ public class StraightToDepotAuto extends SequentialCommandGroup {
       // 1. Bring intake down
       new WaitCommand(1.2).deadlineFor(IntakePivot.getInstance().extendCommand()),
       
-      // 2. Start intake while driving to Depot
+      // 2. Start intake
       new PathPlannerAuto("StraightToDepot Auto 1").deadlineFor(IntakeRollers.getInstance().eatFuelCommand()),
+      
+      // 3. wait 2 seconds
+      // new WaitCommand(2),
 
-      // 3. Aim turret and angler to Hub
+      // 4. Aim turret and angler to Hub
       new ParallelDeadlineGroup(
         new WaitCommand(2),
         ScorerLeft.getInstance().AimToTarget()
       ),
+        
+      // 5. Begin revving flywheel
+      // new WaitCommand(3).deadlineFor(FlywheelLeft.getInstance().revFlywheelCommand()),
       
-      // 4. Launch fuel into Hub with assistance from Intake
+      // 6. Load while flywheel keeps revving for 9 seconds
+      
       new ParallelDeadlineGroup(
         
         new WaitCommand(4), 
         Loader.getInstance().loadInCommand(),
         IntakePivot.getInstance().retractCommand(),
+        // FlywheelLeft.getInstance().revFlywheelCommand()
         ScorerLeft.getInstance().AimToTarget()
       ),
 
-      // 5. Drive into Depot while eating and launching fuel
       new PathPlannerAuto("StraightToDepot Auto 2").deadlineFor(
         IntakeRollers.getInstance().eatFuelCommand(),
         IntakePivot.getInstance().retractCommand(),
@@ -54,12 +63,13 @@ public class StraightToDepotAuto extends SequentialCommandGroup {
         Loader.getInstance().loadInCommand()
       ),
 
-      // 6. Keep launching fuel after path ends
+
       new ParallelDeadlineGroup(
         
         new WaitCommand(6), 
         Loader.getInstance().loadInCommand(),
         IntakePivot.getInstance().retractCommand(),
+        // FlywheelLeft.getInstance().revFlywheelCommand()
         ScorerLeft.getInstance().AimToTarget()
       )
 

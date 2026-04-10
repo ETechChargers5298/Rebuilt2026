@@ -80,6 +80,7 @@ public class Vision extends SubsystemBase {
 
         //Get the current best guess of the position of the robot based on its wheels
         Pose3d currentRobotPose = new Pose3d(drivetrain.getState().Pose);
+        var confidence = edu.wpi.first.math.VecBuilder.fill(0.1,0.1,0.1);
 
         // Ensure cam is up-to-date
         cam.update();
@@ -92,7 +93,6 @@ public class Vision extends SubsystemBase {
 
             // Get the confidence level from cam
             // var confidence = cam.getEstimationSDs();
-            var confidence = edu.wpi.first.math.VecBuilder.fill(0.1,0.1,0.1); // test high trust in vision
             
             // Add each vision measurement update to the drivetrain's pose estimator
             drivetrain.addVisionMeasurement(

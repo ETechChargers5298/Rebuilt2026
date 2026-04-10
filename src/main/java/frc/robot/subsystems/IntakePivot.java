@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Ports;
 import frc.robot.Constants.AnglerConstants;
 import frc.robot.Constants.IntakeConstants;
@@ -77,7 +78,7 @@ public class IntakePivot extends SubsystemBase {
 
     SmartDashboard.putData("Reset Pivot Encoder", resetPivotEncoderCommand());
     SmartDashboard.putData("Toggle Pivot Limits", togglePivotLimits());
-
+    SmartDashboard.putData("Set Max Pivot angle 100",setMaxPivotAngle());
   }
 
   // INTAKE SINGLETON - ensures only 1 instance of Intake is constructed
@@ -129,6 +130,11 @@ public class IntakePivot extends SubsystemBase {
     Command toggleLimits = new InstantCommand(() -> limitOn = !limitOn);
     return toggleLimits.ignoringDisable(true);
   }
+  public Command setMaxPivotAngle()
+  {
+    Command reset = new InstantCommand(() -> pivotEncoder.setPosition(100));
+    return reset.ignoringDisable(true);
+  }
 
   // BASIC INTAKE COMMANDS
 
@@ -175,12 +181,8 @@ public class IntakePivot extends SubsystemBase {
     // In-line Command to agitate the fuel with a bouncing intake
   public Command sixSevenCommand() {
 
-    return extendCommand()
-          .withTimeout(0.5) 
-          .andThen(
-              retractCommand()
-              .withTimeout(0.5) 
-          );
+    return retractCommand()
+          .andThen(new WaitCommand(1.5)).repeatedly();
 
   }
 
@@ -198,6 +200,8 @@ public class IntakePivot extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     SmartDashboard.putNumber("Intake Pivot Angle", getPivotAngle());
+    SmartDashboard.putNumber("Intake Pivot Motor Left Duty Cycle", pivotMotorLeft.get());
+    SmartDashboard.putNumber("Intake Pivot Motor Right Duty Cycle", pivotMotorRight.get());
     SmartDashboard.putBoolean("Pivot Limit Enabled", limitOn);
     
   }
