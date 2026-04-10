@@ -171,6 +171,20 @@ public class IntakePivot extends SubsystemBase {
   }
 
 
+
+    // In-line Command to agitate the fuel with a bouncing intake
+  public Command sixSevenCommand() {
+
+    return extendCommand()
+          .withTimeout(0.5) 
+          .andThen(
+              retractCommand()
+              .withTimeout(0.5) 
+          );
+
+  }
+
+
   // In-line Command to pivot Intake to a specific angle - in degrees
   // public Command pivotToSetPointCommand(DoubleSupplier targetAngle) {
   //   return run(() -> {

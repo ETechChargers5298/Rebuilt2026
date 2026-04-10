@@ -191,6 +191,9 @@ public class RobotContainer {
     // INTAKE PIVOT RETRACT UP (OPERATOR - X) (DRIVER - LB)
     operatorController.x().whileTrue( IntakePivot.getInstance().retractCommand());
     driverController.leftBumper().whileTrue( IntakePivot.getInstance().retractCommand());
+
+    // INTAKE PIVOT 6-7 (DRIVER - X)
+    driverController.x().whileTrue(IntakePivot.getInstance().sixSevenCommand());
      
     
     //---------- LOADER JOYSTICK CONTROLLER BINDINGS ----------//
@@ -218,6 +221,8 @@ public class RobotContainer {
 
     // operatorController.rightBumper().whileTrue(scorerLeft.flywheel.flyWheelCommand(() -> 0.5));
     // operatorController.rightBumper().whileTrue(scorerRight.flywheel.flyWheelCommand(() -> 0.5));
+
+
     // INCREMENT/DECREMENT FLYWHEEL SPEEDS (TESTING - POV LEFT/RIGHT)
     testingController.povRight().onTrue(new InstantCommand(() -> {
       double setSpeed = scorerLeft.flywheel.getSetSpeed();
@@ -244,15 +249,13 @@ public class RobotContainer {
     scorerLeft.angler.setDefaultCommand(
       scorerLeft.angler.aimAnglerCommand( () -> MathUtil.applyDeadband(operatorController.getLeftY(), 0.1) )
     );
-
     scorerRight.angler.setDefaultCommand(
       scorerRight.angler.aimAnglerCommand( () -> MathUtil.applyDeadband(operatorController.getLeftY(), 0.1) )
     );
 
-    //AIM ANGLER TO SETPOINT 0 (OPERATOR - L3)
+    //AIM ANGLER TO SETPOINT 0 (OPERATOR - L3) (TESTING - L3)
     operatorController.leftStick().whileTrue(scorerLeft.angler.aimAnglerCommand(() -> 0));
     testingController.leftStick().whileTrue(scorerLeft.angler.aimAnglerCommand(() -> 0));
-
     operatorController.leftStick().whileTrue(scorerRight.angler.aimAnglerCommand(() -> 0));
     testingController.leftStick().whileTrue(scorerRight.angler.aimAnglerCommand(() -> 0));
 
@@ -265,7 +268,6 @@ public class RobotContainer {
       double setAngle = scorerLeft.angler.getPosition();
       scorerLeft.angler.setSetpoint(setAngle - 0.01);
     }));
-
     testingController.povUp().onTrue(new InstantCommand(() -> {
       double setAngle = scorerRight.angler.getPosition();
       scorerRight.angler.setSetpoint(setAngle + 0.01);
@@ -281,7 +283,6 @@ public class RobotContainer {
     scorerLeft.turret.setDefaultCommand(
       scorerLeft.turret.moveTurretCommand( () -> MathUtil.applyDeadband(operatorController.getRightX(), 0.1) )
     );
-
     scorerRight.turret.setDefaultCommand(
       scorerRight.turret.moveTurretCommand( () -> MathUtil.applyDeadband(operatorController.getRightX(), 0.1) )
     );
@@ -333,32 +334,3 @@ public class RobotContainer {
     }
 
   }
-    
-    
-    //return autoChooser.getSelected();
-    
-    // return new Command() {
-    //   @Override
-    //   public boolean isFinished() {
-    //     return true;
-    //   }
-    // };
-    // // An example command will be run in autonomous
-    // return Autos.exampleAuto();
-
-    // FROM CTRE TUNER: Simple drive forward auton
-    // final var idle = new SwerveRequest.Idle();
-    // return Commands.sequence(
-    //     // Reset our field centric heading to match the robot
-    //     // facing away from our alliance station wall (0 deg).
-    //     drivetrain.runOnce(() -> drivetrain.seedFieldCentric(Rotation2d.kZero)),
-    //     // Then slowly drive forward (away from us) for 5 seconds.
-    //     drivetrain.applyRequest(() ->
-    //         TunerConstants.drive.withVelocityX(0.5)
-    //             .withVelocityY(0)
-    //             .withRotationalRate(0)
-    //     )
-    //     .withTimeout(5.0),
-    //     // Finally idle for the rest of auton
-    //     drivetrain.applyRequest(() -> idle)
-    // );
