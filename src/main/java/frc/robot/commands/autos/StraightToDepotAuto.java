@@ -15,6 +15,7 @@ import frc.robot.subsystems.IntakePivot;
 import frc.robot.subsystems.IntakeRollers;
 import frc.robot.subsystems.Loader;
 import frc.robot.subsystems.ScorerLeft;
+import frc.robot.subsystems.Vision;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
@@ -25,16 +26,16 @@ public class StraightToDepotAuto extends SequentialCommandGroup {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
-
-
+      // 0. Disable vision
+      Vision.getInstance().disable(),
       // 1. Bring intake down
       new WaitCommand(1.2).deadlineFor(IntakePivot.getInstance().extendCommand()),
       
       // 2. Start intake
       new PathPlannerAuto("StraightToDepot Auto 1").deadlineFor(IntakeRollers.getInstance().eatFuelCommand()),
       
-      // 3. wait 2 seconds
-      // new WaitCommand(2),
+      // 3. Re-enable Vision
+      Vision.getInstance().enable(),
 
       // 4. Aim turret and angler to Hub
       new ParallelDeadlineGroup(

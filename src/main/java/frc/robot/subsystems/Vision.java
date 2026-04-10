@@ -7,6 +7,8 @@ import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -18,6 +20,8 @@ public class Vision extends SubsystemBase {
     public AprilCam cam1;
     public AprilCam cam2;
     public boolean doubleCam = true;
+
+    public boolean enabled = true;
     Drivetrain drivetrain = Drivetrain.getInstance();
     AprilTagFieldLayout fieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2026RebuiltWelded);
 
@@ -55,10 +59,20 @@ public class Vision extends SubsystemBase {
         return instance;
     }
 
+    public Command enable(){
+        return new InstantCommand(() -> enabled = true);
+    } 
+
+    public Command disable(){
+        return new InstantCommand(() -> enabled = false);
+    }
+
 
     @Override
     public void periodic() {
-
+        if(enabled == false) {
+            return;
+        }
        // Process Camera 1
         processCamera(cam1);
 
