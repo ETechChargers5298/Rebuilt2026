@@ -130,6 +130,10 @@ public class IntakePivot extends SubsystemBase {
     Command toggleLimits = new InstantCommand(() -> limitOn = !limitOn);
     return toggleLimits.ignoringDisable(true);
   }
+  public Command limitOnCommand(){
+    Command turnLimitOn = new InstantCommand(() -> this.limitOn = true);
+    return turnLimitOn;
+  }
   public Command setMaxPivotAngle()
   {
     Command reset = new InstantCommand(() -> pivotEncoder.setPosition(100));
