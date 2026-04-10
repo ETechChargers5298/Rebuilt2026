@@ -52,14 +52,14 @@ public class StraightToDepotAuto extends SequentialCommandGroup {
         
         new WaitCommand(4), 
         Loader.getInstance().loadInCommand(),
-        IntakePivot.getInstance().retractCommand(),
+        IntakePivot.getInstance().sixSevenCommand(),
         // FlywheelLeft.getInstance().revFlywheelCommand()
         ScorerLeft.getInstance().AimToTarget()
       ),
 
       new PathPlannerAuto("StraightToDepot Auto 2").deadlineFor(
         IntakeRollers.getInstance().eatFuelCommand(),
-        IntakePivot.getInstance().retractCommand(),
+        IntakePivot.getInstance().sixSevenCommand(),
         ScorerLeft.getInstance().AimToTarget(),
         Loader.getInstance().loadInCommand()
       ),
@@ -69,7 +69,7 @@ public class StraightToDepotAuto extends SequentialCommandGroup {
         
         new WaitCommand(6), 
         Loader.getInstance().loadInCommand(),
-        IntakePivot.getInstance().retractCommand(),
+        IntakePivot.getInstance().sixSevenCommand(),
         // FlywheelLeft.getInstance().revFlywheelCommand()
         ScorerLeft.getInstance().AimToTarget()
       )
