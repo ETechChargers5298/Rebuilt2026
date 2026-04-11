@@ -1,8 +1,6 @@
 package frc.robot.utils;
 
 
-import frc.robot.Constants.VisionConstants;
-import frc.robot.subsystems.Drivetrain;
 import frc.robot.FieldConstants;
 import frc.robot.Robot;
 
@@ -13,20 +11,15 @@ import java.util.Optional;
 import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
-import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 import org.photonvision.simulation.PhotonCameraSim;
 import org.photonvision.simulation.VisionSystemSim;
-import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
 import edu.wpi.first.math.Matrix;
-import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
@@ -37,23 +30,23 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 /** Add your docs here. */
 public class AprilCam {
 
+    // April 10, 2026: Code changes made to reflect Photon example at https://github.com/PhotonVision/photonvision/blob/a5be3d062ce5c145f4a759b0207057f218cda6b3/photonlib-java-examples/poseest/src/main/java/frc/robot/Vision.java
+
     private PhotonCamera camera;
     private Transform3d camOffset;
     private PhotonPoseEstimator photonPoseEstimator;
-    private List<PhotonPipelineResult> results;
-    private List<EstimatedRobotPose> estimatedPoses;
-    private PhotonPipelineResult lastResult;
 
-    private PhotonTrackedTarget desiredTarget;
-    private List<PhotonTrackedTarget> targets;
     public int closestId;
     public double closestDistance;
-    private PhotonTrackedTarget closestTarget;
 
     // Simulation
     private PhotonCameraSim cameraSim;
     private VisionSystemSim visionSim;
-    private Matrix<N3, N1> currentSDs;
+    private Matrix<N3, N1> curStdDevs;
+    // The standard deviations of our vision estimated poses, which affect correction rate
+    // (Fake values. Experiment and determine estimation noise on an actual robot.)
+    public static final Matrix<N3, N1> kSingleTagStdDevs = VecBuilder.fill(4, 4, 8);
+    public static final Matrix<N3, N1> kMultiTagStdDevs = VecBuilder.fill(0.5, 0.5, 1);
     
     
     // Constructor 1
@@ -61,10 +54,6 @@ public class AprilCam {
         this.camera = new PhotonCamera(name);
         this.camOffset = new Transform3d(pos, angle);
         this.photonPoseEstimator = new PhotonPoseEstimator(FieldConstants.aprilTagFieldLayout, camOffset);
-        // this.photonPoseEstimator = new PhotonPoseEstimator(FieldConstants.aprilTagFieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, camOffset);
-        this.estimatedPoses = new ArrayList<EstimatedRobotPose>();
-        this.closestTarget = new PhotonTrackedTarget();
-        updateEstimationSDs();
      }
 
      // Constructor 2: simple version
@@ -75,108 +64,50 @@ public class AprilCam {
 
     // ---------------- UPDATES ----------------------------------//
 
-    public void update() { // should get called exactly ONCE per robot loop
-        
-        // Update the List of PhotonPipeline results each cycle
-        this.results = camera.getAllUnreadResults();
+    public void update(EstimateConsumer consumer) { // should get called exactly ONCE per robot loop
+        List<PhotonTrackedTarget> latestTargets = new ArrayList<>();
+        Optional<EstimatedRobotPose> visionEst = Optional.empty();
+        for (var result : camera.getAllUnreadResults()) {
+            visionEst = photonPoseEstimator.estimateCoprocMultiTagPose(result);
+            if (visionEst.isEmpty()) {
+                visionEst = photonPoseEstimator.estimateLowestAmbiguityPose(result);
+            }
+            updateEstimationStdDevs(visionEst, result.getTargets());
 
-        // Update the List of PhotonTrackedTargets seen each cycle
-        for (var result: results){
-            targets = result.getTargets();
-            updateClosestId();
+            if (Robot.isSimulation()) {
+                visionEst.ifPresentOrElse(
+                        est ->
+                                getSimDebugField()
+                                        .getObject("VisionEstimation")
+                                        .setPose(est.estimatedPose.toPose2d()),
+                        () -> {
+                            getSimDebugField().getObject("VisionEstimation").setPoses();
+                        });
+            }
+
+            visionEst.ifPresent(
+                    est -> {
+                        // Change our trust in the measurement based on the tags we can see
+                        var estStdDevs = getEstimationStdDevs();
+
+                        consumer.accept(est.estimatedPose.toPose2d(), est.timestampSeconds, estStdDevs);
+                    });
+
+            
+            latestTargets = result.getTargets();
         }
 
-        // Update the estimation SDs
-        updateEstimationSDs();
+        updateClosestId(latestTargets);
 
         // Display each target info seen
-        SmartDashboard.putNumber("ClosestID",closestId);
-        SmartDashboard.putNumber("closestX", getXClosest());
-        // SmartDashboard.putNumber("closestY", getYClosest());
-        // SmartDashboard.putNumber("closestZ", getZclosest());
-        for (int i = 0; getTargets() != null && i < getTargets().size(); i++) {
-          SmartDashboard.putString("Id" + i, getTargets().get(i).toString());
+        SmartDashboard.putNumber("ClosestID", closestId);
+        for (int i = 0; latestTargets != null && i < latestTargets.size(); i++) {
+          SmartDashboard.putString("Id" + i, latestTargets.get(i).toString());
         }
-
-        
-    }
-
-    public Pair<Pose2d, Double> getFieldToCamera(){
-        Transform3d fieldToCamera = null;
-        double timestamp_s = 0;
-        for(var result : results){
-            var multiTagResult = result.getMultiTagResult();
-            
-
-            if (multiTagResult.isPresent()){
-                fieldToCamera = multiTagResult.get().estimatedPose.best;
-                timestamp_s = result.metadata.captureTimestampMicros / 1e6;
-            }
-        }
-        if (fieldToCamera != null){
-            return new Pair<Pose2d, Double>(new Pose3d(fieldToCamera.toMatrix()).toPose2d(), timestamp_s);
-        }
-        return new Pair<Pose2d, Double>(null, timestamp_s);
-    }
-   
-    // The latest estimated robot pose on the field from vision data. This may be empty.
-    // This should only be called once per loop by Vision class
-    public List<EstimatedRobotPose> getLatestEstimates(Pose3d currentDrivetrainPose) {
-
-        // Create an empty ArrayList to store estimated poses from each tag seen
-        List<EstimatedRobotPose> estimateUpdates = new ArrayList<>();
-
-        // Loop through all the results of the camera
-        for (var result : results) {
-
-            // Get an update from the result if we see multiple tags
-            var estimateUpdate = photonPoseEstimator.estimateCoprocMultiTagPose(result);
-
-            // If we didn't see enough tags for Multi-Tag, try the best single tag
-            if (estimateUpdate.isEmpty()) {
-                estimateUpdate = photonPoseEstimator.estimateLowestAmbiguityPose(result);
-                // estimateUpdate = photonPoseEstimator.estimateClosestToReferencePose(result, currentDrivetrainPose);
-            }
-
-            // Add to the List of Estimated Poses
-            if (estimateUpdate.isPresent()) {
-                EstimatedRobotPose pose = estimateUpdate.get();
-                estimateUpdates.add(pose);
-            }
-
-        }
-
-        this.estimatedPoses = estimateUpdates;
-        return estimateUpdates;
-    }
-
-
-
-
-    // --------------------- GETTING TARGETS -------------------)------------ //
-
-    // Checks if a specific result has a target
-    public boolean hasTarget(PhotonPipelineResult result) {
-        return result.hasTargets();
-    }
-
-    // Checks if any results have targets
-    public boolean hasAnyTarget(){
-        for(PhotonPipelineResult result: results){
-            if(hasTarget(result)){
-                return true;
-            }
-        }
-        return false;
-    }
-
-    //Gets all the AprilTag targets the camera can currently see
-    public List<PhotonTrackedTarget> getTargets(){
-        return targets;
     }
 
     // Private method that occurs in the update
-    private void updateClosestId() {
+    private void updateClosestId(List<PhotonTrackedTarget> targets) {
 
         // Stop trying if there are no targets visible
         if(targets == null || targets.isEmpty()) return;
@@ -195,7 +126,6 @@ public class AprilCam {
             if(checkDistance < minDistance){
                 minDistance = checkDistance;
                 closestId = t.fiducialId;
-                this.closestTarget = t;
             }
         }
 
@@ -206,190 +136,85 @@ public class AprilCam {
         }
     }
 
-
-    // Gets a target object for a specific AprilTag
-    public PhotonTrackedTarget getDesiredTarget(int desiredTargetId) {
-
-        //look at each target in the arraylist of targets
-        if(getTargets() != null){
-            for (PhotonTrackedTarget t: getTargets())
-            {
-                // look for the target with the desired Id
-                 if (t.getFiducialId() == desiredTargetId)
-                 {
-                    return t;
-                 }
-                // return t;  // this automatically return the first ID it sees
-            
-                }
-        }
-        //return null if you can't find the desiredTarget
-        System.out.println("AprilCam cannot find desired target " + desiredTargetId);
-        System.out.println("targets " + getTargets());
-        return null;
-    }
-
-    // Checks if a desired AprilTag is visible
-    public boolean hasDesiredTarget(int desiredTargetId) {
-        ///use the getDesiredTarget method to see if it returns null (not correct target) or not
-        if (getDesiredTarget(desiredTargetId)!= null)
-        {
-            return true;
-        }
-        return false;
-    }
-
-    // --------------------- GETTING DATA FROM A TARGET ------------------------------- //
-    // https://docs.photonvision.org/en/v2025.1.1/docs/programming/photonlib/getting-target-data.html#getting-data-from-a-target
-    // double yaw = target.getYaw();
-    // double pitch = target.getPitch();
-    // double area = target.getArea();
-    // double skew = target.getSkew(); //not available for AprilTags
-    // Transform2d pose = target.getCameraToTarget();
-    // List<TargetCorner> corners = target.getCorners();
-    //  double targetId = target.getfiducialId();
-    // double poseAmbiguity = target.getPoseAmbiguity();
-    // Transform3d bestCameraToTarget = target.getBestCameraToTarget();
-    // Transform3d alternateCameraToTarget = target.getAlternateCameraToTarget();
-
     // Gets the Transform3d object of a specific AprilTag object
     private Transform3d getTargetTransform(PhotonTrackedTarget target){
         if(target == null) {
-            System.out.println("No target found");
             return new Transform3d();
         }
-
-        return new Transform3d();
-        // return target.getBestCameraToTarget();
+        return target.getBestCameraToTarget();
     }
 
 
-
-
-
-    /*
+    /**
      * Calculates new standard deviations This algorithm is a heuristic that creates dynamic standard
      * deviations based on number of tags, estimation strategy, and distance from the tags.
-     * This should only be used when there are targets visible
+     *
      * @param estimatedPose The estimated pose to guess standard deviations for.
      * @param targets All targets in this camera frame
      */
-    private void updateEstimationSDs() {
+    private void updateEstimationStdDevs(
+            Optional<EstimatedRobotPose> estimatedPose, List<PhotonTrackedTarget> targets) {
+        if (estimatedPose.isEmpty()) {
+            // No pose input. Default to single-tag std devs
+            curStdDevs = kSingleTagStdDevs;
 
-        // No pose input. Default to single-tag std devs
-        if (estimatedPoses.isEmpty()) {
-            currentSDs = VisionConstants.SINGLE_TAG_SD;
-        } 
-        
-        // Pose present. Start running Heuristic
-        else {
-            var estimatedSDs = VisionConstants.SINGLE_TAG_SD;
+        } else {
+            // Pose present. Start running Heuristic
+            var estStdDevs = kSingleTagStdDevs;
             int numTags = 0;
-            double totalDistance = 0;
-            double totalWeight = 0;
+            double avgDist = 0;
 
-            // Loop through all the targets to find difference in distance from current pose & how important that tag is
-            for (var target : targets) {
-                // Pose3d tagPose = FieldConstants.getTagPose(target.getFiducialId());
-                // if(tagPose != null){
-                var tagPose = photonPoseEstimator.getFieldTags().getTagPose(target.getFiducialId());
+            // Precalculation - see how many tags we found, and calculate an average-distance metric
+            for (var tgt : targets) {
+                var tagPose = photonPoseEstimator.getFieldTags().getTagPose(tgt.getFiducialId());
                 if (tagPose.isEmpty()) continue;
                 numTags++;
-                Translation2d currentTranslation = estimatedPoses.get(0).estimatedPose.toPose2d().getTranslation();  //Drivetrain.getInstance().get  s.get().estimatedPoses.toPose2d().getTranslation()
-                totalDistance += tagPose.get().toPose2d().getTranslation().getDistance(currentTranslation);
-                totalWeight += FieldConstants.TAG_WEIGHTS[target.getFiducialId() - 1]; 
+                avgDist +=
+                        tagPose
+                                .get()
+                                .toPose2d()
+                                .getTranslation()
+                                .getDistance(estimatedPose.get().estimatedPose.toPose2d().getTranslation());
             }
 
-            // Use the single tag standard deviations if no tags visible
             if (numTags == 0) {
-                currentSDs = VisionConstants.SINGLE_TAG_SD;
-            } 
-            
-            // One or more tags visible, run the full heuristic.
-            else {
-
-                // Calculate the average distance changes were
-                double avgDist = totalDistance /numTags;
-                double avgWeight = totalWeight /numTags;
-
-                // Decrease standard deviations if multiple targets are visible
-                if (numTags > 1) estimatedSDs = VisionConstants.MULTI_TAG_SD;
-                
-                // Increase standard deviations based on average distance
-                if (numTags == 1 && avgDist > 4){
-                    estimatedSDs = VecBuilder.fill(Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE);
-                } else {
-                    estimatedSDs = estimatedSDs.times(1 + (avgDist * avgDist / 30));
-                }
-
-                // apply weights to tags
-                currentSDs = estimatedSDs.times(avgWeight);
+                // No tags visible. Default to single-tag std devs
+                curStdDevs = kSingleTagStdDevs;
+            } else {
+                // One or more tags visible, run the full heuristic.
+                avgDist /= numTags;
+                // Decrease std devs if multiple targets are visible
+                if (numTags > 1) estStdDevs = kMultiTagStdDevs;
+                // Increase std devs based on (average) distance
+                if (numTags == 1 && avgDist > 4)
+                    estStdDevs = VecBuilder.fill(Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE);
+                else estStdDevs = estStdDevs.times(1 + (avgDist * avgDist / 30));
+                curStdDevs = estStdDevs;
             }
         }
     }
-     
 
-    /*
+    /**
      * Returns the latest standard deviations of the estimated pose from {@link
      * #getEstimatedGlobalPose()}, for use with {@link
      * edu.wpi.first.math.estimator.SwerveDrivePoseEstimator SwerveDrivePoseEstimator}. This should
      * only be used when there are targets visible.
      */
-    public Matrix<N3, N1> getEstimationSDs() {
-        return currentSDs;
+    public Matrix<N3, N1> getEstimationStdDevs() {
+        return curStdDevs;
     }
+
     /** A Field2d for visualizing our robot and objects on the field. */
     public Field2d getSimDebugField() {
         if (!Robot.isSimulation()) return null;
         return visionSim.getDebugField();
     }
 
-    
-    //method that gets the Id of the "best" target, generally not used by our robot
-    // public String getAllTargets(){
 
-    //     Optional<MultiTargetPNPResult> target = result.getMultiTagResult();
-
-    //     return target.get().fiducialIdsUsed.toString();
-    // }
-
-
-    //---------------------HELPER METHODS -------------------------//
-    
-    // // Gets the X value of a desired target
-    // public double getXDesired(PhotonTrackedTarget target){
-    //     if(target == null) { return Float.NaN; }
-    //     return getTargetTransform(target).getX();
-    // }
-
-    // Gets the X value of the "Best" target
-    public double getXClosest(){
-        if(closestTarget == null){ return -1.0;}
-        return getTargetTransform(closestTarget).getX();
-        // return getXDesired( closestTarget );
+    @FunctionalInterface
+    public static interface EstimateConsumer {
+        public void accept(Pose2d pose, double timestamp, Matrix<N3, N1> estimationStdDevs);
     }
-    
-    // // Gets the Y value of a desired target
-    // public double getYDesired(PhotonTrackedTarget target){
-    //     if(target == null) { return Float.NaN; }
-    //     return getTargetTransform(target).getY();
-    // }
-
-    // // Gets the Y value of the "Best" target
-    // public double getYClosest(){
-    //     return getYDesired( closestTarget );
-    // }
-
-    // // Gets the Z value of a desired target
-    // public double getZDesired(PhotonTrackedTarget target){
-    //     if(target == null) { return Float.NaN; }
-    //     return getTargetTransform(target).getZ();
-    // }
-
-    // // Gets the Z value of the "Best" target
-    // public double getZclosest(){
-    //     return getZDesired( closestTarget);
-    // }
 
    
 
