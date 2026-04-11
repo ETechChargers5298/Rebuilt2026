@@ -4,13 +4,9 @@ import frc.robot.Constants.VisionConstants;
 import frc.robot.utils.AprilCam;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 
 public class Vision extends SubsystemBase {
@@ -36,9 +32,6 @@ public class Vision extends SubsystemBase {
             VisionConstants.CAM1_ANGLE_OFFSET
         );
 
-        // Get first update from cam1
-        cam1.update();
-
         // Initialize cam2 if desired
         if(doubleCam){
             this.cam2 = new AprilCam(
@@ -46,8 +39,6 @@ public class Vision extends SubsystemBase {
                 VisionConstants.CAM2_POSITION_OFFSET,
                 VisionConstants.CAM2_ANGLE_OFFSET
             );
-            // Get first update from cam2
-            cam2.update();
         }
     }
 
@@ -74,48 +65,14 @@ public class Vision extends SubsystemBase {
             return;
         }
        // Process Camera 1
-        processCamera(cam1);
+        cam1.update(drivetrain::addVisionMeasurement);
 
         // Process Camera 2 (if enabled)
         if (doubleCam) {
-            processCamera(cam2);
+            cam2.update(drivetrain::addVisionMeasurement);
         }
-
-        // DISPLAY STUFF ON SMARTDASHBOARD
-
-        // cam1.hasTarget(cam1.targets)
-
 
     }  // close periodic
-
-
-
-    private void processCamera(AprilCam cam) {
-
-        //Get the current best guess of the position of the robot based on its wheels
-        Pose3d currentRobotPose = new Pose3d(drivetrain.getState().Pose);
-        var confidence = edu.wpi.first.math.VecBuilder.fill(0.1,0.1,0.1);
-
-        // Ensure cam is up-to-date
-        cam.update();
-
-        // Get the latest pose estimates from cam1
-        var visionEstPoses1 = cam.getLatestEstimates(currentRobotPose);
-
-        // Loop through all the pose estimate updates from cam1
-        for(var update : visionEstPoses1){
-
-            // Get the confidence level from cam
-            // var confidence = cam.getEstimationSDs();
-            
-            // Add each vision measurement update to the drivetrain's pose estimator
-            drivetrain.addVisionMeasurement(
-                update.estimatedPose.toPose2d(),
-                update.timestampSeconds,
-                confidence
-            );
-        }
-    }
         
 
 } // close Vision class
