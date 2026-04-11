@@ -78,6 +78,26 @@ public class Scorer extends SubsystemBase {
             alliance = allianceOptional.get();
         }
 
+        setTargets(alliance);
+        SmartDashboard.putData("Set alliance targets", new InstantCommand(() -> {
+            Optional<Alliance> allianceOptional = DriverStation.getAlliance();
+            if (allianceOptional.isPresent()) {
+                alliance = allianceOptional.get();
+            }
+
+            setTargets(alliance);
+        }
+        ));
+
+        // Set the hub as the default target
+        targetX = hubX;
+        targetY = hubY;
+        targetString = "Hub";
+
+        SmartDashboard.putData("toggleMovingFlag", flagToggleCommand().ignoringDisable(true));
+    }
+
+    public void setTargets(Alliance alliance) {
         if(alliance == DriverStation.Alliance.Blue){
             hubX = FieldConstants.BLUE_HUB_CENTER_X;
             hubY = FieldConstants.FIELD_CENTER_Y;
@@ -94,13 +114,6 @@ public class Scorer extends SubsystemBase {
             outpostHerdX = FieldConstants.RED_OUTPOST_HERD_X;
             outpostHerdY = FieldConstants.RED_OUTPOST_HERD_Y;
         }
-
-        // Set the hub as the default target
-        targetX = hubX;
-        targetY = hubY;
-        targetString = "Hub";
-
-        SmartDashboard.putData("toggleMovingFlag", flagToggleCommand().ignoringDisable(true));
     }
 
 
@@ -345,5 +358,6 @@ public class Scorer extends SubsystemBase {
         SmartDashboard.putNumber(side.substring(0, 1) + " Ideal Shot Angle (Degrees)", shots.angle);
         SmartDashboard.putNumber(side.substring(0,1) + " Scorer: Bonus Distance", this.bonusMeasure );
         SmartDashboard.putBoolean(side.substring(0,1)+ "Moving While Shooting", movingFlag);
+        SmartDashboard.putString("Alliance", alliance.toString());
     }   
 }
