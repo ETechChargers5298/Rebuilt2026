@@ -341,6 +341,13 @@ public class Scorer extends SubsystemBase {
             .alongWith(angler.aimAnglerToSetPointCommand(()-> getIdealShot(getDistanceToTarget() + bonusMeasure).angle))
             .withName("Scorer:AimToTarget");
     }
+
+    public Command AimToTargetNoAngle(){
+        // System.out.print("aiming");
+        return turret.aimTurretToSetPointCommand(() -> getAngleToTargetFromTurretPerspective())
+            .alongWith( flywheel.flyWheelCommand(() -> getIdealShot(getDistanceToTarget() + bonusMeasure ).setSpeed))
+            .withName("Scorer:AimToTarget");
+    }
      
     public void update() {
         // update robot's pose each cycle, called in Robot.java's periodic() method

@@ -90,6 +90,8 @@ public class Loader extends SubsystemBase {
     // This method will be called once per scheduler run
     SmartDashboard.putBoolean("Loader Active", isLoaderActive());
     SmartDashboard.putNumber("LoaderRPM", getLoaderRPM());
+    SmartDashboard.putNumber("Loader Current", loaderMotor.getOutputCurrent());
+    SmartDashboard.putNumber("Loader Applied output", loaderMotor.getAppliedOutput());
   }
 
   @Override

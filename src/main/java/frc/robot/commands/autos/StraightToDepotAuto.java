@@ -32,13 +32,16 @@ public class StraightToDepotAuto extends SequentialCommandGroup {
       // 4. Re-enable Vision
       Vision.getInstance().enable(),
 
-      // 5. Aim turret and angler to Hub
+      // 5. Re-Zero Intake
+      IntakePivot.getInstance().setMaxPivotAngle(),
+      
+      // 6. Aim turret and angler to Hub
       new ParallelDeadlineGroup(
         new WaitCommand(2),
         ScorerLeft.getInstance().AimToTarget()
       ),
       
-      // 6. Launch fuel with loader with 67 assistance
+      // 7. Launch fuel with loader with 67 assistance
       new ParallelDeadlineGroup(  
         new WaitCommand(4), 
         Loader.getInstance().loadInCommand(),
@@ -46,20 +49,20 @@ public class StraightToDepotAuto extends SequentialCommandGroup {
         ScorerLeft.getInstance().AimToTarget()
       ),
 
-      // 7. 2nd Path to depot
+      // 8. 2nd Path to depot
       new PathPlannerAuto("StraightToDepot Auto 2").deadlineFor(
         IntakeRollers.getInstance().eatFuelCommand(),
         //IntakePivot.getInstance().sixSevenCommand(), // fuel will not go into intake when this is happening
         ScorerLeft.getInstance().AimToTarget()
       ),
 
-      // 8. 3rd Path for closer shot
+      // 9. 3rd Path for closer shot
       new PathPlannerAuto("StraightToDepot Auto 3").deadlineFor(
         IntakeRollers.getInstance().eatFuelCommand(),
         ScorerLeft.getInstance().AimToTarget()
       ),
 
-      //9. Aim + Shoot Fuel for second volley
+      //10. Aim + Shoot Fuel for second volley
       new ParallelDeadlineGroup(
         new WaitCommand(6),
         ScorerLeft.getInstance().AimToTarget(),

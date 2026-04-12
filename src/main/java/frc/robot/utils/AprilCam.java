@@ -67,6 +67,7 @@ public class AprilCam {
     public void update(EstimateConsumer consumer) { // should get called exactly ONCE per robot loop
         List<PhotonTrackedTarget> latestTargets = new ArrayList<>();
         Optional<EstimatedRobotPose> visionEst = Optional.empty();
+        boolean hadTarget = false;
         for (var result : camera.getAllUnreadResults()) {
             visionEst = photonPoseEstimator.estimateCoprocMultiTagPose(result);
             if (visionEst.isEmpty()) {
@@ -92,7 +93,8 @@ public class AprilCam {
 
                         consumer.accept(est.estimatedPose.toPose2d(), est.timestampSeconds, estStdDevs);
                     });
-
+            
+            hadTarget = result.hasTargets();
             
             latestTargets = result.getTargets();
         }
@@ -100,6 +102,7 @@ public class AprilCam {
         updateClosestId(latestTargets);
 
         // Display each target info seen
+        SmartDashboard.putBoolean("AprilCamHadTarget", hadTarget);
         SmartDashboard.putNumber("ClosestID", closestId);
         for (int i = 0; latestTargets != null && i < latestTargets.size(); i++) {
           SmartDashboard.putString("Id" + i, latestTargets.get(i).toString());

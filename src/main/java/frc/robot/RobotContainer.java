@@ -220,7 +220,9 @@ public class RobotContainer {
     operatorController.rightBumper().whileTrue(scorerRight.flywheel.revFlywheelCommand());
 
     // operatorController.rightBumper().whileTrue(scorerLeft.flywheel.flyWheelCommand(() -> 0.5));
-    // operatorController.rightBumper().whileTrue(scorerRight.flywheel.flyWheelCommand(() -> 0.5));
+    // operatorController.rightBumper().whileTrue(scorerRight.flywheel.flyWheelCommand(() -> 0.5))
+
+    operatorController.leftBumper().whileTrue(Loader.getInstance().unloadCommand());
 
 
     // INCREMENT/DECREMENT FLYWHEEL SPEEDS (TESTING - POV LEFT/RIGHT)
