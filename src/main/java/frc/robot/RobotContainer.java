@@ -45,6 +45,7 @@ public class RobotContainer {
   public final Loader loader = Loader.getInstance();
   public final IntakePivot intake = IntakePivot.getInstance();
   private final Vision vision = Vision.getInstance();    //VISION! (Comment IN to use vision)
+  // private final Music music = Music.getInstance();
 
   // CTRE SWERVE FIELDS
   private double MaxSpeed = 1.0 * TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed

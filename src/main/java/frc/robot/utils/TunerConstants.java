@@ -45,11 +45,11 @@ public class TunerConstants {
         
 
     // Check if Roborio is for the Competition Robot
-    public static final String COMPETITION_ROBORIO_SERIAL_NUM = "0329F2C4"; // ID for Current Roborio v2 on COMPBOT
+    public static final String COMPETITION_ROBORIO_SERIAL_NUM = "0329F2C4"; //OLD: ID for Old Roborio v2 not on COMPBOT TODO: update to new serial number
     public static boolean isCompetitionBot() {
         String serialNumber = RobotController.getSerialNumber();
         System.out.println("ROBORIO is " + serialNumber);
-        if (serialNumber.equals(COMPETITION_ROBORIO_SERIAL_NUM)) {
+        if (!serialNumber.equals(COMPETITION_ROBORIO_SERIAL_NUM)) {
             System.out.println("Competition Bot RoboRio found!");
             return true;
         }
