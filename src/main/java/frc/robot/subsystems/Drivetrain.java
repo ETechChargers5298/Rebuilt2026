@@ -74,7 +74,8 @@ public class Drivetrain extends TunerSwerveDrivetrain implements Subsystem {
   public boolean fieldCentric = true;
   public boolean allianceCentric = true;
   private final Field2d field;
-
+  public Music music = Music.getInstance();
+  
   // CTRE SIM FIELDS
   private static final double kSimLoopPeriod = 0.004; // 4 ms
   private Notifier m_simNotifier = null;
@@ -192,6 +193,7 @@ private final SwerveRequest.ApplyRobotSpeeds m_pathApplyRobotSpeeds = new Swerve
     }
 
     configurePathPlanner();
+    
 
   }
 

@@ -48,7 +48,9 @@ public class Scorer extends SubsystemBase {
     double robotY = Drivetrain.getInstance().getRobotY();
     double robotAngle = Drivetrain.getInstance().getRobotAngleDegrees();
     Optional<Alliance> allianceOptional = DriverStation.getAlliance();
-    static Alliance alliance = null;
+    
+    //Does this break while null?
+    static Alliance alliance = Alliance.Red;
     
 
     // SCORER CONSTRUCTOR

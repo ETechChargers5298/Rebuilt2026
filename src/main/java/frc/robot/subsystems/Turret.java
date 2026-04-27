@@ -26,6 +26,7 @@ public class Turret extends SubsystemBase {
   public double turretMotorSpeed = 0;
   public double turretAngle = 0;
   private String side;
+  public Music music;
 
   // Define the request once as a field to save memory
   private final MotionMagicVoltage expoRequest = new MotionMagicVoltage(0);
@@ -35,8 +36,11 @@ public class Turret extends SubsystemBase {
   public Turret(String side, int motorPort) {
 
     turretMotor = new TalonFX(motorPort);
-
     this.side = side;
+
+    //Music setup
+    music = Music.getInstance();
+    music.addInstrument(turretMotor, 0);
 
     TalonFXConfiguration config = new TalonFXConfiguration();
     

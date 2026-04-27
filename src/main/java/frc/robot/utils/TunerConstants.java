@@ -173,6 +173,9 @@ public class TunerConstants {
             .withSupplyCurrentLimit(40)
             .withSupplyCurrentLimitEnable(true)
         
+        )
+        .withAudio(new AudioConfigs()
+        .withAllowMusicDurDisable(true)
         );
     private static final TalonFXConfiguration steerInitialConfigs = new TalonFXConfiguration()
         .withCurrentLimits(

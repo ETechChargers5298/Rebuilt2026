@@ -45,8 +45,7 @@ public class RobotContainer {
   public final Loader loader = Loader.getInstance();
   public final IntakePivot intake = IntakePivot.getInstance();
   private final Vision vision = Vision.getInstance();    //VISION! (Comment IN to use vision)
-  // private final Music music = Music.getInstance();
-
+  public final Music music = Music.getInstance();
   // CTRE SWERVE FIELDS
   private double MaxSpeed = 1.0 * TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
   private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
@@ -98,6 +97,19 @@ public class RobotContainer {
 
     // Setup joystick buttons
     configureBindings();
+
+    //Setup drive motors for music playing
+    music.addInstrument(drivetrain.getModule(2).getSteerMotor(), 1);
+    music.addInstrument(drivetrain.getModule(2).getDriveMotor(), 2);
+
+    music.addInstrument(drivetrain.getModule(1).getSteerMotor(), 3);
+    music.addInstrument(drivetrain.getModule(1).getDriveMotor(), 4);
+
+    music.addInstrument(drivetrain.getModule(3).getSteerMotor(), 5);
+    music.addInstrument(drivetrain.getModule(3).getDriveMotor(), 6);
+
+    music.addInstrument(drivetrain.getModule(4).getSteerMotor(), 7);
+    music.addInstrument(drivetrain.getModule(4).getDriveMotor(), 8);
 
   }
 
