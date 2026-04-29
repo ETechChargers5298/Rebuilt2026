@@ -8,6 +8,7 @@ import frc.robot.utils.Telemetry;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.SignalLogger;
+import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.FollowPathCommand;
@@ -97,8 +98,9 @@ public class RobotContainer {
 
     // Setup joystick buttons
     configureBindings();
-
+    
     //Setup drive motors for music playing
+    if(!Utils.isSimulation()){
     music.addInstrument(drivetrain.getModule(2).getSteerMotor(), 1);
     music.addInstrument(drivetrain.getModule(2).getDriveMotor(), 2);
 
@@ -107,10 +109,7 @@ public class RobotContainer {
 
     music.addInstrument(drivetrain.getModule(3).getSteerMotor(), 5);
     music.addInstrument(drivetrain.getModule(3).getDriveMotor(), 6);
-
-    music.addInstrument(drivetrain.getModule(4).getSteerMotor(), 7);
-    music.addInstrument(drivetrain.getModule(4).getDriveMotor(), 8);
-
+    }
   }
 
   /**

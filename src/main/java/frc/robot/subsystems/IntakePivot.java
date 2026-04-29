@@ -159,12 +159,6 @@ public class IntakePivot extends SubsystemBase {
     return run(
         () -> {
           retract();
-          // TODO: Turn on the robot, put the pivot in the stowed position for match start, zero the angle,
-          // extend the pivot, write down the angle, retract it as far as necessary for match play, write down
-          // the angle, and set the code below with the appropriate angle and greater than/less than direction,
-          // and remove the || true (it's in there so that this code doesn't break retract because I have no
-          // idea what the number needs to be). The intent of this code is to let the driveteam retract without
-          // worrying about retracting too far.
         }).onlyWhile(() -> (!limitOn || getPivotAngle() > 85 )).finallyDo(
           () -> {
               stopExtending();
