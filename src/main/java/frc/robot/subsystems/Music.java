@@ -12,8 +12,8 @@ public class Music extends SubsystemBase {
     // MUSIC FIELDS
     private static Music instance;
     private static Orchestra orchestra;
-    private final SendableChooser<Command> musicChooser;
-    private String songChoice = "indianaJones.chrp";
+    // private final SendableChooser<Command> musicChooser;
+    private static String songChoice = "indianaJones.chrp";
         //Music Constructor
         
         private Music(){
@@ -21,15 +21,19 @@ public class Music extends SubsystemBase {
 
             SmartDashboard.putData("Play Music", playMusicCommand().ignoringDisable(true));
             SmartDashboard.putData("Stop Music", stopMusicCommand().ignoringDisable(true));
-            SmartDashboard.putData("Load Music", loadMusicCommand().ignoringDisable(true));
+            // SmartDashboard.putData("Load Music", loadMusicCommand().ignoringDisable(true));
             
-            musicChooser = new SendableChooser<>();
+            // musicChooser = new SendableChooser<>();
+            // musicChooser.setDefaultOption("Indiana Jones Theme", setSongCommand("indianaJones.chrp").ignoringDisable(true));
 
-            musicChooser.addOption("Indiana Jones Theme", loadMusicCommand("indianaJones.chrp"));
-            musicChooser.addOption("Under the Sea", loadMusicCommand("underTheSea.chrp"));
+            // musicChooser.addOption("Indiana Jones Theme", setSongCommand("indianaJones.chrp").ignoringDisable(true));
+            // musicChooser.addOption("Under the Sea", setSongCommand("underTheSea.chrp").ignoringDisable(true));
 
-            SmartDashboard.putData("Music Choice", musicChooser);
-            //SmartDashboard.putData("Set Song", musicChooser.getSelected().ignoringDisable(true));
+            // SmartDashboard.putData("Music Choice", musicChooser);
+            // SmartDashboard.putData("Set Song", musicChooser.getSelected().ignoringDisable(true));
+            SmartDashboard.putData("Under the Sea", loadMusicCommand("underTheSea.chrp").ignoringDisable(true));
+            SmartDashboard.putData("Indiana Jones Theme", loadMusicCommand("indianaJones.chrp").ignoringDisable(true));
+            SmartDashboard.putData("Ievan Polka", loadMusicCommand("IevanPolka.chrp").ignoringDisable(true));
         }
 
         //Music Singleton
@@ -42,9 +46,9 @@ public class Music extends SubsystemBase {
 
         //Basic music methods
 
-        public void loadMusic(){
-            orchestra.loadMusic(songChoice);
-        }
+        // public void loadMusic(){
+        //     orchestra.loadMusic(songChoice);
+        // }
         
         public void loadMusic(String s){
             orchestra.loadMusic(s);
@@ -62,9 +66,9 @@ public class Music extends SubsystemBase {
             orchestra.addInstrument(motor, track);
         }
         
-        public void setSong(String s){
-            songChoice = s;
-        }
+        // public void setSong(String s){
+        //     songChoice = s;
+        // }
 
     //Music Commands
     public Command playMusicCommand(){
@@ -84,15 +88,15 @@ public class Music extends SubsystemBase {
         
         });
     }
-    public Command loadMusicCommand(){
-        System.out.println("Im working");
-        return runOnce(
-        () -> 
-        {
-            loadMusic();
+    // public Command loadMusicCommand(){
+    //     System.out.println("Im working");
+    //     return runOnce(
+    //     () -> 
+    //     {
+    //         loadMusic();
             
-        });
-    }
+    //     });
+    // }
     public Command loadMusicCommand(String s){
         System.out.println("Im working");
         return runOnce(
@@ -102,13 +106,13 @@ public class Music extends SubsystemBase {
             
         });
     }
-    public Command setSongCommand(String s){
-        return runOnce(
-            ()->
-            {
-                setSong(s);
-            });
-    }
+    // public Command setSongCommand(String s){
+    //     return runOnce(
+    //         ()->
+    //         {
+    //             setSong(s);
+    //         });
+    // }
 
     @Override
     public void periodic(){
