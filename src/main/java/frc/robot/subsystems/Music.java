@@ -34,6 +34,7 @@ public class Music extends SubsystemBase {
             SmartDashboard.putData("Under the Sea", loadMusicCommand("underTheSea.chrp").ignoringDisable(true));
             SmartDashboard.putData("Indiana Jones Theme", loadMusicCommand("indianaJones.chrp").ignoringDisable(true));
             SmartDashboard.putData("Ievan Polka", loadMusicCommand("IevanPolka.chrp").ignoringDisable(true));
+            SmartDashboard.putData("Pokemon Poke Center", loadMusicCommand("pokemonCenter.chrp"));
         }
 
         //Music Singleton

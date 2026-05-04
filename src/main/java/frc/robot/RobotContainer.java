@@ -109,6 +109,9 @@ public class RobotContainer {
 
     music.addInstrument(drivetrain.getModule(3).getSteerMotor(), 5);
     music.addInstrument(drivetrain.getModule(3).getDriveMotor(), 6);
+
+    music.addInstrument(drivetrain.getModule(0).getDriveMotor(), 7);
+    music.addInstrument(drivetrain.getModule(0).getSteerMotor(), 0);
     }
   }
 
