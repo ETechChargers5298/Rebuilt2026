@@ -8,7 +8,6 @@ import frc.robot.Constants.IntakeConstants;
 
 import com.revrobotics.spark.*;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
-import com.revrobotics.spark.config.SparkMaxConfig;
 
 
 public class IntakeRollers extends SubsystemBase {

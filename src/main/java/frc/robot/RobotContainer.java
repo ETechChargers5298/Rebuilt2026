@@ -10,10 +10,7 @@ import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.swerve.SwerveRequest;
-import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.FollowPathCommand;
-import com.pathplanner.lib.commands.PathPlannerAuto;
-import com.pathplanner.lib.path.PathPlannerPath;
 
 // import com.pathplanner.lib.auto.AutoBuilder;
 // import com.pathplanner.lib.commands.FollowPathCommand;
@@ -45,7 +42,7 @@ public class RobotContainer {
   public final ScorerRight scorerRight = ScorerRight.getInstance();
   public final Loader loader = Loader.getInstance();
   public final IntakePivot intake = IntakePivot.getInstance();
-  private final Vision vision = Vision.getInstance();    //VISION! (Comment IN to use vision)
+  //private final Vision vision = Vision.getInstance();    //VISION! (Comment IN to use vision)
   public final Music music = Music.getInstance();
   // CTRE SWERVE FIELDS
   private double MaxSpeed = 1.0 * TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
@@ -134,8 +131,8 @@ public class RobotContainer {
     // Note: WPILib convention of X is , Y is left
     drivetrain.setDefaultCommand(
       drivetrain.applyRequest(() ->
-          TunerConstants.drive.withVelocityX(-driverController.getLeftY() * TunerConstants.MaxSpeed) // Drive forward with negative Y (forward)
-              .withVelocityY(-driverController.getLeftX() * TunerConstants.MaxSpeed) // Drive left with negative X (left)
+          TunerConstants.drive.withVelocityX(driverController.getLeftY() * TunerConstants.MaxSpeed) // Drive forward with negative Y (forward)
+              .withVelocityY(driverController.getLeftX() * TunerConstants.MaxSpeed) // Drive left with negative X (left)
               .withRotationalRate(-driverController.getRightX() * TunerConstants.MaxAngularRate) // Drive counterclockwise with negative X (left)
       )
     );
