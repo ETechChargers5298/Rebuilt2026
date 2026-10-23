@@ -4,6 +4,7 @@ import static edu.wpi.first.units.Units.*;
 
 import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.*;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.swerve.*;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants.*;
@@ -163,12 +164,23 @@ public class TunerConstants {
     // Some configs will be overwritten; check the `with*InitialConfigs()` API documentation.
     private static final TalonFXConfiguration driveInitialConfigs = new TalonFXConfiguration()
         .withCurrentLimits(new CurrentLimitsConfigs()
-            .withStatorCurrentLimit(80) //change to lower acceleration? Reduces torque output as well, is already slower for heavier people.
+
+            .withStatorCurrentLimit(40) //change to lower acceleration? Reduces torque output as well, is already slower for heavier people. Originally 80, will 100% struggle at 40.
             .withStatorCurrentLimitEnable(true)
             .withSupplyCurrentLimit(40)
             .withSupplyCurrentLimitEnable(true)
-        
+           
+
         )
+        .withOpenLoopRamps(new OpenLoopRampsConfigs()
+            .withDutyCycleOpenLoopRampPeriod(5)
+            .withVoltageOpenLoopRampPeriod(5)
+        )
+        .withClosedLoopRamps(new ClosedLoopRampsConfigs()
+            .withDutyCycleClosedLoopRampPeriod(5)
+            .withVoltageClosedLoopRampPeriod(5)
+        
+        ) //should work without closedloops, would only be used for position control (i.e fieldcentric), which we're not using for the chair.
         .withAudio(new AudioConfigs()
         .withAllowMusicDurDisable(true)
         );
@@ -181,7 +193,6 @@ public class TunerConstants {
                 .withStatorCurrentLimitEnable(true)
                 .withSupplyCurrentLimit(30)
                 .withSupplyCurrentLimitEnable(true)
-
         );
     private static final CANcoderConfiguration encoderInitialConfigs = new CANcoderConfiguration();
     
